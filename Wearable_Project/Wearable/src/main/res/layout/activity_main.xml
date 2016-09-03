@@ -12,8 +12,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/connect"
-        android:id="@+id/connectBtn"
+        android:text="@string/addTile"
+        android:id="@+id/installBtn"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
@@ -21,36 +21,10 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/install"
-        android:id="@+id/createBtn"
-        android:layout_below="@+id/connectBtn"
+        android:text="@string/removeTile"
+        android:id="@+id/uninstallBtn"
+        android:layout_below="@+id/installBtn"
         android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/connectBtn" />
+        android:layout_alignEnd="@+id/installBtn" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/remove"
-        android:id="@+id/removeBtn"
-        android:layout_below="@+id/setupBtn"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sendDiag"
-        android:id="@+id/sendDiagBtn"
-        android:layout_below="@+id/createBtn"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/setupPg"
-        android:id="@+id/setupBtn"
-        android:layout_below="@+id/sendDiagBtn"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
 </RelativeLayout>
