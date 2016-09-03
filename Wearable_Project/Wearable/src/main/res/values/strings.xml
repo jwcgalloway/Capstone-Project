@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Wearable Project</string>
+    <string name="connect">Connect To Band</string>
+    <string name="install">Create Tile on Band</string>
+    <string name="remove">Remove Tile from Band</string>
+    <string name="sendDiag">Send Dialog</string>
+    <string name="setupPg">Setup Tile Pages</string>
+</resources>
