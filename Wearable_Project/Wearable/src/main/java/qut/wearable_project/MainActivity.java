@@ -8,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.microsoft.band.BandClient;
@@ -16,6 +19,7 @@ import com.microsoft.band.BandException;
 import com.microsoft.band.BandInfo;
 import com.microsoft.band.BandPendingResult;
 import com.microsoft.band.ConnectionState;
+import com.microsoft.band.sensors.SampleRate;
 import com.microsoft.band.tiles.BandIcon;
 import com.microsoft.band.tiles.BandTile;
 import com.microsoft.band.tiles.pages.FlowPanelOrientation;
@@ -35,14 +39,19 @@ import java.util.UUID;
 /**
  * @author James Galloway
  *
- * TODO Project name
- * TODO This description
- * TODO User messages
+ * MainActivity class for Wearable Project.  Contains functions responsible for the initial
+ * setup of the application, including the initial contact with the Band as well as event
+ * listeners for all screen elements.
+ *
+ * TODO App name
  * TODO Persistence between values when app is run multiple times
+ * TODO Load screen maybe
  */
 public class MainActivity extends AppCompatActivity {
     private ProjectClient projectClient;
     private Toast statusTst;
+    private final TextView[] accValTxt = new TextView[3];
+    private final TextView[] gyroValTxt = new TextView[3];
 
     @SuppressLint("ShowToast")
     @Override
@@ -52,6 +61,21 @@ public class MainActivity extends AppCompatActivity {
 
         statusTst = Toast.makeText(MainActivity.this, null, Toast.LENGTH_LONG);
 
+        accValTxt[0] = (TextView) findViewById(R.id.xAccVal);
+        accValTxt[1] = (TextView) findViewById(R.id.yAccVal);
+        accValTxt[2] = (TextView) findViewById(R.id.zAccVal);
+
+        gyroValTxt[0] = (TextView) findViewById(R.id.xGyroVal);
+        gyroValTxt[1] = (TextView) findViewById(R.id.yGyroVal);
+        gyroValTxt[2] = (TextView) findViewById(R.id.zGyroVal);
+
+        setEventListeners();
+    }
+
+    /**
+     * Set event listeners for each of the elements on the activity.
+     */
+    private void setEventListeners() {
         /* Install Button */
         Button installBtn = (Button) findViewById(R.id.installBtn);
         installBtn.setOnClickListener(new View.OnClickListener() {
@@ -68,22 +92,62 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String response;
-                if (projectClient.removeTile()) {
-                    response = "Wearable Project tile has been successfully removed";
+                if (projectClient != null) {
+                    if (projectClient.removeTile()) {
+                        response = "Wearable Project tile has been successfully removed.";
+                        findViewById(R.id.accSwitch).setEnabled(false);
+                    } else {
+                        response = "Could not remove Wearable Project tile.";
+                        projectClient.sendDialog("Uninstall", response);
+                    }
+                    statusTst.setText(response);
+                    statusTst.show();
                 } else {
-                    response = "Could not remove Wearable Project tile";
-                    projectClient.sendDialog("Uninstall", response);
+                    response = "Not connected to Band.";
+                    statusTst.setText(response);
+                    statusTst.show();
                 }
-                statusTst.setText(response);
-                statusTst.show();
             }
         });
-    }
+
+        /* Accelerometer Switch */
+        Switch accSwitch = (Switch) findViewById(R.id.accSwitch);
+        accSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ProjectAccelerometer projectAcc = projectClient.getProjectAcc();
+                if (isChecked) {
+                    projectAcc.registerListener(projectClient.getBandClient(), SampleRate.MS128);
+                } else {
+                    projectAcc.unregisterListener(projectClient.getBandClient());
+                    for (TextView val : accValTxt) {
+                        val.setText(R.string.noData);
+                    }
+                }
+            }
+        });
+
+        /* Gyroscope Switch */
+        Switch gyroSwitch = (Switch) findViewById(R.id.gyroSwitch);
+        gyroSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ProjectGyroscope projectGyro = projectClient.getProjectGyro();
+                if (isChecked) {
+                    projectGyro.registerListener(projectClient.getBandClient(), SampleRate.MS128);
+                } else {
+                    projectGyro.unregisterListener(projectClient.getBandClient());
+                    for (TextView val : gyroValTxt) {
+                        val.setText(R.string.noData);
+                    }
+                }
+            }
+        });
+    } // end setEventListeners
 
     enum TileLayoutIndex {
         MessagesLayout
     }
-
     enum TileMessagesPageElementId {
         Message
     }
@@ -92,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
      * @author James Galloway
      * Private class with functions required to install the Band application.
      *
-     * TODO +1s after ordinal calls - enum
      */
     private class InstallAsync extends AsyncTask<Void, Void, Boolean> {
         private String response;
@@ -122,8 +185,18 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean installed) {
             if (installed) {
                 projectClient = new ProjectClient(bandClient, tileId, page1Id);
-                projectClient.sendDialog("Installation Successful", "And then some other message");
                 response = "Installation Successful";
+                projectClient.sendDialog(response, "Tap to continue...");
+
+
+                findViewById(R.id.accSwitch).setEnabled(true);
+                findViewById(R.id.gyroSwitch).setEnabled(true);
+
+                ProjectAccelerometer acc = projectClient.getProjectAcc();
+                acc.setListener(MainActivity.this, accValTxt);
+
+                ProjectGyroscope gyro = projectClient.getProjectGyro();
+                gyro.setListener(MainActivity.this, gyroValTxt);
             }
             statusTst.setText(response);
             statusTst.show();
@@ -153,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                 if (state == ConnectionState.CONNECTED) {
                     return true;
                 } else {
-                    response = "Connection Failed";
+                    response = "Connection failed.";
                     return false;
                 }
             } catch (InterruptedException | BandException ex) {
@@ -184,7 +257,10 @@ public class MainActivity extends AppCompatActivity {
                     .build();
 
             try {
-                bandClient.getTileManager().addTile(MainActivity.this, tile).await();
+                if (!bandClient.getTileManager().addTile(MainActivity.this, tile).await()) {
+                    response = "Could not add tile to the Band.";
+                    return false;
+                }
                 return true;
             } catch (InterruptedException | BandException ex) {
                 ex.printStackTrace();
@@ -228,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
             page1Id = UUID.randomUUID();
 
             WrappedTextBlockData TBData =
-                    new WrappedTextBlockData(TileMessagesPageElementId.Message.ordinal() + 1, "Ye Boi");
+                    new WrappedTextBlockData(TileMessagesPageElementId.Message.ordinal() + 1, "Accelerometer Data");
 
             PageData data =
                     new PageData(page1Id, TileLayoutIndex.MessagesLayout.ordinal()).update(TBData);
@@ -242,6 +318,5 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         } // end setPageContent
-
     } // end InstallAsync
 }
