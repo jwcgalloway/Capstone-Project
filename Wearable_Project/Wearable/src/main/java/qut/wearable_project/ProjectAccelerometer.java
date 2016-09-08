@@ -18,7 +18,7 @@ import java.util.Locale;
  */
 class ProjectAccelerometer implements ProjectSensorInterface {
     private BandAccelerometerEventListener listener;
-    private float xAcc, yAcc, zAcc;
+    private double xAcc, yAcc, zAcc;
 
     /**
      * Sets the event listener for the sensor upon any change in data.
@@ -31,7 +31,9 @@ class ProjectAccelerometer implements ProjectSensorInterface {
         listener = new BandAccelerometerEventListener() {
             @Override
             public void onBandAccelerometerChanged(BandAccelerometerEvent bandAccelerometerEvent) {
+                // Low-pass filter to remove effect of gravity
                 xAcc = bandAccelerometerEvent.getAccelerationX();
+//                        - (0.9 * xAcc + 0.1 * bandAccelerometerEvent.getAccelerationX());
                 yAcc = bandAccelerometerEvent.getAccelerationY();
                 zAcc = bandAccelerometerEvent.getAccelerationZ();
 
