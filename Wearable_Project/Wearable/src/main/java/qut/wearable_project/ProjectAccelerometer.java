@@ -91,15 +91,16 @@ class ProjectAccelerometer implements ProjectSensorInterface {
         }
     } // end unregisterListener
 
-    private void saveAccData(long time, float xAcc, float yAcc, float zAcc){
+    private void saveAccData(long time, float xAcc, float yAcc, float zAcc, Activity activity){
         String FILENAME = "acc_data";
         String string = "x, y, z";
 
         try {
-            FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_APPEND);
+            FileOutputStream fos = activity.openFileOutput(FILENAME, Context.MODE_APPEND);
             fos.write(string.getBytes());
             fos.close();
         } catch (Exception e){
+
         }
     } // end saveAccData
 }
