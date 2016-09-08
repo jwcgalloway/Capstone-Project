@@ -35,6 +35,7 @@ import com.microsoft.band.tiles.pages.WrappedTextBlock;
 import com.microsoft.band.tiles.pages.WrappedTextBlockData;
 import com.microsoft.band.tiles.pages.WrappedTextBlockFont;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.UUID;
 
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private Toast statusTst;
     private final TextView[] accValTxt = new TextView[3];
     private final TextView[] gyroValTxt = new TextView[3];
+    private TextView showSavedTxt;
 
     @SuppressLint("ShowToast")
     @Override
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         gyroValTxt[2] = (TextView) findViewById(R.id.zGyroVal);
 
         saveInit();
-
+        showSavedTxt = (TextView) findViewById(R.id.showSavedTxt);
         setEventListeners();
     }
 
@@ -147,6 +149,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        /* Show Saved Data */
+        Button showSavedBtn = (Button) findViewById(R.id.showSavedBtn);
+        showSavedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                FileOutputStream fos = openFileOutput("acc_data", Context.MODE_PRIVATE);
+                                //showDataTxt.setText(fos.toString());
+                                showSavedTxt.setText("Get Fucked");
+                            } catch (FileNotFoundException ex) {
+                                ex.printStackTrace();
+                                statusTst.setText("Could not find saved data.");
+                                statusTst.show();
+                            }
+                        }
+                    });
+            }
+        });
     } // end setEventListeners
 
     enum TileLayoutIndex {
@@ -159,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
     /**
      * @author James Galloway
      * Private class with functions required to install the Band application.
-     *
      */
     private class InstallAsync extends AsyncTask<Void, Void, Boolean> {
         private String response;
@@ -191,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
                 projectClient = new ProjectClient(bandClient, tileId, page1Id);
                 response = "Installation Successful";
                 projectClient.sendDialog(response, "Tap to continue...");
-
 
                 findViewById(R.id.accSwitch).setEnabled(true);
                 findViewById(R.id.gyroSwitch).setEnabled(true);

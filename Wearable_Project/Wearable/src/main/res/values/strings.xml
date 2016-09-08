@@ -8,4 +8,5 @@
     <string name="xTxt">X:</string>
     <string name="yTxt">Y:</string>
     <string name="zTxt">Z:</string>
+    <string name="showSavedLabel">Show Saved Data</string>
 </resources>

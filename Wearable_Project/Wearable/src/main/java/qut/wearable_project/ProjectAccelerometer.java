@@ -36,7 +36,9 @@ class ProjectAccelerometer implements ProjectSensorInterface {
         listener = new BandAccelerometerEventListener() {
             @Override
             public void onBandAccelerometerChanged(BandAccelerometerEvent bandAccelerometerEvent) {
+                // Low-pass filter to remove effect of gravity
                 xAcc = bandAccelerometerEvent.getAccelerationX();
+//                        - (0.9 * xAcc + 0.1 * bandAccelerometerEvent.getAccelerationX());
                 yAcc = bandAccelerometerEvent.getAccelerationY();
                 zAcc = bandAccelerometerEvent.getAccelerationZ();
 
