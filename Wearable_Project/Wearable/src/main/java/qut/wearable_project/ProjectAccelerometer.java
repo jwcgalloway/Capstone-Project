@@ -44,6 +44,7 @@ class ProjectAccelerometer implements ProjectSensorInterface {
 
                 time = bandAccelerometerEvent.getTimestamp();
 
+                saveAccData(time, xAcc, yAcc, zAcc, activity);
 
                 activity.runOnUiThread(new Runnable() {
                     @Override
@@ -93,7 +94,7 @@ class ProjectAccelerometer implements ProjectSensorInterface {
 
     private void saveAccData(long time, float xAcc, float yAcc, float zAcc, Activity activity){
         String FILENAME = "acc_data";
-        String string = "x, y, z";
+        String string = "x, y, z, time";
 
         try {
             FileOutputStream fos = activity.openFileOutput(FILENAME, Context.MODE_APPEND);

@@ -35,8 +35,14 @@ import com.microsoft.band.tiles.pages.WrappedTextBlock;
 import com.microsoft.band.tiles.pages.WrappedTextBlockData;
 import com.microsoft.band.tiles.pages.WrappedTextBlockFont;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.UUID;
 
 /**
@@ -159,10 +165,11 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-                                FileOutputStream fos = openFileOutput("acc_data", Context.MODE_PRIVATE);
-                                //showDataTxt.setText(fos.toString());
-                                showSavedTxt.setText("Get Fucked");
-                            } catch (FileNotFoundException ex) {
+                                String filePath = getFilesDir().toString() + "/acc_data";
+                                String str = getStrFromFile(filePath);
+
+                                showSavedTxt.setText(str);
+                            } catch (IOException ex) {
                                 ex.printStackTrace();
                                 statusTst.setText("Could not find saved data.");
                                 statusTst.show();
@@ -365,4 +372,24 @@ public class MainActivity extends AppCompatActivity {
             statusTst.show();
         }
     } // end saveInit()
+
+    private static String streamToString(InputStream is) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
+    } // end streamToString
+
+    public static String getStrFromFile (String filePath) throws IOException {
+        File fl = new File(filePath);
+        FileInputStream fin = new FileInputStream(fl);
+        String ret = streamToString(fin);
+
+        fin.close();
+        return ret;
+    } // end getStrFromFile
 }
