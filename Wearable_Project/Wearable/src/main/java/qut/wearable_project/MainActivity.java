@@ -1,6 +1,7 @@
 package qut.wearable_project;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -34,6 +35,7 @@ import com.microsoft.band.tiles.pages.WrappedTextBlock;
 import com.microsoft.band.tiles.pages.WrappedTextBlockData;
 import com.microsoft.band.tiles.pages.WrappedTextBlockFont;
 
+import java.io.FileOutputStream;
 import java.util.UUID;
 
 /**
@@ -68,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         gyroValTxt[0] = (TextView) findViewById(R.id.xGyroVal);
         gyroValTxt[1] = (TextView) findViewById(R.id.yGyroVal);
         gyroValTxt[2] = (TextView) findViewById(R.id.zGyroVal);
+
+        saveInit();
 
         setEventListeners();
     }
@@ -319,4 +323,24 @@ public class MainActivity extends AppCompatActivity {
             }
         } // end setPageContent
     } // end InstallAsync
+
+    /**
+     * @author Lok Sum (Moon) Lo
+     * Private method to create local save file for accelerometer data upon startup.
+     *
+     */
+    private void saveInit() {
+        String FILENAME = "acc_data";
+        String string = "datetime,acc_x,acc_y,acc_z,";
+
+        try {
+            FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            fos.write(string.getBytes());
+            fos.close();
+        } catch (Exception e){
+            e.printStackTrace();
+            statusTst.setText("Can't create save file.");
+            statusTst.show();
+        }
+    } // end saveInit()
 }

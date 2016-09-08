@@ -1,6 +1,7 @@
 package qut.wearable_project;
 
 import android.app.Activity;
+import android.content.Context;
 import android.widget.TextView;
 
 import com.microsoft.band.BandClient;
@@ -9,7 +10,10 @@ import com.microsoft.band.sensors.BandAccelerometerEvent;
 import com.microsoft.band.sensors.BandAccelerometerEventListener;
 import com.microsoft.band.sensors.SampleRate;
 
+import java.io.FileOutputStream;
 import java.util.Locale;
+
+
 
 /**
  * @author James Galloway
@@ -19,6 +23,7 @@ import java.util.Locale;
 class ProjectAccelerometer implements ProjectSensorInterface {
     private BandAccelerometerEventListener listener;
     private float xAcc, yAcc, zAcc;
+    private long time;
 
     /**
      * Sets the event listener for the sensor upon any change in data.
@@ -34,6 +39,9 @@ class ProjectAccelerometer implements ProjectSensorInterface {
                 xAcc = bandAccelerometerEvent.getAccelerationX();
                 yAcc = bandAccelerometerEvent.getAccelerationY();
                 zAcc = bandAccelerometerEvent.getAccelerationZ();
+
+                time = bandAccelerometerEvent.getTimestamp();
+
 
                 activity.runOnUiThread(new Runnable() {
                     @Override
@@ -80,4 +88,16 @@ class ProjectAccelerometer implements ProjectSensorInterface {
             return false;
         }
     } // end unregisterListener
+
+    private void saveAccData(long time, float xAcc, float yAcc, float zAcc){
+        String FILENAME = "acc_data";
+        String string = "x, y, z";
+
+        try {
+            FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_APPEND);
+            fos.write(string.getBytes());
+            fos.close();
+        } catch (Exception e){
+        }
+    } // end saveAccData
 }
