@@ -174,9 +174,19 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/noData"
         android:id="@+id/showSavedTxt"
+        android:layout_below="@+id/moveCountTxt"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/uninstallBtn"
+        android:layout_alignEnd="@+id/uninstallBtn" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/noData"
+        android:id="@+id/moveCountTxt"
         android:layout_below="@+id/showSavedBtn"
         android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/showSavedBtn"
-        android:layout_above="@+id/uninstallBtn" />
+        android:layout_alignEnd="@+id/showSavedBtn" />
 
 </RelativeLayout>

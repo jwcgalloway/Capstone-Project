@@ -12,8 +12,6 @@ import com.microsoft.band.sensors.SampleRate;
 import java.util.Locale;
 
 /**
- * @author James Galloway
- *
  * Implementation of the ProjectSensorInterface for the gyroscope on the device.
  */
 public class ProjectGyroscope implements ProjectSensorInterface {

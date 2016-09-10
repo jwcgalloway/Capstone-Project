@@ -11,13 +11,12 @@ import com.microsoft.band.sensors.BandAccelerometerEventListener;
 import com.microsoft.band.sensors.SampleRate;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Locale;
 
 
 
 /**
- * @author James Galloway
- *
  * Implementation of the ProjectSensorInterface for the accelerometer on the device.
  */
 class ProjectAccelerometer implements ProjectSensorInterface {
@@ -102,13 +101,12 @@ class ProjectAccelerometer implements ProjectSensorInterface {
         t = Long.toString(time);
         string = t + "," + x + "," + y + "," + z + ",";
 
-
         try {
             FileOutputStream fos = activity.openFileOutput(FILENAME, Context.MODE_APPEND);
             fos.write(string.getBytes());
             fos.close();
-        } catch (Exception e){
-
+        } catch (IOException e){
+            e.printStackTrace();
         }
     } // end saveAccData
 }

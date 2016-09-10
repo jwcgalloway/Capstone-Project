@@ -7,8 +7,6 @@ import com.microsoft.band.BandClient;
 import com.microsoft.band.sensors.SampleRate;
 
 /**
- * @author James Galloway
- *
  * Defines constraints for the use of the Band's sensors.
  */
 interface ProjectSensorInterface {

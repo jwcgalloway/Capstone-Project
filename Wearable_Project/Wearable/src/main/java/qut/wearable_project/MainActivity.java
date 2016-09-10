@@ -20,6 +20,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
+
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandClientManager;
 import com.microsoft.band.BandException;
@@ -44,7 +45,6 @@ import com.microsoft.band.tiles.pages.WrappedTextBlockFont;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,13 +52,10 @@ import java.io.InputStreamReader;
 import java.util.UUID;
 
 /**
- * @author James Galloway
- *
  * MainActivity class for Wearable Project.  Contains functions responsible for the initial
  * setup of the application, including the initial contact with the Band as well as event
  * listeners for all screen elements.
  *
- * TODO App name
  * TODO Persistence between values when app is run multiple times
  * TODO Load screen maybe
  */
@@ -108,9 +105,8 @@ public class MainActivity extends AppCompatActivity {
         mChart.setScaleEnabled(true);
         mChart.setDrawGridBackground(true);
 
-        //enable pinch zoom to avoid seperately scaling x and y
+        //enable pinch zoom to avoid separately scaling x and y
         mChart.setPinchZoom(true);
-
 
         //background colours
         mChart.setBackgroundColor(Color.LTGRAY);
@@ -123,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
         mChart.setData(data);
 
         //get legend object
-
         Legend l = mChart.getLegend();
 
         //customize
@@ -240,6 +235,60 @@ public class MainActivity extends AppCompatActivity {
         });
     } // end setEventListeners
 
+    /**
+     * Private method to create local save file for accelerometer data upon startup.
+     *
+     */
+    private void saveInit() {
+        String FILENAME = "acc_data";
+        String string = "datetime,acc_x,acc_y,acc_z,";
+
+        try {
+            FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            fos.write(string.getBytes());
+            fos.close();
+        } catch (Exception e){
+            e.printStackTrace();
+            statusTst.setText("Can't create save file.");
+            statusTst.show();
+        }
+    } // end saveInit()
+
+    /**
+     * Converts the contents of an input stream to a string.
+     *
+     * @param stream The input stream to be converted.
+     * @return The contents of the input stream as a string.
+     * @throws IOException If line could not be read.
+     */
+    private static String streamToString(InputStream stream) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        StringBuilder sb = new StringBuilder();
+        @SuppressWarnings("UnusedAssignment")
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
+    } // end streamToString
+
+    /**
+     * Reads a given file and returns its contents as a string.
+     *
+     * @param filePath The filepath of the file to be read.
+     * @return The string contents of the file.
+     * @throws IOException If file is not found.
+     */
+    private static String getStrFromFile (String filePath) throws IOException {
+        File file = new File(filePath);
+        FileInputStream stream = new FileInputStream(file);
+        String str = streamToString(stream);
+
+        stream.close();
+        return str;
+    } // end getStrFromFile
+
     enum TileLayoutIndex {
         MessagesLayout
     }
@@ -248,7 +297,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * @author James Galloway
      * Private class with functions required to install the Band application.
      */
     private class InstallAsync extends AsyncTask<Void, Void, Boolean> {
@@ -412,44 +460,4 @@ public class MainActivity extends AppCompatActivity {
             }
         } // end setPageContent
     } // end InstallAsync
-
-    /**
-     * @author Lok Sum (Moon) Lo
-     * Private method to create local save file for accelerometer data upon startup.
-     *
-     */
-    private void saveInit() {
-        String FILENAME = "acc_data";
-        String string = "datetime,acc_x,acc_y,acc_z,";
-
-        try {
-            FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            fos.write(string.getBytes());
-            fos.close();
-        } catch (Exception e){
-            e.printStackTrace();
-            statusTst.setText("Can't create save file.");
-            statusTst.show();
-        }
-    } // end saveInit()
-
-    private static String streamToString(InputStream is) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line).append("\n");
-        }
-        reader.close();
-        return sb.toString();
-    } // end streamToString
-
-    public static String getStrFromFile (String filePath) throws IOException {
-        File fl = new File(filePath);
-        FileInputStream fin = new FileInputStream(fl);
-        String ret = streamToString(fin);
-
-        fin.close();
-        return ret;
-    } // end getStrFromFile
 }

@@ -6,8 +6,6 @@ import com.microsoft.band.BandException;
 import java.util.UUID;
 
 /**
- * @author James Galloway
- *
  * Contains functions related to the communication of the Band with the user's device.
  */
 class ProjectClient {
