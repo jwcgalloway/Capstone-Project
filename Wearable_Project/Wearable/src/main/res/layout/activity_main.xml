@@ -177,7 +177,7 @@
         android:layout_below="@+id/moveCountTxt"
         android:layout_alignParentStart="true"
         android:layout_above="@+id/uninstallBtn"
-        android:layout_alignEnd="@+id/uninstallBtn" />
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -186,7 +186,15 @@
         android:text="@string/noData"
         android:id="@+id/moveCountTxt"
         android:layout_below="@+id/showSavedBtn"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/showSavedBtn" />
+        android:layout_toEndOf="@+id/moveCountLbl" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/moveCountLabel"
+        android:id="@+id/moveCountLbl"
+        android:layout_below="@+id/showSavedBtn"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

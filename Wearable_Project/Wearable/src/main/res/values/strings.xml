@@ -9,4 +9,6 @@
     <string name="yTxt">Y:</string>
     <string name="zTxt">Z:</string>
     <string name="showSavedLabel">Show Saved Data</string>
+    <string name="moveCountLabel">Movement Count:</string>
+    <string name="countMoveLabel">Count Movements</string>
 </resources>

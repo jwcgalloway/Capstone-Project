@@ -15,13 +15,13 @@ import java.io.IOException;
 import java.util.Locale;
 
 
-
 /**
  * Implementation of the ProjectSensorInterface for the accelerometer on the device.
  */
 class ProjectAccelerometer implements ProjectSensorInterface {
     private BandAccelerometerEventListener listener;
-    private float xAcc, yAcc, zAcc;
+    private float xAcc, yAcc, zAcc, movePeak = 0;
+    private int moveCount = 0;
     private long time;
 
     /**
@@ -37,7 +37,6 @@ class ProjectAccelerometer implements ProjectSensorInterface {
             public void onBandAccelerometerChanged(BandAccelerometerEvent bandAccelerometerEvent) {
                 // Low-pass filter to remove effect of gravity
                 xAcc = bandAccelerometerEvent.getAccelerationX();
-//                        - (0.9 * xAcc + 0.1 * bandAccelerometerEvent.getAccelerationX());
                 yAcc = bandAccelerometerEvent.getAccelerationY();
                 zAcc = bandAccelerometerEvent.getAccelerationZ();
 
@@ -93,13 +92,17 @@ class ProjectAccelerometer implements ProjectSensorInterface {
 
     private void saveAccData(long time, float xAcc, float yAcc, float zAcc, Activity activity){
         String FILENAME = "acc_data";
-        String x, y, z, t, string;
+        String t, sumStr, string;
+        float sum = xAcc + yAcc +zAcc;
 
-        x = String.format(Locale.getDefault(), "%f", xAcc);
-        y = String.format(Locale.getDefault(), "%f", yAcc);
-        z = String.format(Locale.getDefault(), "%f", zAcc);
+        if (sum > movePeak + 1 || sum < movePeak - 1) {
+            movePeak = sum;
+            moveCount++;
+        }
+        
+        sumStr = String.format(Locale.getDefault(), "%f", sum);
         t = Long.toString(time);
-        string = t + "," + x + "," + y + "," + z + ",";
+        string = t + "," + sumStr + "\n";
 
         try {
             FileOutputStream fos = activity.openFileOutput(FILENAME, Context.MODE_APPEND);
@@ -109,4 +112,6 @@ class ProjectAccelerometer implements ProjectSensorInterface {
             e.printStackTrace();
         }
     } // end saveAccData
+
+    public int getMoveCount() { return moveCount; } // end getMoveCount
 }

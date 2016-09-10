@@ -49,6 +49,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private Toast statusTst;
     private final TextView[] accValTxt = new TextView[3];
     private final TextView[] gyroValTxt = new TextView[3];
-    private TextView showSavedTxt;
+    private TextView showSavedTxt, moveCountTxt;
 
     //graph
     private RelativeLayout mainLayout;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         saveInit();
         showSavedTxt = (TextView) findViewById(R.id.showSavedTxt);
+        moveCountTxt = (TextView) findViewById(R.id.moveCountTxt);
         setEventListeners();
 
         mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
@@ -220,9 +222,11 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
+                                int moveCount = projectClient.getProjectAcc().getMoveCount();
+                                moveCountTxt.setText(String.format(Locale.getDefault(), "%d", moveCount));
+
                                 String filePath = getFilesDir().toString() + "/acc_data";
                                 String str = getStrFromFile(filePath);
-
                                 showSavedTxt.setText(str);
                             } catch (IOException ex) {
                                 ex.printStackTrace();
@@ -237,15 +241,12 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Private method to create local save file for accelerometer data upon startup.
-     *
      */
     private void saveInit() {
         String FILENAME = "acc_data";
-        String string = "datetime,acc_x,acc_y,acc_z,";
 
         try {
             FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            fos.write(string.getBytes());
             fos.close();
         } catch (Exception e){
             e.printStackTrace();
