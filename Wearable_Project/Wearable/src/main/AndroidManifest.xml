@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="qut.wearable_project">
 
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="com.microsoft.band.service.access.BIND_BAND_SERVICE" />
 
     <application
@@ -21,9 +21,9 @@
 
         <receiver
             android:name=".TileEventForwarder"
-            android:label="@string/app_name"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="com.microsoft.band.action.ACTION_TILE_OPENED" />
                 <action android:name="com.microsoft.band.action.ACTION_TILE_BUTTON_PRESSED" />
@@ -31,6 +31,7 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name=".DisplayGraphActivity"></activity>
     </application>
 
 </manifest>

@@ -512,4 +512,16 @@ public class MainActivity extends AppCompatActivity {
             }
         } // end setPageContent
     } // end InstallAsync
+
+    /**
+     *Graphing related shenanigans
+     */
+
+    public void goToGraph(View view){
+        //go to the graph when the button is pressed
+        Intent intent = new Intent(this,DisplayGraphActivity.class);
+        startActivity(intent);
+
+
+    }
 }
