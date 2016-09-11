@@ -1,7 +1,10 @@
 package qut.wearable_project;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -31,13 +34,12 @@ import com.microsoft.band.sensors.SampleRate;
 import com.microsoft.band.tiles.BandIcon;
 import com.microsoft.band.tiles.BandTile;
 import com.microsoft.band.tiles.pages.FlowPanelOrientation;
-import com.microsoft.band.tiles.pages.HorizontalAlignment;
-import com.microsoft.band.tiles.pages.Margins;
 import com.microsoft.band.tiles.pages.PageData;
 import com.microsoft.band.tiles.pages.PageLayout;
 import com.microsoft.band.tiles.pages.PageRect;
 import com.microsoft.band.tiles.pages.ScrollFlowPanel;
-import com.microsoft.band.tiles.pages.VerticalAlignment;
+import com.microsoft.band.tiles.pages.TextButton;
+import com.microsoft.band.tiles.pages.TextButtonData;
 import com.microsoft.band.tiles.pages.WrappedTextBlock;
 import com.microsoft.band.tiles.pages.WrappedTextBlockData;
 import com.microsoft.band.tiles.pages.WrappedTextBlockFont;
@@ -59,6 +61,8 @@ import java.util.UUID;
  *
  * TODO Persistence between values when app is run multiple times
  * TODO Load screen maybe
+ * TODO This sad and rambling file
+ * TODO Marathon Code Clean
  */
 public class MainActivity extends AppCompatActivity {
     private ProjectClient projectClient;
@@ -66,6 +70,34 @@ public class MainActivity extends AppCompatActivity {
     private final TextView[] accValTxt = new TextView[3];
     private final TextView[] gyroValTxt = new TextView[3];
     private TextView showSavedTxt, moveCountTxt;
+
+    private BroadcastReceiver tileEventReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int moveCount = projectClient.getProjectAcc().getMoveCount();
+
+            WrappedTextBlockData headingData =
+                    new WrappedTextBlockData(TileMessagesPageElementId.Heading.ordinal() + 1, "Movements:");
+
+            WrappedTextBlockData contentData =
+                    new WrappedTextBlockData(TileMessagesPageElementId.Content.ordinal() + 1, String.format(Locale.getDefault(), "%d", moveCount));
+
+            TextButtonData buttonData =
+                    new TextButtonData(TileMessagesPageElementId.Button.ordinal() + 1, "Refresh");
+
+            PageData data =
+                    new PageData(projectClient.getPageId(), TileLayoutIndex.MessagesLayout.ordinal())
+                            .update(headingData)
+                            .update(contentData)
+                            .update(buttonData);
+
+            try {
+                projectClient.getBandClient().getTileManager().setPages(projectClient.getTileId(), data).await();
+            } catch (InterruptedException | BandException ex) {
+                ex.printStackTrace();
+            }
+        }
+    };
 
     //graph
     private RelativeLayout mainLayout;
@@ -86,10 +118,13 @@ public class MainActivity extends AppCompatActivity {
         gyroValTxt[1] = (TextView) findViewById(R.id.yGyroVal);
         gyroValTxt[2] = (TextView) findViewById(R.id.zGyroVal);
 
-        saveInit();
         showSavedTxt = (TextView) findViewById(R.id.showSavedTxt);
         moveCountTxt = (TextView) findViewById(R.id.moveCountTxt);
+
+        registerReceiver(tileEventReceiver, new IntentFilter("BUTTON_PRESSED_FORWARD"));
+
         setEventListeners();
+        saveInit();
 
         mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
         //create the lineChart
@@ -222,8 +257,12 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-                                int moveCount = projectClient.getProjectAcc().getMoveCount();
-                                moveCountTxt.setText(String.format(Locale.getDefault(), "%d", moveCount));
+                                if (projectClient != null) {
+                                    int moveCount = projectClient.getProjectAcc().getMoveCount();
+                                    moveCountTxt.setText(String.format(Locale.getDefault(), "%d", moveCount));
+                                } else {
+                                    statusTst.setText("Band Client is not connected.");
+                                }
 
                                 String filePath = getFilesDir().toString() + "/acc_data";
                                 String str = getStrFromFile(filePath);
@@ -294,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
         MessagesLayout
     }
     enum TileMessagesPageElementId {
-        Message
+        Heading, Content, Button
     }
 
     /**
@@ -304,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
         private String response;
         BandClient bandClient;
         UUID tileId;
-        UUID page1Id;
+        UUID pageId;
 
         /**
          * Installs the Band application by connecting to the device, creating a tile and
@@ -327,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean installed) {
             if (installed) {
-                projectClient = new ProjectClient(bandClient, tileId, page1Id);
+                projectClient = new ProjectClient(bandClient, tileId, pageId);
                 response = "Installation Successful";
                 projectClient.sendDialog(response, "Tap to continue...");
 
@@ -417,23 +456,26 @@ public class MainActivity extends AppCompatActivity {
          * @return Layout of the pages.
          */
         private PageLayout createLayout() {
-            /* Scrollable vertical panel */
-            ScrollFlowPanel panel = new ScrollFlowPanel(new PageRect(0, 0, 245, 102));
+            // Scrollable Vertical Panel
+            ScrollFlowPanel panel = new ScrollFlowPanel(new PageRect(0, 0, 258, 128));
             panel.setFlowPanelOrientation(FlowPanelOrientation.VERTICAL);
-            panel.setHorizontalAlignment(HorizontalAlignment.LEFT);
-            panel.setVerticalAlignment(VerticalAlignment.TOP);
 
-            /* Text block */
-            WrappedTextBlock textBlock1 =
-                    new WrappedTextBlock(new PageRect(0, 0, 245, 102), WrappedTextBlockFont.SMALL);
-            textBlock1.setId(TileMessagesPageElementId.Message.ordinal() + 1);
-            textBlock1.setMargins(new Margins(15, 0, 15, 0));
-            textBlock1.setColor(Color.WHITE);
-            textBlock1.setAutoHeightEnabled(true);
-            textBlock1.setHorizontalAlignment(HorizontalAlignment.LEFT);
-            textBlock1.setVerticalAlignment(VerticalAlignment.TOP);
+            // Heading
+            WrappedTextBlock heading =
+                    new WrappedTextBlock(new PageRect(0, 0, 258, 128), WrappedTextBlockFont.SMALL);
+            heading.setId(TileMessagesPageElementId.Heading.ordinal() + 1);
+            heading.setColor(Color.argb(0, 184, 255, 29)); // Light Green
 
-            panel.addElements(textBlock1);
+            // Content
+            WrappedTextBlock content =
+                    new WrappedTextBlock(new PageRect(0, 0, 258, 128), WrappedTextBlockFont.SMALL);
+            content.setId(TileMessagesPageElementId.Content.ordinal() + 1);
+
+            // Button
+            TextButton button = new TextButton(new PageRect(158, 0, 258, 50));
+            button.setId(TileMessagesPageElementId.Button.ordinal() + 1);
+
+            panel.addElements(heading, content, button);
             return new PageLayout(panel);
         } // end createLayout
 
@@ -443,13 +485,22 @@ public class MainActivity extends AppCompatActivity {
          * @return True if the page content was set successfully, otherwise false.
          */
         private boolean setPageContent() {
-            page1Id = UUID.randomUUID();
+            pageId = UUID.randomUUID();
 
-            WrappedTextBlockData TBData =
-                    new WrappedTextBlockData(TileMessagesPageElementId.Message.ordinal() + 1, "Accelerometer Data");
+            WrappedTextBlockData headingData =
+                    new WrappedTextBlockData(TileMessagesPageElementId.Heading.ordinal() + 1, "Movements:");
+
+            WrappedTextBlockData contentData =
+                    new WrappedTextBlockData(TileMessagesPageElementId.Content.ordinal() + 1, "No Data");
+
+            TextButtonData buttonData =
+                    new TextButtonData(TileMessagesPageElementId.Button.ordinal() + 1, "Refresh");
 
             PageData data =
-                    new PageData(page1Id, TileLayoutIndex.MessagesLayout.ordinal()).update(TBData);
+                    new PageData(pageId, TileLayoutIndex.MessagesLayout.ordinal())
+                            .update(headingData)
+                            .update(contentData)
+                            .update(buttonData);
 
             try {
                 bandClient.getTileManager().setPages(tileId, data).await();

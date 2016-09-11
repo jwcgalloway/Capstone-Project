@@ -92,7 +92,7 @@ class ProjectAccelerometer implements ProjectSensorInterface {
 
     private void saveAccData(long time, float xAcc, float yAcc, float zAcc, Activity activity){
         String FILENAME = "acc_data";
-        String t, sumStr, string;
+        String t, x, y, z, string;
         float sum = xAcc + yAcc +zAcc;
 
         if (sum > movePeak + 1 || sum < movePeak - 1) {
@@ -100,9 +100,11 @@ class ProjectAccelerometer implements ProjectSensorInterface {
             moveCount++;
         }
         
-        sumStr = String.format(Locale.getDefault(), "%f", sum);
+        x = String.format(Locale.getDefault(), "%f", xAcc);
+        y = String.format(Locale.getDefault(), "%f", yAcc);
+        z = String.format(Locale.getDefault(), "%f", zAcc);
         t = Long.toString(time);
-        string = t + "," + sumStr + "\n";
+        string = t + "," + x + "," + y + "," + z + "\n";
 
         try {
             FileOutputStream fos = activity.openFileOutput(FILENAME, Context.MODE_APPEND);
@@ -113,5 +115,5 @@ class ProjectAccelerometer implements ProjectSensorInterface {
         }
     } // end saveAccData
 
-    public int getMoveCount() { return moveCount; } // end getMoveCount
+    public int getMoveCount() { return moveCount; }
 }
