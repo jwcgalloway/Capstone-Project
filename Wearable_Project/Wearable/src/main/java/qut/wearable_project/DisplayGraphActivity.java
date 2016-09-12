@@ -3,13 +3,20 @@ package qut.wearable_project;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.AbsListView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
+import java.util.ArrayList;
 
 public class DisplayGraphActivity extends AppCompatActivity {
     //graph
@@ -28,51 +35,38 @@ public class DisplayGraphActivity extends AppCompatActivity {
         mainLayout = (RelativeLayout) findViewById(R.id.activity_display_graph);
         //create the lineChart
         mChart = new LineChart(this);
-        mainLayout.addView(mChart);
-        //Customise the line Chart
-        mChart.setDescription("");
-        mChart.setNoDataTextDescription("No data atm mates");
-        //enable value highlighting
-        mChart.setHighlightEnabled(true);
-        //enable touch gestures
-        mChart.setTouchEnabled(true);
-        //enable scaling and dragging
-        mChart.setDragEnabled(true);
-        mChart.setScaleEnabled(true);
-        mChart.setDrawGridBackground(true);
 
-        //enable pinch zoom to avoid separately scaling x and y
-        mChart.setPinchZoom(true);
+        mainLayout.addView(mChart, new AbsListView.LayoutParams
+                (AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.MATCH_PARENT));
+        LineChart lineChart = (LineChart) findViewById(R.id.mChart);
 
-        //background colours
-        mChart.setBackgroundColor(Color.LTGRAY);
 
-        //data
-        LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
+        ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(4f, 0));
+        entries.add(new Entry(8f, 1));
+        entries.add(new Entry(6f, 2));
+        entries.add(new Entry(2f, 3));
+        entries.add(new Entry(18f, 4));
+        entries.add(new Entry(9f, 5));
 
-        //add the data
-        mChart.setData(data);
+        LineDataSet dataset = new LineDataSet(entries, "# of Calls");
 
-        //get legend object
-        Legend l = mChart.getLegend();
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add("January");
+        labels.add("February");
+        labels.add("March");
+        labels.add("April");
+        labels.add("May");
+        labels.add("June");
 
-        //customize
-        l.setForm(Legend.LegendForm.LINE);
-        l.setTextColor(Color.WHITE);
+        LineData data = new LineData(labels, dataset);
+        dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
+        dataset.setDrawCubic(true);
+        dataset.setDrawFilled(true);
 
-        XAxis x1 = mChart.getXAxis();
-        x1.setTextColor(Color.WHITE);
-        x1.setDrawGridLines(false);
-        x1.setAvoidFirstLastClipping(true);
+        lineChart.setData(data);
+        lineChart.animateY(3000);
 
-        YAxis y1 = mChart.getAxisLeft();
-        y1.setTextColor(Color.WHITE);
-        y1.setAxisMaxValue(120f);
-        y1.setDrawGridLines(true);
-
-        YAxis y12 = mChart.getAxisRight();
-        y12.setEnabled(false);
 
     }
 }
