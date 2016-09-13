@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private Toast statusTst;
     private final TextView[] accValTxt = new TextView[3];
     private final TextView[] gyroValTxt = new TextView[3];
-    private TextView showSavedTxt, moveCountTxt;
+    private TextView showSavedTxt, moveCountTxt, bandStatusTxt;
 
     private BroadcastReceiver tileEventReceiver = new BroadcastReceiver() {
         @Override
@@ -111,14 +111,14 @@ public class MainActivity extends AppCompatActivity {
         gyroValTxt[1] = (TextView) findViewById(R.id.yGyroVal);
         gyroValTxt[2] = (TextView) findViewById(R.id.zGyroVal);
 
-        showSavedTxt = (TextView) findViewById(R.id.showSavedTxt);
+        //showSavedTxt = (TextView) findViewById(R.id.showSavedTxt);
         moveCountTxt = (TextView) findViewById(R.id.moveCountTxt);
+        bandStatusTxt = (TextView) findViewById(R.id.bandContactStatus);
 
         registerReceiver(tileEventReceiver, new IntentFilter("BUTTON_PRESSED_FORWARD"));
 
         setEventListeners();
         saveInit();
-
 
     }
 
@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
      * Set event listeners for each of the elements on the activity.
      */
     private void setEventListeners() {
+
         /* Install Button */
         Button installBtn = (Button) findViewById(R.id.installBtn);
         installBtn.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 installation.execute();
             }
         });
+
 
         /* Uninstall Button */
         Button uninstallBtn = (Button) findViewById(R.id.uninstallBtn);
@@ -166,8 +168,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ProjectAccelerometer projectAcc = projectClient.getProjectAcc();
+                ProjectBandContact projectCon = projectClient.getProjectContact();
                 if (isChecked) {
                     projectAcc.registerListener(projectClient.getBandClient(), SampleRate.MS128);
+                    projectCon.registerListener(projectClient.getBandClient(), SampleRate.MS128);
                 } else {
                     projectAcc.unregisterListener(projectClient.getBandClient());
                     for (TextView val : accValTxt) {
@@ -194,9 +198,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         /* Show Saved Data */
-        Button showSavedBtn = (Button) findViewById(R.id.showSavedBtn);
-        showSavedBtn.setOnClickListener(new View.OnClickListener() {
+        //Button showSavedBtn = (Button) findViewById(R.id.showSavedBtn);
+        /*showSavedBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                     runOnUiThread(new Runnable() {
@@ -221,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
             }
-        });
+        }); */
     } // end setEventListeners
 
     /**
@@ -324,6 +329,9 @@ public class MainActivity extends AppCompatActivity {
 
                 ProjectGyroscope gyro = projectClient.getProjectGyro();
                 gyro.setListener(MainActivity.this, gyroValTxt);
+
+                ProjectBandContact con = projectClient.getProjectContact();
+                con.setListener(MainActivity.this, bandStatusTxt);
             }
             statusTst.setText(response);
             statusTst.show();

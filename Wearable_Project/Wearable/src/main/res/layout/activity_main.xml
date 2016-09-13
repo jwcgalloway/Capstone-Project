@@ -25,7 +25,6 @@
         android:text="@string/removeTile"
         android:id="@+id/uninstallBtn"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
         android:layout_alignEnd="@+id/installBtn" />
 
     <TextView
@@ -159,16 +158,16 @@
         android:layout_alignTop="@+id/zGyroLabel"
         android:layout_alignStart="@+id/yGyroVal" />
 
-    <Button
+    <!--<Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/showSavedLabel"
         android:id="@+id/showSavedBtn"
         android:layout_below="@+id/zGyroLabel"
         android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/gyroSwitch" />
+        android:layout_alignEnd="@+id/gyroSwitch" />-->
 
-    <TextView
+    <!--<TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
@@ -177,7 +176,7 @@
         android:layout_below="@+id/moveCountTxt"
         android:layout_alignParentStart="true"
         android:layout_above="@+id/uninstallBtn"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true" />-->
 
     <TextView
         android:layout_width="wrap_content"
@@ -185,7 +184,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/noData"
         android:id="@+id/moveCountTxt"
-        android:layout_below="@+id/showSavedBtn"
+        android:layout_alignTop="@+id/moveCountLbl"
         android:layout_toEndOf="@+id/moveCountLbl" />
 
     <TextView
@@ -194,7 +193,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/moveCountLabel"
         android:id="@+id/moveCountLbl"
-        android:layout_below="@+id/showSavedBtn"
+        android:layout_below="@+id/zGyroLabel"
         android:layout_alignParentStart="true" />
 
     <Button
@@ -204,8 +203,23 @@
         android:text="Go to Graph"
         android:id="@+id/goGraph"
         android:onClick="goToGraph"
-        android:layout_above="@+id/uninstallBtn"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/showSavedTxt" />
+        android:layout_alignTop="@+id/uninstallBtn"
+        android:layout_toStartOf="@+id/uninstallBtn" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Band contact status:"
+        android:id="@+id/bandStatusText"
+        android:layout_below="@+id/moveCountLbl"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Data"
+        android:id="@+id/bandContactStatus"
+        android:layout_below="@+id/moveCountTxt"
+        android:layout_toEndOf="@+id/bandStatusText" />
 
 </RelativeLayout>

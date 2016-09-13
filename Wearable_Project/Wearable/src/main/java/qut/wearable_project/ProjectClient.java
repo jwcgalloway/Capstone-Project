@@ -12,6 +12,7 @@ class ProjectClient {
     private final BandClient bandClient;
     private final ProjectAccelerometer projectAcc;
     private final ProjectGyroscope projectGyro;
+    private final ProjectBandContact projectContact;
     private final UUID tileId;
     private final UUID pageId;
 
@@ -21,6 +22,7 @@ class ProjectClient {
         pageId = p1Id;
         projectAcc = new ProjectAccelerometer();
         projectGyro = new ProjectGyroscope();
+        projectContact = new ProjectBandContact();
 
     }
 
@@ -58,6 +60,8 @@ class ProjectClient {
     ProjectAccelerometer getProjectAcc() { return projectAcc; }
 
     ProjectGyroscope getProjectGyro() { return projectGyro; }
+
+    ProjectBandContact getProjectContact() { return projectContact; }
 
     UUID getPageId() { return pageId; }
 

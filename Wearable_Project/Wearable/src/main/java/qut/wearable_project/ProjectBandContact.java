@@ -8,6 +8,7 @@ import com.microsoft.band.BandClient;
 import com.microsoft.band.BandIOException;
 import com.microsoft.band.sensors.BandContactEvent;
 import com.microsoft.band.sensors.BandContactEventListener;
+import com.microsoft.band.sensors.BandContactState;
 import com.microsoft.band.sensors.SampleRate;
 
 import java.io.FileOutputStream;
@@ -20,23 +21,44 @@ import java.util.Locale;
  * Class for band contact state.
  */
 class ProjectBandContact implements ProjectSensorInterface{
+    private BandContactEventListener listener;
+    private boolean worn;
 
-    @Override
-    public void setListener(Activity activity, TextView[] txtViews) {
+
+    public void setListener(final Activity activity, final TextView txtViews) {
         listener = new BandContactEventListener() {
             @Override
             public void onBandContactChanged(BandContactEvent bandContactEvent) {
-                activity.runOnUiThread(new Runnable() {
 
+                if (bandContactEvent.getContactState() == BandContactState.WORN){
+                    worn = true;
+                } else {
+                    worn = false;
+                }
+
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(worn){
+                            txtViews.setText("Worn");
+                        } else {
+                            txtViews.setText("Not Worn");
+                        }
+                    }
                 });
             }
         };
     }
 
     @Override
+    public void setListener(Activity activity, TextView[] txtViews) {
+
+    }
+
+    @Override
     public boolean registerListener(BandClient bandClient, SampleRate rate) {
         try {
-            bandClient.getSensorManager().registerContactEventListener(listener, rate);
+            bandClient.getSensorManager().registerContactEventListener(listener);
             return true;
         } catch (BandIOException ex) {
             ex.printStackTrace();
