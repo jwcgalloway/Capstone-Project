@@ -18,7 +18,7 @@ import java.util.Locale;
 /**
  * Implementation of the ProjectSensorInterface for the accelerometer on the device.
  */
-class ProjectAccelerometer implements ProjectSensorInterface {
+class ProjectAccelerometer {
     private BandAccelerometerEventListener listener;
     private float xAcc, yAcc, zAcc, movePeak = 0;
     private int moveCount = 0;
@@ -30,8 +30,8 @@ class ProjectAccelerometer implements ProjectSensorInterface {
      * @param activity The activity containing the TextView elements.
      * @param txtViews Array containing each of the TextView elements that will display the data
      */
-    @Override
-    public void setListener(final Activity activity, final TextView[] txtViews) {
+
+    public void setListener(final Activity activity, final TextView[] txtViews, final ProjectClient projectClient) {
         listener = new BandAccelerometerEventListener() {
             @Override
             public void onBandAccelerometerChanged(BandAccelerometerEvent bandAccelerometerEvent) {
@@ -39,10 +39,11 @@ class ProjectAccelerometer implements ProjectSensorInterface {
                 xAcc = bandAccelerometerEvent.getAccelerationX();
                 yAcc = bandAccelerometerEvent.getAccelerationY();
                 zAcc = bandAccelerometerEvent.getAccelerationZ();
-
                 time = bandAccelerometerEvent.getTimestamp();
 
-                saveAccData(time, xAcc, yAcc, zAcc, activity);
+                if (projectClient.getProjectContact().getWorn()){
+                    saveAccData(time, xAcc, yAcc, zAcc, activity);
+                }
 
                 activity.runOnUiThread(new Runnable() {
                     @Override
@@ -63,7 +64,7 @@ class ProjectAccelerometer implements ProjectSensorInterface {
      * @param rate The sample rate at which to listen.
      * @return True if successfully registered, otherwise false.
      */
-    @Override
+
     public boolean registerListener(BandClient bandClient, SampleRate rate) {
         try {
             bandClient.getSensorManager().registerAccelerometerEventListener(listener, rate);

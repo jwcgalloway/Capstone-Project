@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         gyroValTxt[1] = (TextView) findViewById(R.id.yGyroVal);
         gyroValTxt[2] = (TextView) findViewById(R.id.zGyroVal);
 
-        //showSavedTxt = (TextView) findViewById(R.id.showSavedTxt);
+        showSavedTxt = (TextView) findViewById(R.id.showSavedTxt);
         moveCountTxt = (TextView) findViewById(R.id.moveCountTxt);
         bandStatusTxt = (TextView) findViewById(R.id.bandContactStatus);
 
@@ -200,33 +200,33 @@ public class MainActivity extends AppCompatActivity {
 
 
         /* Show Saved Data */
-        //Button showSavedBtn = (Button) findViewById(R.id.showSavedBtn);
-        /*showSavedBtn.setOnClickListener(new View.OnClickListener() {
+        Button showSavedBtn = (Button) findViewById(R.id.showSavedBtn);
+        showSavedBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                if (projectClient != null) {
-                                    int moveCount = projectClient.getProjectAcc().getMoveCount();
-                                    moveCountTxt.setText(String.format(Locale.getDefault(), "%d", moveCount));
-                                } else {
-                                    statusTst.setText("Band Client is not connected.");
-                                }
-
-                                String filePath = getFilesDir().toString() + "/acc_data";
-                                String str = getStrFromFile(filePath);
-                                showSavedTxt.setText(str);
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                                statusTst.setText("Could not find saved data.");
-                                statusTst.show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (projectClient != null) {
+                                int moveCount = projectClient.getProjectAcc().getMoveCount();
+                                moveCountTxt.setText(String.format(Locale.getDefault(), "%d", moveCount));
+                            } else {
+                                statusTst.setText("Band Client is not connected.");
                             }
+
+                            String filePath = getFilesDir().toString() + "/acc_data";
+                            String str = getStrFromFile(filePath);
+                            showSavedTxt.setText(str);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            statusTst.setText("Could not find saved data.");
+                            statusTst.show();
                         }
-                    });
+                    }
+                });
             }
-        }); */
+        });
     } // end setEventListeners
 
     /**
@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.gyroSwitch).setEnabled(true);
 
                 ProjectAccelerometer acc = projectClient.getProjectAcc();
-                acc.setListener(MainActivity.this, accValTxt);
+                acc.setListener(MainActivity.this, accValTxt, projectClient);
 
                 ProjectGyroscope gyro = projectClient.getProjectGyro();
                 gyro.setListener(MainActivity.this, gyroValTxt);

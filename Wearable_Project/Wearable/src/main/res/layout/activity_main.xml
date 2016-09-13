@@ -158,25 +158,25 @@
         android:layout_alignTop="@+id/zGyroLabel"
         android:layout_alignStart="@+id/yGyroVal" />
 
-    <!--<Button
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/showSavedLabel"
         android:id="@+id/showSavedBtn"
-        android:layout_below="@+id/zGyroLabel"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/gyroSwitch" />-->
+        android:layout_below="@+id/bandStatusText"
+        android:layout_alignStart="@+id/bandStatusText"
+        android:layout_alignEnd="@+id/showSavedTxt" />
 
-    <!--<TextView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/noData"
         android:id="@+id/showSavedTxt"
-        android:layout_below="@+id/moveCountTxt"
         android:layout_alignParentStart="true"
         android:layout_above="@+id/uninstallBtn"
-        android:layout_alignParentEnd="true" />-->
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/showSavedBtn" />
 
     <TextView
         android:layout_width="wrap_content"

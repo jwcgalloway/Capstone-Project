@@ -24,7 +24,6 @@ class ProjectBandContact implements ProjectSensorInterface{
     private BandContactEventListener listener;
     private boolean worn;
 
-
     public void setListener(final Activity activity, final TextView txtViews) {
         listener = new BandContactEventListener() {
             @Override
@@ -76,4 +75,6 @@ class ProjectBandContact implements ProjectSensorInterface{
             return false;
         }
     }
+
+    public boolean getWorn(){ return worn; }
 }
