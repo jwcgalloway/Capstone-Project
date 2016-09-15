@@ -8,6 +8,8 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+
 import com.microsoft.band.BandClient;
 
 import java.util.Locale;
@@ -47,6 +49,9 @@ class MainActivity extends AppCompatActivity implements SpecialEventListener {
                 }
             }
         });
+
+        LineChart mChart = (LineChart) findViewById(R.id.mChart);
+        new AccelerometerGraph(mChart);
     }
 
     /**

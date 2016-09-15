@@ -36,8 +36,9 @@ public class DisplayGraphActivity extends AppCompatActivity {
         //create the lineChart
         mChart = new LineChart(this);
 
-        mainLayout.addView(mChart, new AbsListView.LayoutParams
-                (AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.MATCH_PARENT));
+        mainLayout.addView(mChart,
+                new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
+                        AbsListView.LayoutParams.MATCH_PARENT));
         LineChart lineChart = (LineChart) findViewById(R.id.mChart);
 
 

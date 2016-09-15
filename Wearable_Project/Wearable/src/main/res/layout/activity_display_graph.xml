@@ -14,9 +14,9 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/mChart"
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
-
-
+        android:layout_height="300dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>
