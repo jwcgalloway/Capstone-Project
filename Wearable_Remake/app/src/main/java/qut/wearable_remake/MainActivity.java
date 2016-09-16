@@ -69,8 +69,9 @@ class MainActivity extends AppCompatActivity implements SpecialEventListener {
     public void onConnectDone(BandClient bandClient) {
         if (bandClient != null) {
             projectClient = new ProjectClient(bandClient, this);
-            if (HelperMethods.isInstalled()) {
+            if (HelperMethods.isInstalled(this, "acc_data")) {
                 // TODO Load previous
+                projectClient.sendDialog("Device status", "Connected to existing data.");
             } else {
                 new Setup(MainActivity.this, projectClient).execute();
             }

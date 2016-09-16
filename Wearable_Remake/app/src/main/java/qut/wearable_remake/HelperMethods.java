@@ -15,12 +15,19 @@ class HelperMethods {
 
     /**
      * TODO Check if previous install
-     * Checks to see if there is an existing instance of the application.
+     * Checks to see if there is an existing instance of the application by checking if the internal
+     * save files already exist.
      *
+     * @param  context Context of the current page.
+     * @param fileName Name of internally saved file to be checked if exists.
      * @return True is installed, otherwise false.
      */
-    public static boolean isInstalled() {
-
+    public static boolean isInstalled(Context context, String fileName) {
+        String filePath = context.getFilesDir().toString() + String.format("/%s", fileName);
+        File file = new File(filePath);
+        if (file.exists()){
+            return true;
+        }
         return false;
     }
 
