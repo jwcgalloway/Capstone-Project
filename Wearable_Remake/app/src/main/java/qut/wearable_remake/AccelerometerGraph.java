@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
@@ -24,7 +23,6 @@ class AccelerometerGraph {
     public AccelerometerGraph(LineChart lc,Activity mainActivity) {
         mChart = lc;
         this.mainActivity = mainActivity;
-        setDummyData(mainActivity);
     }
 
     public void setDummyData(Context mainActivity) {
@@ -38,10 +36,10 @@ class AccelerometerGraph {
 
         LineDataSet dataSet = new LineDataSet(entries, "# of Calls");
 
-        List<Entry> xVal = new ArrayList<Entry>();
-        List<Entry> yVal = new ArrayList<Entry>();
-        List<Entry> zVal = new ArrayList<Entry>();
-        TreeMap<Integer, List<String>> map =new TreeMap<Integer, List<String>>();
+        List<Entry> xVal = new ArrayList<>();
+        List<Entry> yVal = new ArrayList<>();
+        List<Entry> zVal = new ArrayList<>();
+        TreeMap<Integer, String[]> map = new TreeMap<>();
 
         //get data
         String data = "";
@@ -56,7 +54,9 @@ class AccelerometerGraph {
         Scanner scanner = new Scanner(data);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            List<String> values = Arrays.asList(line.split(" , "));
+            //List<String> values = Arrays.asList(line.split(" , "));
+            String[] values = line.split(",");
+
             //process into a map
             map.put(key,values);
             Log.d("Scanner Line Data",line);
@@ -66,15 +66,15 @@ class AccelerometerGraph {
 
         //test treemap
         //TREEMAP : Timestamp, ACCELX, ACCEL Y, ACCEL Z
-        for (Map.Entry<Integer, List<String>> entry : map.entrySet()) {
+        for (Map.Entry<Integer, String[]> entry : map.entrySet()) {
             Log.d("TreeMap","Key: " + entry.getKey() + ". Value: " + entry.getValue());
 
         }
 
         //fill datasets with values
-        for (Map.Entry<Integer, List<String>> entry : map.entrySet()) {
+        for (Map.Entry<Integer, String[]> entry : map.entrySet()) {
             Log.d("TreeMap","Key: " + entry.getKey() + ". Value: " + entry.getValue());
-            String entryString = entry.getValue().get(1);
+            String entryString = entry.getValue()[0];
             float entryFloat = (float)Float.parseFloat(entryString);
             //entryFloat = (float)Math.round(entryFloat);
             //Entry entryValue = new Entry(entryFloat,entry.getKey());
@@ -95,7 +95,7 @@ class AccelerometerGraph {
        // dataSet.setDrawCubic(true);
         dataSet.setDrawFilled(true);
 
-       // mChart.setData(data);
+        //mChart.setData(data);
         mChart.animateY(3000);
     }
 

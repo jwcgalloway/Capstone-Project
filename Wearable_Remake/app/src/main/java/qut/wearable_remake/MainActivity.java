@@ -12,6 +12,7 @@ import com.github.mikephil.charting.charts.LineChart;
 
 import com.microsoft.band.BandClient;
 
+import java.io.IOException;
 import java.util.Locale;
 
 class MainActivity extends AppCompatActivity implements SpecialEventListener {
@@ -55,11 +56,6 @@ class MainActivity extends AppCompatActivity implements SpecialEventListener {
         //create accelerometer chart
         mChart = (LineChart) findViewById(R.id.mChart);
         charting = new AccelerometerGraph(mChart,this);
-
-
-
-
-
     }
 
     /**
@@ -110,17 +106,16 @@ class MainActivity extends AppCompatActivity implements SpecialEventListener {
      */
     @Override
     public void onAccChanged(float[] accData, long time) {
-        String str = String.format(Locale.getDefault(), "%f", accData[0])
-                + String.format(Locale.getDefault(), "%f", accData[1])
-                + String.format(Locale.getDefault(), "%f", accData[2])
-                + String.format(Locale.getDefault(), "%d", time);
+        String str = String.format(Locale.getDefault(), "%d,", time)
+                + String.format(Locale.getDefault(), "%f,", accData[0])
+                + String.format(Locale.getDefault(), "%f,", accData[1])
+                + String.format(Locale.getDefault(), "%f\n", accData[2]);
 
         HelperMethods.writeToFile("acc_data", str, MainActivity.this);
     } // end onAccChanged()
 
-    public void refreshTheGraph(View v){
+    public void refreshTheGraph(View v) throws IOException {
         charting.setDummyData(getApplicationContext());
         mChart.invalidate();
-
     }
 }
