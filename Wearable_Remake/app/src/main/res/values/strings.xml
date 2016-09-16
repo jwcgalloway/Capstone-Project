@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Wearable_Remake</string>
+    <string name="toDebugLbl">To Debug Page</string>
+    <string name="removeTileLbl">Remove Tile</string>
+    <string name="moveCountLbl">Movement Count:</string>
+    <string name="recDataLbl">Record Data</string>
+</resources>
