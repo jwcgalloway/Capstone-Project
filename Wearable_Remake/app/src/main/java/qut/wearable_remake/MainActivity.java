@@ -16,6 +16,8 @@ import java.util.Locale;
 
 class MainActivity extends AppCompatActivity implements SpecialEventListener {
     private ProjectClient projectClient;
+    private LineChart mChart;
+    private AccelerometerGraph charting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +52,14 @@ class MainActivity extends AppCompatActivity implements SpecialEventListener {
             }
         });
 
-        LineChart mChart = (LineChart) findViewById(R.id.mChart);
-        new AccelerometerGraph(mChart);
-        HelperMethods.saveInit(this);
+        //create accelerometer chart
+        mChart = (LineChart) findViewById(R.id.mChart);
+        charting = new AccelerometerGraph(mChart,this);
+
+
+
+
+
     }
 
     /**
@@ -110,4 +117,10 @@ class MainActivity extends AppCompatActivity implements SpecialEventListener {
 
         HelperMethods.writeToFile("acc_data", str, MainActivity.this);
     } // end onAccChanged()
+
+    public void refreshTheGraph(View v){
+        charting.setDummyData(getApplicationContext());
+        mChart.invalidate();
+
+    }
 }

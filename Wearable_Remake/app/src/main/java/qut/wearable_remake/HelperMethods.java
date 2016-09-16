@@ -42,18 +42,7 @@ class HelperMethods {
         }
     } // end writeToFile()
 
-    /*
-    Function to initialise saving raw sensor data.
-     */
-    public static void saveInit(Activity activity) {
-        String FILENAME = "acc_data";
-        try {
-            FileOutputStream fos = activity.openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            fos.close();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    } // end saveInit()
+
 
     /**
      * Converts the contents of an input stream to a string.
@@ -82,7 +71,7 @@ class HelperMethods {
      * @return The string contents of the file.
      * @throws IOException If file is not found.
      */
-    private static String getStrFromFile(String fileName, Context context) throws IOException {
+    public static String getStrFromFile(String fileName, Context context) throws IOException {
         String filePath = context.getFilesDir().toString() + String.format("/{0}", fileName);
         File file = new File(filePath);
         FileInputStream stream = new FileInputStream(file);
