@@ -35,7 +35,7 @@ class AccelerometerGraph {
         labels.add("May");
         labels.add("June");
 
-        LineData data = new LineData(labels, dataSet);
+        LineDataSet data = new LineData(labels, dataSet);
         dataSet.setColors(ColorTemplate.COLORFUL_COLORS); //
         dataSet.setDrawCubic(true);
         dataSet.setDrawFilled(true);
