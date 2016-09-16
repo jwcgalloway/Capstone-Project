@@ -52,6 +52,7 @@ class MainActivity extends AppCompatActivity implements SpecialEventListener {
 
         LineChart mChart = (LineChart) findViewById(R.id.mChart);
         new AccelerometerGraph(mChart);
+        HelperMethods.saveInit(this);
     }
 
     /**

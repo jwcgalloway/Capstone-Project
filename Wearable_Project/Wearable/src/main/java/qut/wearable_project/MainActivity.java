@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,7 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandClientManager;
 import com.microsoft.band.BandException;
@@ -53,7 +56,7 @@ import java.util.UUID;
  * MainActivity class for Wearable Project.  Contains functions responsible for the initial
  * setup of the application, including the initial contact with the Band as well as event
  * listeners for all screen elements.
- *
+ * <p/>
  * TODO Persistence between values when app is run multiple times
  * TODO Load screen maybe
  * TODO This sad and rambling file
@@ -93,6 +96,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
 
     @SuppressLint("ShowToast")
@@ -120,6 +128,9 @@ public class MainActivity extends AppCompatActivity {
         setEventListeners();
         saveInit();
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     /**
@@ -238,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
             fos.close();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             statusTst.setText("Can't create save file.");
             statusTst.show();
@@ -271,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
      * @return The string contents of the file.
      * @throws IOException If file is not found.
      */
-    private static String getStrFromFile (String filePath) throws IOException {
+    private static String getStrFromFile(String filePath) throws IOException {
         File file = new File(filePath);
         FileInputStream stream = new FileInputStream(file);
         String str = streamToString(stream);
@@ -280,9 +291,50 @@ public class MainActivity extends AppCompatActivity {
         return str;
     } // end getStrFromFile
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://qut.wearable_project/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://qut.wearable_project/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
+
     enum TileLayoutIndex {
         MessagesLayout
     }
+
     enum TileMessagesPageElementId {
         Heading, Content, Button
     }
@@ -304,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
          * @return True if the installation was successful, otherwise false.
          */
         @Override
-        protected Boolean doInBackground(Void...params) {
+        protected Boolean doInBackground(Void... params) {
             return connectToBand() && createTile() && setPageContent();
         } // end doInBackground
 
@@ -468,12 +520,12 @@ public class MainActivity extends AppCompatActivity {
     } // end InstallAsync
 
     /**
-     *Graphing related shenanigans
+     * Graphing related shenanigans
      */
 
-    public void goToGraph(View view){
+    public void goToGraph(View view) {
         //go to the graph when the button is pressed
-        Intent intent = new Intent(this,DisplayGraphActivity.class);
+        Intent intent = new Intent(this, DisplayGraphActivity.class);
         startActivity(intent);
 
 
