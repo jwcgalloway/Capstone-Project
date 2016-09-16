@@ -21,6 +21,7 @@ class HelperMethods {
      * @return True is installed, otherwise false.
      */
     public static boolean isInstalled() {
+
         return false;
     }
 
@@ -76,11 +77,13 @@ class HelperMethods {
     /**
      * Reads a given file and returns its contents as a string.
      *
-     * @param filePath The filepath of the file to be read.
+     * @param fileName The name of the file to be read.
+     * @param  context Context of the current activity.
      * @return The string contents of the file.
      * @throws IOException If file is not found.
      */
-    private static String getStrFromFile(String filePath) throws IOException {
+    private static String getStrFromFile(String fileName, Context context) throws IOException {
+        String filePath = context.getFilesDir().toString() + String.format("/{0}", fileName);
         File file = new File(filePath);
         FileInputStream stream = new FileInputStream(file);
         String str = streamToString(stream);
