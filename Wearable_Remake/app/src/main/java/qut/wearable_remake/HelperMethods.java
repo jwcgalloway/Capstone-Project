@@ -72,7 +72,7 @@ class HelperMethods {
      * @throws IOException If file is not found.
      */
     public static String getStrFromFile(String fileName, Context context) throws IOException {
-        String filePath = context.getFilesDir().toString() + String.format("/{0}", fileName);
+        String filePath = context.getFilesDir().toString() + String.format("/%s", fileName);
         File file = new File(filePath);
         FileInputStream stream = new FileInputStream(file);
         String str = streamToString(stream);
