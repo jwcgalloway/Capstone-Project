@@ -27,10 +27,10 @@ class ProjectAccelerometer implements ProjectSensor {
                 float z = bandEvent.getAccelerationZ();
                 long time = bandEvent.getTimestamp();
 
-                if (projectClient.getProjectContact().getWorn()) {
+              //  if (projectClient.getProjectContact().getWorn()) {
                     float[] accData = {x, y, z};
                     specialEvent.onAccChanged(accData, time);
-                }
+               // }
 
                 float sum = x + y + z;
                 if ((sum - offset > 0.3 || sum - offset < -0.3) && !moving
