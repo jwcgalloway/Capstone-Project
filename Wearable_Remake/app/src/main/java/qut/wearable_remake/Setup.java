@@ -130,13 +130,13 @@ class Setup extends AsyncTask<Void, Void, Boolean> {
 
         // Heading
         WrappedTextBlock heading =
-                new WrappedTextBlock(new PageRect(0, 0, 258, 128), WrappedTextBlockFont.SMALL);
+                new WrappedTextBlock(new PageRect(0, 0, 258, 128), WrappedTextBlockFont.MEDIUM);
         heading.setId(1);
         heading.setColor(Color.argb(0, 184, 255, 29)); // Light Green
 
         // Content
         WrappedTextBlock content =
-                new WrappedTextBlock(new PageRect(0, 0, 258, 128), WrappedTextBlockFont.SMALL);
+                new WrappedTextBlock(new PageRect(0, 0, 258, 128), WrappedTextBlockFont.MEDIUM);
         content.setId(2);
 
         panel.addElements(heading, content);
