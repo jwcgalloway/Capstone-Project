@@ -142,4 +142,4 @@ class Setup extends AsyncTask<Void, Void, Boolean> {
         panel.addElements(heading, content);
         return new PageLayout(panel);
     } // end createLayout()
-} // end Setup {
+} // end Setup

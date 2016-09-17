@@ -12,7 +12,6 @@ import com.github.mikephil.charting.charts.LineChart;
 
 import com.microsoft.band.BandClient;
 
-import java.io.IOException;
 import java.util.Locale;
 
 class MainActivity extends AppCompatActivity implements SpecialEventListener {
@@ -69,7 +68,9 @@ class MainActivity extends AppCompatActivity implements SpecialEventListener {
     public void onConnectDone(BandClient bandClient) {
         if (bandClient != null) {
             projectClient = new ProjectClient(bandClient, this);
-            if (HelperMethods.isInstalled(this, "acc_data")) {
+            if (HelperMethods.isInstalled(this, "acc_data")
+                && HelperMethods.isInstalled(this, "move_count")
+                && HelperMethods.isInstalled(this, "please_fail")) { // Intentional fail until load data works
                 // TODO Load previous
                 projectClient.sendDialog("Device status", "Connected to existing data.");
             } else {
@@ -115,8 +116,8 @@ class MainActivity extends AppCompatActivity implements SpecialEventListener {
         HelperMethods.writeToFile("acc_data", str, MainActivity.this);
     } // end onAccChanged()
 
-    public void refreshTheGraph(View v) throws IOException {
-        charting.setDummyData(getApplicationContext());
+    public void refreshTheGraph() {
+        charting.setData();
         mChart.invalidate();
     }
 }

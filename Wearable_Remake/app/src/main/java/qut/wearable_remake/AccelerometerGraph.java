@@ -1,7 +1,6 @@
 package qut.wearable_remake;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -20,12 +19,12 @@ class AccelerometerGraph {
     private final LineChart mChart;
     private final Activity mainActivity;
 
-    public AccelerometerGraph(LineChart lc,Activity mainActivity) {
+    public AccelerometerGraph(LineChart lc, Activity ma) {
         mChart = lc;
-        this.mainActivity = mainActivity;
+        mainActivity = ma;
     }
 
-    public void setDummyData(Context mainActivity) {
+    public void setData() {
         ArrayList<Entry> entries = new ArrayList<>();
         entries.add(new Entry(4f, 0));
         entries.add(new Entry(8f, 1));
@@ -67,15 +66,14 @@ class AccelerometerGraph {
         //test treemap
         //TREEMAP : Timestamp, ACCELX, ACCEL Y, ACCEL Z
         for (Map.Entry<Integer, String[]> entry : map.entrySet()) {
-            Log.d("TreeMap","Key: " + entry.getKey() + ". Value: " + entry.getValue());
-
+            Log.d("TreeMap","Key: " + entry.getKey() + ". Value: " + Arrays.toString(entry.getValue()));
         }
 
         //fill datasets with values
         for (Map.Entry<Integer, String[]> entry : map.entrySet()) {
-            Log.d("TreeMap","Key: " + entry.getKey() + ". Value: " + entry.getValue());
+            Log.d("TreeMap","Key: " + entry.getKey() + ". Value: " + Arrays.toString(entry.getValue()));
             String entryString = entry.getValue()[0];
-            float entryFloat = (float)Float.parseFloat(entryString);
+            float entryFloat = Float.parseFloat(entryString);
             //entryFloat = (float)Math.round(entryFloat);
             //Entry entryValue = new Entry(entryFloat,entry.getKey());
             xVal.add(new Entry(entryFloat,entry.getKey()));
@@ -99,8 +97,8 @@ class AccelerometerGraph {
         mChart.animateY(3000);
     }
 
-    public LineChart getChart(){
-        return this.mChart;
-    }
+//    public LineChart getChart(){
+//        return this.mChart;
+//    }
 }
 

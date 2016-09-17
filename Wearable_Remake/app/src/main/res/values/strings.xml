@@ -4,4 +4,5 @@
     <string name="removeTileLbl">Remove Tile</string>
     <string name="moveCountLbl">Movement Count:</string>
     <string name="recDataLbl">Record Data</string>
+    <string name="refresh">Refresh</string>
 </resources>

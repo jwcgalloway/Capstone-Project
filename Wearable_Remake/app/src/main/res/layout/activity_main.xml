@@ -68,7 +68,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Refresh"
+        android:text="@string/refresh"
         android:id="@+id/refreshGraph"
         android:onClick="refreshTheGraph"
         android:layout_alignParentBottom="true"
