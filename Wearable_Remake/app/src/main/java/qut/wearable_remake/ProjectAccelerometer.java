@@ -7,9 +7,12 @@ import com.microsoft.band.sensors.BandAccelerometerEventListener;
 import com.microsoft.band.sensors.SampleRate;
 
 class ProjectAccelerometer implements ProjectSensor {
+    private static final long BOUNCE_TIME = 750;
+    private static final double THRESHOLD = 0.3;
+
     private final ProjectClient projectClient;
     private final BandAccelerometerEventListener listener;
-    private static final long BOUNCE_TIME = 750;
+
     private long lastActivated;
     private boolean moving;
     private float offset;
@@ -33,11 +36,11 @@ class ProjectAccelerometer implements ProjectSensor {
                // }
 
                 float sum = x + y + z;
-                if ((sum - offset > 0.3 || sum - offset < -0.3) && !moving
-                        && bandEvent.getTimestamp() > lastActivated + BOUNCE_TIME) {
-                    lastActivated = bandEvent.getTimestamp();
-
+                if ((sum - offset > THRESHOLD || sum - offset < -THRESHOLD)
+                        && bandEvent.getTimestamp() > lastActivated + BOUNCE_TIME
+                        && !moving) {
                     moving = true;
+                    lastActivated = bandEvent.getTimestamp();
                     projectClient.setMoveCount(projectClient.getMoveCount() + 1);
                 } else {
                     moving = false;

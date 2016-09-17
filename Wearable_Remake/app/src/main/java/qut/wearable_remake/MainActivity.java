@@ -10,20 +10,12 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.EntryXComparator;
 import com.microsoft.band.BandClient;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Locale;
 
-class MainActivity extends AppCompatActivity implements SpecialEventListener {
+public class MainActivity extends AppCompatActivity implements SpecialEventListener {
     private ProjectClient projectClient;
-    private LineChart mChart;
     private AccelerometerGraph charting;
 
     @Override
@@ -60,10 +52,8 @@ class MainActivity extends AppCompatActivity implements SpecialEventListener {
         });
 
         //create accelerometer chart
-        mChart = (LineChart) findViewById(R.id.mChart);
+        LineChart mChart = (LineChart) findViewById(R.id.mChart);
         charting = new AccelerometerGraph(mChart,this);
-
-
     }
 
     /**
