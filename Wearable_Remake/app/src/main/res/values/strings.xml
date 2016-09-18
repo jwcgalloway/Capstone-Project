@@ -5,4 +5,5 @@
     <string name="moveCountLbl">Movement Count:</string>
     <string name="recDataLbl">Record Data</string>
     <string name="refresh">Refresh</string>
+    <string name="orientLbl">Orientation:</string>
 </resources>
