@@ -15,8 +15,12 @@ import com.microsoft.band.BandClient;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
+    private static final long GRAPH_REFRESH_TIME = 1000;
+
     private ProjectClient projectClient;
-    private AccelerometerGraph charting;
+    private Graph accDataGraph;
+    private long lastRefreshed;
+    private boolean liveGraphing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +55,17 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             }
         });
 
-        //create accelerometer chart
+        Switch liveGraphingSwitch = (Switch) findViewById(R.id.liveGraphSwitch);
+        liveGraphingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                liveGraphing = isChecked;
+            }
+        });
+
         LineChart mChart = (LineChart) findViewById(R.id.mChart);
-        charting = new AccelerometerGraph(mChart,this);
+        accDataGraph = new Graph(mChart, this);
+        accDataGraph.setEmptyGraph();
     }
 
     /**
@@ -101,21 +113,31 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
 
     /**
      * Called when the accelerometer data has changed.
-     * Writes the accelerometer data to the 'acc_data' local file.
+     * Writes the accelerometer data to the 'acc_data' local file, sets the orientation text view to
+     * the given string, and refreshes the graph, provided live graphing is checked.
      *
      * @param accData The accelerometer data.
      */
     @Override
-    public void onAccChanged(float[] accData, long time) {
+    public void onAccChanged(float[] accData, final long time, final String orientation) {
         String str = String.format(Locale.getDefault(), "%d,", time)
                 + String.format(Locale.getDefault(), "%f,", accData[0])
                 + String.format(Locale.getDefault(), "%f,", accData[1])
                 + String.format(Locale.getDefault(), "%f\n", accData[2]);
 
         HelperMethods.writeToFile("acc_data", str, MainActivity.this);
-    } // end onAccChanged()
 
-    public void refreshTheGraph(View v) {
-        charting.refreshValues();
-    }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TextView orientTxt = (TextView) findViewById(R.id.orientTxt);
+                orientTxt.setText(orientation);
+
+                if (time > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphing) {
+                    lastRefreshed = time;
+                    accDataGraph.refreshValues();
+                }
+            }
+        });
+    } // end onAccChanged()
 }

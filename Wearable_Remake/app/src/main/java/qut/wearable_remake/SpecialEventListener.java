@@ -24,5 +24,5 @@ interface SpecialEventListener {
      *
      * @param accData The accelerometer data.
      */
-    void onAccChanged(float[] accData, long timestamp);
+    void onAccChanged(float[] accData, long timestamp, String orientation);
 }

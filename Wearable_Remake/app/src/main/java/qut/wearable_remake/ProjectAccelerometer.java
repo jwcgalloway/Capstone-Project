@@ -8,19 +8,23 @@ import com.microsoft.band.sensors.SampleRate;
 
 class ProjectAccelerometer implements ProjectSensor {
     private static final long BOUNCE_TIME = 750;
-    private static final double THRESHOLD = 0.3;
+    private static final double ACC_THRESHOLD = 0.3;
+    private static final double ORIENTATION_THRESHOLD = 0.7;
 
     private final ProjectClient projectClient;
     private final BandAccelerometerEventListener listener;
 
-    private long lastActivated;
+    private long lastMovement;
+    private long lastOrientation;
     private boolean moving;
     private float offset;
+    private String orientation;
 
     ProjectAccelerometer(final ProjectClient pc, final SpecialEventListener specialEvent) {
         projectClient = pc;
         moving = false;
         offset = 0;
+        orientation = "Unknown";
 
         listener = new BandAccelerometerEventListener() {
             @Override
@@ -30,22 +34,39 @@ class ProjectAccelerometer implements ProjectSensor {
                 float z = bandEvent.getAccelerationZ();
                 long time = bandEvent.getTimestamp();
 
-              //  if (projectClient.getProjectContact().getWorn()) {
-                    float[] accData = {x, y, z};
-                    specialEvent.onAccChanged(accData, time);
-               // }
+                if (time > lastOrientation + BOUNCE_TIME) {
+                    lastOrientation = time;
+                    if (y < -ORIENTATION_THRESHOLD) {
+                        orientation = "Tilt Right";
+                    } else if (z > ORIENTATION_THRESHOLD) {
+                        orientation = "Flat";
+                    } else if (y > ORIENTATION_THRESHOLD) {
+                        orientation = "Tilt Left";
+                    } else if (z < -ORIENTATION_THRESHOLD) {
+                        orientation = "Upside Down";
+                    } else if (x < -ORIENTATION_THRESHOLD) {
+                        orientation = "Vertical Up";
+                    } else {
+                        orientation = "Vertical Down";
+                    }
+                }
 
                 float sum = x + y + z;
-                if ((sum - offset > THRESHOLD || sum - offset < -THRESHOLD)
-                        && bandEvent.getTimestamp() > lastActivated + BOUNCE_TIME
+                if ((sum - offset > ACC_THRESHOLD || sum - offset < -ACC_THRESHOLD)
+                        && time > lastMovement + BOUNCE_TIME
                         && !moving) {
                     moving = true;
-                    lastActivated = bandEvent.getTimestamp();
+                    lastMovement = time;
                     projectClient.setMoveCount(projectClient.getMoveCount() + 1);
                 } else {
                     moving = false;
                     offset = sum;
                 }
+
+              //  if (projectClient.getProjectContact().getWorn()) {
+                    float[] accData = {x, y, z};
+                    specialEvent.onAccChanged(accData, time, orientation);
+               // }
             }
         };
     }
