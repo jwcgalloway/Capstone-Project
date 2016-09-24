@@ -8,7 +8,7 @@ import com.microsoft.band.sensors.SampleRate;
 
 class ProjectAccelerometer implements ProjectSensor {
     private static final long BOUNCE_TIME = 750;
-    private static final double ACC_THRESHOLD = 0.3;
+    private static final double ACCELERATION_THRESHOLD = 0.3;
     private static final double ORIENTATION_THRESHOLD = 0.7;
 
     private final ProjectClient projectClient;
@@ -22,8 +22,6 @@ class ProjectAccelerometer implements ProjectSensor {
 
     ProjectAccelerometer(final ProjectClient pc, final SpecialEventListener specialEvent) {
         projectClient = pc;
-        moving = false;
-        offset = 0;
         orientation = "Unknown";
 
         listener = new BandAccelerometerEventListener() {
@@ -34,6 +32,7 @@ class ProjectAccelerometer implements ProjectSensor {
                 float z = bandEvent.getAccelerationZ();
                 long time = bandEvent.getTimestamp();
 
+                /** Detect Orientation **/
                 if (time > lastOrientation + BOUNCE_TIME) {
                     lastOrientation = time;
                     if (y < -ORIENTATION_THRESHOLD) {
@@ -51,18 +50,20 @@ class ProjectAccelerometer implements ProjectSensor {
                     }
                 }
 
+                /** Count Movements **/
                 float sum = x + y + z;
-                if ((sum - offset > ACC_THRESHOLD || sum - offset < -ACC_THRESHOLD)
-                        && time > lastMovement + BOUNCE_TIME
-                        && !moving) {
+                if (!moving && (sum - offset > ACCELERATION_THRESHOLD || sum - offset < -ACCELERATION_THRESHOLD)) {
                     moving = true;
-                    lastMovement = time;
-                    projectClient.setMoveCount(projectClient.getMoveCount() + 1);
                 } else {
+                    if (moving && time > lastMovement + BOUNCE_TIME) {
+                        projectClient.setMoveCount(projectClient.getMoveCount() + 1);
+                        lastMovement = time;
+                    }
                     moving = false;
                     offset = sum;
                 }
 
+                /** Write Data to File **/
               //  if (projectClient.getProjectContact().getWorn()) {
                     float[] accData = {x, y, z};
                     specialEvent.onAccChanged(accData, time, orientation);
