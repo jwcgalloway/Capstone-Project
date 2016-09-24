@@ -66,11 +66,17 @@ class Graph {
 
         for (Map.Entry<Integer, String[]> entry : map.entrySet()) {
             //Log.d("TreeMap","Key: " + entry.getKey() + ". Value: " + entry.getValue());
-            String entryString = entry.getValue()[1];
-            float entryFloat = Float.parseFloat(entryString);
+            String xString = entry.getValue()[1];
+            float xFloat = Float.parseFloat(xString);
+
+            String yString = entry.getValue()[2];
+            float yFloat = Float.parseFloat(yString);
+
+            String zString = entry.getValue()[3];
+            float zFloat = Float.parseFloat(zString);
             //entryFloat = (float)Math.round(entryFloat);
             //Entry entryValue = new Entry(entryFloat,entry.getKey());
-            xAcc.add(new Entry(entry.getKey(),entryFloat));
+            xAcc.add(new Entry(entry.getKey(), xFloat + yFloat + zFloat));
         }
         return xAcc;
     } // end loadDataIntoMap()

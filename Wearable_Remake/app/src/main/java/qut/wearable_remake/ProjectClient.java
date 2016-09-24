@@ -2,6 +2,7 @@ package qut.wearable_remake;
 
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandException;
+import com.microsoft.band.notifications.VibrationType;
 import com.microsoft.band.tiles.pages.PageData;
 import com.microsoft.band.tiles.pages.WrappedTextBlockData;
 
@@ -42,6 +43,17 @@ class ProjectClient {
             ex.printStackTrace();
         }
     } // end sendDialog()
+
+    /**
+     * Sends a haptic (vibration) to the Band.
+     */
+    void sendHaptic() {
+        try {
+            bandClient.getNotificationManager().vibrate(VibrationType.NOTIFICATION_ONE_TONE);
+        } catch (BandException e) {
+            e.printStackTrace();
+        }
+    } // end sendHaptic()
 
     /**
      * Removes the project tile from the Band.
