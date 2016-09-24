@@ -1,4 +1,4 @@
-package qut.wearable_remake;
+package qut.wearable_remake.band;
 
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandException;
@@ -9,10 +9,15 @@ import com.microsoft.band.tiles.pages.WrappedTextBlockData;
 import java.util.Locale;
 import java.util.UUID;
 
+import qut.wearable_remake.SpecialEventListener;
+import qut.wearable_remake.sensors.ProjectAccelerometer;
+import qut.wearable_remake.sensors.ProjectBandContact;
+import qut.wearable_remake.sensors.ProjectSensor;
+
 /**
  * Contains functions related to the communication of the Band with the user's device.
  */
-class ProjectClient {
+public class ProjectClient {
     private final BandClient bandClient;
     private final SpecialEventListener movementListener;
     private final ProjectBandContact projectContact;
@@ -21,7 +26,7 @@ class ProjectClient {
     private UUID tileId, pageId;
     private int moveCount;
 
-    ProjectClient(BandClient c, SpecialEventListener e) {
+    public ProjectClient(BandClient c, SpecialEventListener e) {
         bandClient = c;
         pageId = UUID.randomUUID();
         movementListener = e;
@@ -36,7 +41,7 @@ class ProjectClient {
      * @param title The title of the dialog.
      * @param msg The content of the dialog.
      */
-    void sendDialog(String title, String msg) {
+    public void sendDialog(String title, String msg) {
         try {
             bandClient.getNotificationManager().showDialog(tileId, title, msg).await();
         } catch (InterruptedException | BandException ex) {
@@ -47,7 +52,7 @@ class ProjectClient {
     /**
      * Sends a haptic (vibration) to the Band.
      */
-    void sendHaptic() {
+    public void sendHaptic() {
         try {
             bandClient.getNotificationManager().vibrate(VibrationType.NOTIFICATION_ONE_TONE);
         } catch (BandException e) {
@@ -58,7 +63,7 @@ class ProjectClient {
     /**
      * Removes the project tile from the Band.
      */
-    void removeTile() {
+    public void removeTile() {
         try {
             bandClient.getTileManager().removeTile(tileId).await();
         } catch (BandException | InterruptedException ex) {
@@ -102,8 +107,8 @@ class ProjectClient {
         }).start();
     } // end setMoveCount()
 
-    public void setTileId(UUID id) { tileId = id; }
-    public void setPageId(UUID id) { pageId = id; }
+    void setTileId(UUID id) { tileId = id; }
+    void setPageId(UUID id) { pageId = id; }
 
     public BandClient getBandClient() { return bandClient; }
     public int getMoveCount() { return moveCount; }

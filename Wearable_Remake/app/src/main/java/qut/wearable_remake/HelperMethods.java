@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-class HelperMethods {
+public class HelperMethods {
 
     /**
      * Checks to see if there is an existing instance of the application by checking if the internal
@@ -21,7 +21,7 @@ class HelperMethods {
      * @param fileName Name of internally saved file to be checked if exists.
      * @return True is installed, otherwise false.
      */
-    public static boolean isInstalled(Context context, String fileName) {
+    static boolean isInstalled(Context context, String fileName) {
         String filePath = context.getFilesDir().toString() + String.format("/%s", fileName);
         File file = new File(filePath);
         return file.exists();
@@ -34,7 +34,7 @@ class HelperMethods {
      * @param content The string that will be written.
      * @param activity The activity used to obtain the filepath.
      */
-    public static void writeToFile(String filename, String content, Activity activity) {
+    static void writeToFile(String filename, String content, Activity activity) {
         try {
             FileOutputStream fos = activity.openFileOutput(filename, Context.MODE_APPEND);
             fos.write(content.getBytes());
@@ -61,7 +61,7 @@ class HelperMethods {
         }
         reader.close();
         return sb.toString();
-    } // end streamToString
+    } // end streamToString()
 
     /**
      * Reads a given file and returns its contents as a string.
@@ -79,5 +79,5 @@ class HelperMethods {
 
         stream.close();
         return str;
-    } // end getStrFromFile
+    } // end getStrFromFile()
 }

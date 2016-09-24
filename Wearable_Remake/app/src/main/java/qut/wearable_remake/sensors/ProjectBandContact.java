@@ -1,4 +1,4 @@
-package qut.wearable_remake;
+package qut.wearable_remake.sensors;
 
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandIOException;
@@ -11,11 +11,11 @@ import com.microsoft.band.sensors.BandContactState;
  *
  * Class for Band contact state.
  */
-class ProjectBandContact implements ProjectSensor {
+public class ProjectBandContact implements ProjectSensor {
     private final BandContactEventListener listener;
     private boolean worn = false;
 
-    ProjectBandContact() {
+    public ProjectBandContact() {
         listener = new BandContactEventListener() {
             @Override
             public void onBandContactChanged(BandContactEvent event) {
@@ -52,5 +52,5 @@ class ProjectBandContact implements ProjectSensor {
         }
     } // end unregisterListener()
 
-    public boolean getWorn() { return worn; }
+    boolean getWorn() { return worn; }
 }

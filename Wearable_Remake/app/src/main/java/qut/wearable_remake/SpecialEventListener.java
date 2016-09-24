@@ -2,7 +2,7 @@ package qut.wearable_remake;
 
 import com.microsoft.band.BandClient;
 
-interface SpecialEventListener {
+public interface SpecialEventListener {
 
     /**
      * Called after the device has connected to the Band.
@@ -23,6 +23,8 @@ interface SpecialEventListener {
      * Called when the accelerometer data has changed.
      *
      * @param accData The accelerometer data.
+     * @param timestamp The timestamp that the accelerometer data was taken at.
+     * @param orientation The current orientation (String) of the Band.
      */
-    void onAccChanged(float[] accData, long timestamp, String orientation);
+    void onAccChanged(float accData, long timestamp, String orientation);
 }

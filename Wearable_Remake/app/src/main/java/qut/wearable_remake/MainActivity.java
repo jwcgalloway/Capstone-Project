@@ -14,11 +14,17 @@ import com.microsoft.band.BandClient;
 
 import java.util.Locale;
 
+import qut.wearable_remake.band.ConnectAsync;
+import qut.wearable_remake.band.ProjectClient;
+import qut.wearable_remake.band.Setup;
+import qut.wearable_remake.graphing.AccGraph;
+import qut.wearable_remake.sensors.ProjectSensor;
+
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
     private static final long GRAPH_REFRESH_TIME = 1000;
 
     private ProjectClient projectClient;
-    private Graph accDataGraph;
+    private AccGraph accDataGraph;
     private long lastRefreshed;
     private boolean liveGraphing;
 
@@ -64,8 +70,8 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         });
 
         LineChart mChart = (LineChart) findViewById(R.id.mChart);
-        accDataGraph = new Graph(mChart, this);
-        accDataGraph.setEmptyGraph();
+        accDataGraph = new AccGraph(mChart, this, "acc_data");
+        accDataGraph.setGraphEmpty();
     }
 
     /**
@@ -119,11 +125,9 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      * @param accData The accelerometer data.
      */
     @Override
-    public void onAccChanged(float[] accData, final long time, final String orientation) {
+    public void onAccChanged(float accData, final long time, final String orientation) {
         String str = String.format(Locale.getDefault(), "%d,", time)
-                + String.format(Locale.getDefault(), "%f,", accData[0])
-                + String.format(Locale.getDefault(), "%f,", accData[1])
-                + String.format(Locale.getDefault(), "%f\n", accData[2]);
+                + String.format(Locale.getDefault(), "%f\n", accData);
 
         HelperMethods.writeToFile("acc_data", str, MainActivity.this);
 
@@ -135,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
 
                 if (time > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphing) {
                     lastRefreshed = time;
-                    accDataGraph.refreshValues();
+                    accDataGraph.updateChart();
                 }
             }
         });

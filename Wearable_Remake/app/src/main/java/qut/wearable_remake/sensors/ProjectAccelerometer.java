@@ -1,4 +1,4 @@
-package qut.wearable_remake;
+package qut.wearable_remake.sensors;
 
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandIOException;
@@ -6,7 +6,11 @@ import com.microsoft.band.sensors.BandAccelerometerEvent;
 import com.microsoft.band.sensors.BandAccelerometerEventListener;
 import com.microsoft.band.sensors.SampleRate;
 
-class ProjectAccelerometer implements ProjectSensor {
+
+import qut.wearable_remake.SpecialEventListener;
+import qut.wearable_remake.band.ProjectClient;
+
+public class ProjectAccelerometer implements ProjectSensor {
     private static final long BOUNCE_TIME = 750;
     private static final double ACCELERATION_THRESHOLD = 0.3;
     private static final double ORIENTATION_THRESHOLD = 0.7;
@@ -20,7 +24,7 @@ class ProjectAccelerometer implements ProjectSensor {
     private float offset;
     private String orientation;
 
-    ProjectAccelerometer(final ProjectClient pc, final SpecialEventListener specialEvent) {
+    public ProjectAccelerometer(final ProjectClient pc, final SpecialEventListener specialEvent) {
         projectClient = pc;
         orientation = "Unknown";
 
@@ -57,6 +61,7 @@ class ProjectAccelerometer implements ProjectSensor {
                 } else {
                     if (moving && time > lastMovement + BOUNCE_TIME) {
                         projectClient.setMoveCount(projectClient.getMoveCount() + 1);
+                        projectClient.sendHaptic(); // TODO Add to settings
                         lastMovement = time;
                     }
                     moving = false;
@@ -64,10 +69,9 @@ class ProjectAccelerometer implements ProjectSensor {
                 }
 
                 /** Write Data to File **/
-              //  if (projectClient.getProjectContact().getWorn()) {
-                    float[] accData = {x, y, z};
-                    specialEvent.onAccChanged(accData, time, orientation);
-               // }
+                if (projectClient.getProjectContact().getWorn()) {
+                    specialEvent.onAccChanged(sum, time, orientation);
+                }
             }
         };
     }

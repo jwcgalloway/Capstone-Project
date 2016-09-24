@@ -1,4 +1,4 @@
-package qut.wearable_remake;
+package qut.wearable_remake.band;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -26,13 +26,13 @@ import java.util.UUID;
  * Group of static methods relating to the installation and setup of the app on both the device and
  * Band.
  */
-class Setup extends AsyncTask<Void, Void, Boolean> {
+public class Setup extends AsyncTask<Void, Void, Boolean> {
     private final Activity activity;
     private final ProjectClient projectClient;
     private final UUID tileId, pageId;
     private ProgressDialog setupDialog;
 
-    Setup(Activity a, ProjectClient pc) {
+    public Setup(Activity a, ProjectClient pc) {
         activity = a;
         projectClient = pc;
         tileId = UUID.randomUUID();

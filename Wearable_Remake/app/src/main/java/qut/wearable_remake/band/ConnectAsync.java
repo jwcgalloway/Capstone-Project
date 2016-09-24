@@ -1,4 +1,4 @@
-package qut.wearable_remake;
+package qut.wearable_remake.band;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -12,16 +12,18 @@ import com.microsoft.band.BandInfo;
 import com.microsoft.band.BandPendingResult;
 import com.microsoft.band.ConnectionState;
 
+import qut.wearable_remake.SpecialEventListener;
+
 /**
  * Class used solely to asynchronously connect the device to any paired Bands.
  */
-class ConnectAsync extends AsyncTask<Void, Void, Boolean> {
+public class ConnectAsync extends AsyncTask<Void, Void, Boolean> {
     private ProgressDialog connectDialog;
     private BandClient bandClient;
     private final Activity activity;
     private final SpecialEventListener listener;
 
-    ConnectAsync(Activity a, SpecialEventListener l) {
+    public ConnectAsync(Activity a, SpecialEventListener l) {
         super();
         activity = a;
         listener = l;
