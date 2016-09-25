@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
 public class HelperMethods {
 
@@ -64,20 +65,24 @@ public class HelperMethods {
     } // end streamToString()
 
     /**
-     * Reads a given file and returns its contents as a string.
+     * Reads a given file and returns its contents as a string.  The contents of the file are then
+     * deleted.
      *
      * @param fileName The name of the file to be read.
      * @param  context Context of the current activity.
      * @return The string contents of the file.
      * @throws IOException If file is not found.
      */
-    public static String getStrFromFile(String fileName, Context context) throws IOException {
+    public static String getDataFromFile(String fileName, Context context) throws IOException {
         String filePath = context.getFilesDir().toString() + String.format("/%s", fileName);
         File file = new File(filePath);
         FileInputStream stream = new FileInputStream(file);
         String str = streamToString(stream);
-
         stream.close();
+
+        PrintWriter pw = new PrintWriter(filePath);
+        pw.close();
+
         return str;
-    } // end getStrFromFile()
+    } // end getDataFromFile()
 }

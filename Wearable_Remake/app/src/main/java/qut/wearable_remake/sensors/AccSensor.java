@@ -10,23 +10,19 @@ import com.microsoft.band.sensors.SampleRate;
 import qut.wearable_remake.SpecialEventListener;
 import qut.wearable_remake.band.ProjectClient;
 
-public class ProjectAccelerometer implements ProjectSensor {
+public class AccSensor implements SensorInterface {
     private static final long BOUNCE_TIME = 750;
     private static final double ACCELERATION_THRESHOLD = 0.3;
-    private static final double ORIENTATION_THRESHOLD = 0.7;
 
     private final ProjectClient projectClient;
     private final BandAccelerometerEventListener listener;
 
     private long lastMovement;
-    private long lastOrientation;
     private boolean moving;
     private float offset;
-    private String orientation;
 
-    public ProjectAccelerometer(final ProjectClient pc, final SpecialEventListener specialEvent) {
+    public AccSensor(final ProjectClient pc, final SpecialEventListener specialEvent) {
         projectClient = pc;
-        orientation = "Unknown";
 
         listener = new BandAccelerometerEventListener() {
             @Override
@@ -37,22 +33,22 @@ public class ProjectAccelerometer implements ProjectSensor {
                 long time = bandEvent.getTimestamp();
 
                 /** Detect Orientation **/
-                if (time > lastOrientation + BOUNCE_TIME) {
-                    lastOrientation = time;
-                    if (y < -ORIENTATION_THRESHOLD) {
-                        orientation = "Tilt Right";
-                    } else if (z > ORIENTATION_THRESHOLD) {
-                        orientation = "Flat";
-                    } else if (y > ORIENTATION_THRESHOLD) {
-                        orientation = "Tilt Left";
-                    } else if (z < -ORIENTATION_THRESHOLD) {
-                        orientation = "Upside Down";
-                    } else if (x < -ORIENTATION_THRESHOLD) {
-                        orientation = "Vertical Up";
-                    } else {
-                        orientation = "Vertical Down";
-                    }
-                }
+//                if (time > lastOrientation + BOUNCE_TIME) {
+//                    lastOrientation = time;
+//                    if (y < -ORIENTATION_THRESHOLD) {
+//                        orientation = "Tilt Right";
+//                    } else if (z > ORIENTATION_THRESHOLD) {
+//                        orientation = "Flat";
+//                    } else if (y > ORIENTATION_THRESHOLD) {
+//                        orientation = "Tilt Left";
+//                    } else if (z < -ORIENTATION_THRESHOLD) {
+//                        orientation = "Upside Down";
+//                    } else if (x < -ORIENTATION_THRESHOLD) {
+//                        orientation = "Vertical Up";
+//                    } else {
+//                        orientation = "Vertical Down";
+//                    }
+//                }
 
                 /** Count Movements **/
                 float sum = x + y + z;
@@ -60,9 +56,11 @@ public class ProjectAccelerometer implements ProjectSensor {
                     moving = true;
                 } else {
                     if (moving && time > lastMovement + BOUNCE_TIME) {
-                        projectClient.setMoveCount(projectClient.getMoveCount() + 1);
+                        int moveCount = projectClient.getMoveCount() + 1;
+                        projectClient.setMoveCount(moveCount);
                         projectClient.sendHaptic(); // TODO Add to settings
                         lastMovement = time;
+                        specialEvent.onMoveCountChanged(time, moveCount);
                     }
                     moving = false;
                     offset = sum;
@@ -70,7 +68,7 @@ public class ProjectAccelerometer implements ProjectSensor {
 
                 /** Write Data to File **/
                 if (projectClient.getProjectContact().getWorn()) {
-                    specialEvent.onAccChanged(sum, time, orientation);
+                    specialEvent.onAccChanged(time, sum);
                 }
             }
         };

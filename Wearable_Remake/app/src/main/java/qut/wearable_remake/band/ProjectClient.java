@@ -10,18 +10,17 @@ import java.util.Locale;
 import java.util.UUID;
 
 import qut.wearable_remake.SpecialEventListener;
-import qut.wearable_remake.sensors.ProjectAccelerometer;
-import qut.wearable_remake.sensors.ProjectBandContact;
-import qut.wearable_remake.sensors.ProjectSensor;
+import qut.wearable_remake.sensors.AccSensor;
+import qut.wearable_remake.sensors.ContactSensor;
+import qut.wearable_remake.sensors.SensorInterface;
 
 /**
  * Contains functions related to the communication of the Band with the user's device.
  */
 public class ProjectClient {
     private final BandClient bandClient;
-    private final SpecialEventListener movementListener;
-    private final ProjectBandContact projectContact;
-    private final ProjectAccelerometer projectAcc;
+    private final ContactSensor projectContact;
+    private final AccSensor projectAcc;
 
     private UUID tileId, pageId;
     private int moveCount;
@@ -29,10 +28,9 @@ public class ProjectClient {
     public ProjectClient(BandClient c, SpecialEventListener e) {
         bandClient = c;
         pageId = UUID.randomUUID();
-        movementListener = e;
 
-        projectAcc = new ProjectAccelerometer(this, e);
-        projectContact = new ProjectBandContact();
+        projectAcc = new AccSensor(this, e);
+        projectContact = new ContactSensor();
     }
 
     /**
@@ -98,7 +96,7 @@ public class ProjectClient {
      */
     public void setMoveCount(int count) {
         moveCount = count;
-        movementListener.onMoveCountChanged(moveCount);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -112,6 +110,6 @@ public class ProjectClient {
 
     public BandClient getBandClient() { return bandClient; }
     public int getMoveCount() { return moveCount; }
-    public ProjectBandContact getProjectContact() { return projectContact; }
-    public ProjectSensor[] getSensors() { return new ProjectSensor[]{projectContact, projectAcc}; }
+    public ContactSensor getProjectContact() { return projectContact; }
+    public SensorInterface[] getSensors() { return new SensorInterface[]{projectContact, projectAcc}; }
 }

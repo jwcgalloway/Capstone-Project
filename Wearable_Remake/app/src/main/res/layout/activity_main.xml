@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,87 +8,83 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="qut.wearable_remake.MainActivity"
-    android:id="@+id/mainLayout">
+    android:id="@+id/mainLayout"
+    android:scrollbarStyle="outsideInset"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentStart="true"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true" >
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="@string/removeTileLbl"
-        android:id="@+id/removeTileBtn"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignTop="@+id/recAccSwitch" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/movesTodayLbl"
-        android:id="@+id/moveCountLbl"
-        android:layout_marginTop="18dp"
-        android:gravity="center"
-        android:layout_below="@+id/moveCountTxt"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/todayLbl"
+                android:id="@+id/todayLbl"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:textColor="@color/abc_secondary_text_material_light" />
 
-    <TextView
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/moveCountTxt"
-        android:textSize="100sp"
-        android:gravity="center"
-        android:background="@drawable/info_clock"
-        android:layout_below="@+id/todayLbl"
-        android:layout_centerHorizontal="true" />
+            <!-- TODO Annoying text formatting error -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/moveCountTxt"
+                android:textSize="70sp"
+                android:gravity="center"
+                android:background="@drawable/info_clock"
+                android:layout_margin="18dp"
+                android:text="@string/zeroLbl" />
 
-    <Switch
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="@string/recDataLbl"
-        android:id="@+id/recAccSwitch"
-        android:checked="false"
-        android:layout_above="@+id/liveGraphSwitch"
-        android:layout_alignParentStart="true" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/movesTodayLbl"
+                android:id="@+id/moveCountLbl"
+                android:gravity="center" />
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:layout_width="400dp"
-        android:layout_height="200dp"
-        android:id="@+id/mChart"
-        android:layout_below="@+id/orientTxt"
-        android:layout_alignParentStart="true" />
+            <com.github.mikephil.charting.charts.LineChart
+                android:layout_height="200dp"
+                android:id="@+id/accLineGraph"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_width="320dp" />
 
-    <TextView
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/orientTxt"
-        android:gravity="center"
-        android:layout_below="@+id/moveCountLbl"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
+            <com.github.mikephil.charting.charts.BarChart
+                android:layout_height="200dp"
+                android:id="@+id/movementBarGraph"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_width="320dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/todayLbl"
-        android:id="@+id/todayLbl"
-        android:gravity="center"
-        android:textSize="30sp"
-        android:layout_alignParentTop="true"
-        android:textColor="@color/abc_secondary_text_material_light"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/recDataLbl"
+                android:id="@+id/recAccSwitch"
+                android:checked="false" />
 
-    <Switch
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="@string/liveGraphLbl"
-        android:id="@+id/liveGraphSwitch"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:checked="false" />
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/liveGraphLbl"
+                android:id="@+id/liveGraphSwitch"
+                android:checked="false" />
 
-</RelativeLayout>
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/removeTileLbl"
+                android:id="@+id/removeTileBtn" />
+
+        </LinearLayout>
+</ScrollView>

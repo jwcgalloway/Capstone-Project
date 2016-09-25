@@ -2,7 +2,7 @@ package qut.wearable_remake.sensors;
 
 import com.microsoft.band.BandClient;
 
-public interface ProjectSensor {
+public interface SensorInterface {
 
     /**
      * Registers the sensor's event listener.

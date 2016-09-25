@@ -11,11 +11,11 @@ import com.microsoft.band.sensors.BandContactState;
  *
  * Class for Band contact state.
  */
-public class ProjectBandContact implements ProjectSensor {
+public class ContactSensor implements SensorInterface {
     private final BandContactEventListener listener;
     private boolean worn = false;
 
-    public ProjectBandContact() {
+    public ContactSensor() {
         listener = new BandContactEventListener() {
             @Override
             public void onBandContactChanged(BandContactEvent event) {

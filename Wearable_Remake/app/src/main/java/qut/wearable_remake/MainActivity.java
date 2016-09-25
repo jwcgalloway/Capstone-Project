@@ -8,6 +8,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 
 import com.microsoft.band.BandClient;
@@ -17,14 +18,17 @@ import java.util.Locale;
 import qut.wearable_remake.band.ConnectAsync;
 import qut.wearable_remake.band.ProjectClient;
 import qut.wearable_remake.band.Setup;
-import qut.wearable_remake.graphing.AccGraph;
-import qut.wearable_remake.sensors.ProjectSensor;
+import qut.wearable_remake.graphs.AccLineGraph;
+import qut.wearable_remake.graphs.MovementBarGraph;
+import qut.wearable_remake.sensors.SensorInterface;
 
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
     private static final long GRAPH_REFRESH_TIME = 1000;
 
     private ProjectClient projectClient;
-    private AccGraph accDataGraph;
+    private AccLineGraph accLineGraph;
+    private MovementBarGraph movementBarGraph;
+
     private long lastRefreshed;
     private boolean liveGraphing;
 
@@ -48,13 +52,13 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 BandClient bandClient = projectClient.getBandClient();
-                ProjectSensor[] sensors = projectClient.getSensors();
+                SensorInterface[] sensors = projectClient.getSensors();
                 if (isChecked) {
-                    for (ProjectSensor sensor : sensors) {
+                    for (SensorInterface sensor : sensors) {
                         sensor.registerListener(bandClient);
                     }
                 } else {
-                    for (ProjectSensor sensor : sensors) {
+                    for (SensorInterface sensor : sensors) {
                         sensor.unregisterListener(bandClient);
                     }
                 }
@@ -69,9 +73,11 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             }
         });
 
-        LineChart mChart = (LineChart) findViewById(R.id.mChart);
-        accDataGraph = new AccGraph(mChart, this, "acc_data");
-        accDataGraph.setGraphEmpty();
+        LineChart accChartView = (LineChart) findViewById(R.id.accLineGraph);
+        accLineGraph = new AccLineGraph(accChartView, this);
+
+        BarChart movementChartView = (BarChart) findViewById(R.id.movementBarGraph);
+        movementBarGraph = new MovementBarGraph(movementChartView, this);
     }
 
     /**
@@ -99,20 +105,27 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     /**
      * Called when the moveCount variable has been updated.
      * Writes the new count to the 'move_count' local file and updates the value displayed
-     * on the device.
+     * on the info clock and the graph device.
      *
+     * @param timestamp The timestamp that the movement count was taken at.
      * @param moveCount The movement count.
      */
     @Override
-    public void onMoveCountChanged(int moveCount) {
-        final String countStr = String.format(Locale.getDefault(), "%d", moveCount);
-        HelperMethods.writeToFile("move_count", countStr, MainActivity.this);
+    public void onMoveCountChanged(final long timestamp, int moveCount) {
+        final String countStr = String.format(Locale.getDefault(), "%d\n", moveCount);
+        String str = String.format(Locale.getDefault(), "%d,", timestamp)
+                + countStr;
+        HelperMethods.writeToFile("move_count", str, MainActivity.this);
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 TextView moveCountTxt = (TextView) findViewById(R.id.moveCountTxt);
                 moveCountTxt.setText(countStr);
+
+                if (liveGraphing) {
+                    movementBarGraph.updateGraph();
+                }
             }
         });
     } // end onMoveCountChanged()
@@ -122,11 +135,12 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      * Writes the accelerometer data to the 'acc_data' local file, sets the orientation text view to
      * the given string, and refreshes the graph, provided live graphing is checked.
      *
+     * @param timestamp The timestamp that the accelerometer data was taken at.
      * @param accData The accelerometer data.
      */
     @Override
-    public void onAccChanged(float accData, final long time, final String orientation) {
-        String str = String.format(Locale.getDefault(), "%d,", time)
+    public void onAccChanged(final long timestamp, float accData) {
+        String str = String.format(Locale.getDefault(), "%d,", timestamp)
                 + String.format(Locale.getDefault(), "%f\n", accData);
 
         HelperMethods.writeToFile("acc_data", str, MainActivity.this);
@@ -134,12 +148,9 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                TextView orientTxt = (TextView) findViewById(R.id.orientTxt);
-                orientTxt.setText(orientation);
-
-                if (time > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphing) {
-                    lastRefreshed = time;
-                    accDataGraph.updateChart();
+                if (timestamp > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphing) {
+                    lastRefreshed = timestamp;
+                    accLineGraph.updateGraph();
                 }
             }
         });
