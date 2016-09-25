@@ -1,10 +1,13 @@
 <resources>
+    <!-- Place Holders & Labels -->
     <string name="app_name">Wearable_Remake</string>
-    <string name="removeTileLbl">Remove Tile</string>
-
     <string name="todayLbl">Today</string>
     <string name="movesTodayLbl">Movements Today</string>
+    <string name="zeroLbl">0</string>
 
+    <!-- Settings Strings -->
+    <string name="removeTileLbl">Remove Tile</string>
     <string name="recDataLbl">Record Data</string>
     <string name="liveGraphLbl">Live Graphing</string>
+
 </resources>
