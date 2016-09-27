@@ -22,12 +22,13 @@ public class MovementBarGraph extends AbstractGraph {
         bc.setBorderColor(Color.BLACK);
         bc.setBorderWidth((float) 0.2);
         bc.getLegend().setEnabled(false);
+        bc.getXAxis().setValueFormatter(new DateFormatter());
 
         entriesList = new ArrayList<>();
-
-        BarData emptyData = new BarData();
-        emptyData.addEntry(new BarEntry(0, 0), 0);
-        setGraphEmpty(emptyData);
+        for (int i = 1; i <= 24; i++) {
+            entriesList.add(new BarEntry(i, 0));
+        }
+        refreshDisplay(convertEntries());
     }
 
     /**
@@ -38,6 +39,8 @@ public class MovementBarGraph extends AbstractGraph {
     @Override
     ChartData convertEntries() {
         BarDataSet dataSet = new BarDataSet(entriesList, "");
+        dataSet.setBarBorderWidth((float) 0.2);
+        dataSet.setBarBorderColor(Color.BLACK);
         dataSet.setDrawValues(false);
         return new BarData(dataSet);
     } // end convertEntries()
@@ -49,7 +52,10 @@ public class MovementBarGraph extends AbstractGraph {
     @Override
     void parseGraphData() {
         for (String[] pair : this.getGraphData()) {
-            int xVal = 1; // TODO Get real timestamp
+
+            String[] splitXVal = pair[0].split(":");
+            // splitXVal[0] = dd/mm/yyyy // TODO Factor in the day/month/year
+            float xVal = Float.parseFloat(splitXVal[1]);
             int yVal = Integer.parseInt(pair[1]);
 
             entriesList.add(new BarEntry(xVal, yVal));

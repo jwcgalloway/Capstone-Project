@@ -58,9 +58,8 @@ public class AccSensor implements SensorInterface {
                     if (moving && time > lastMovement + BOUNCE_TIME) {
                         int moveCount = projectClient.getMoveCount() + 1;
                         projectClient.setMoveCount(moveCount);
-                        projectClient.sendHaptic(); // TODO Add to settings
                         lastMovement = time;
-                        specialEvent.onMoveCountChanged(time, moveCount);
+                        specialEvent.onMoveCountChanged(moveCount);
                     }
                     moving = false;
                     offset = sum;

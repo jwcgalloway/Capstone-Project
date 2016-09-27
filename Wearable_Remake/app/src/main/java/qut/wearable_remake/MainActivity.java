@@ -13,6 +13,9 @@ import com.github.mikephil.charting.charts.LineChart;
 
 import com.microsoft.band.BandClient;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import qut.wearable_remake.band.ConnectAsync;
@@ -107,15 +110,20 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      * Writes the new count to the 'move_count' local file and updates the value displayed
      * on the info clock and the graph device.
      *
-     * @param timestamp The timestamp that the movement count was taken at.
      * @param moveCount The movement count.
      */
     @Override
-    public void onMoveCountChanged(final long timestamp, int moveCount) {
-        final String countStr = String.format(Locale.getDefault(), "%d\n", moveCount);
-        String str = String.format(Locale.getDefault(), "%d,", timestamp)
-                + countStr;
+    public void onMoveCountChanged(int moveCount) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy:HH", Locale.getDefault());
+        Date date = Calendar.getInstance().getTime();
+        final String countStr = String.format(Locale.getDefault(), "%d", moveCount);
+
+        String str = dateFormat.format(date) + "," + countStr + "\n";
         HelperMethods.writeToFile("move_count", str, MainActivity.this);
+
+        //if (sendHaptics) { // TODO Add to settings
+            projectClient.sendHaptic();
+        //}
 
         runOnUiThread(new Runnable() {
             @Override

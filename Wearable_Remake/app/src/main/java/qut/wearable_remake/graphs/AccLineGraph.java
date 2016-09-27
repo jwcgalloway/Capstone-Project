@@ -24,10 +24,8 @@ public class AccLineGraph extends AbstractGraph {
         lc.getLegend().setEnabled(false);
 
         entriesList = new ArrayList<>();
-
-        LineData emptyData = new LineData();
-        emptyData.addEntry(new Entry(0, 0), 0);
-        setGraphEmpty(emptyData);
+        entriesList.add(new Entry(0, 0));
+        refreshDisplay(convertEntries());
     }
 
     /**

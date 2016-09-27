@@ -18,10 +18,9 @@ public interface SpecialEventListener {
      * Writes the new count to the 'move_count' local file and updates the value displayed
      * on the device.
      *
-     * @param timestamp The timestamp that the movement count was taken at.
      * @param moveCount The movement count.
      */
-    void onMoveCountChanged(long timestamp, int moveCount);
+    void onMoveCountChanged(int moveCount);
 
     /**
      * Called when the accelerometer data has changed.

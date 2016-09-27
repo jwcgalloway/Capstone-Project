@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import com.microsoft.band.tiles.pages.WrappedTextBlockFont;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 /**
@@ -99,9 +101,7 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
      * @return True if the tile was successfully created, otherwise false.
      */
     private boolean createTile() {
-        Bitmap largeIconBitmap = Bitmap.createBitmap(48, 48, Bitmap.Config.ARGB_8888);
-        BandIcon largeIcon = BandIcon.toBandIcon(largeIconBitmap);
-
+        BandIcon largeIcon = BandIcon.toBandIcon(getIconFromAssets()); // TODO Comes out as a big ol' square for some reason
         PageLayout layout = createLayout();
 
         BandTile tile = new BandTile.Builder(tileId, "Wearable", largeIcon)
@@ -142,4 +142,19 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
         panel.addElements(heading, content);
         return new PageLayout(panel);
     } // end createLayout()
+
+    /**
+     * Reads the icon image from the assets file into a bitmap.
+     *
+     * @return The bitmap with the icon image read into it.
+     */
+    private Bitmap getIconFromAssets() {
+        try {
+            InputStream is = activity.getAssets().open("large_icon.bmp");
+            return BitmapFactory.decodeStream(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    } // end getIconFromAssets()
 } // end Setup

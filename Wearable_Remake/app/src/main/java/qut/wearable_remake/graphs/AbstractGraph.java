@@ -36,13 +36,6 @@ abstract class AbstractGraph {
      */
     abstract void parseGraphData();
 
-    /**
-     * Refreshes the graph with an empty dataEntries set for the purpose of displaying a blank
-     * graph.
-     */
-    void setGraphEmpty(ChartData emptyData) {
-        refreshDisplay(emptyData);
-    } // end setGraphEmpty()
 
     /**
      * Updates the graph with the latest data available.
@@ -83,7 +76,7 @@ abstract class AbstractGraph {
      * Updates the graphical display of the graph with the provided data.
      */
     @SuppressWarnings("unchecked")
-    private void refreshDisplay(ChartData data) {
+    void refreshDisplay(ChartData data) {
         MPChart.setData(data);
         MPChart.invalidate();
     } // end refreshDisplay()

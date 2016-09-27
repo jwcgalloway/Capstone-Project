@@ -31,7 +31,6 @@
                 android:textSize="30sp"
                 android:textColor="@color/abc_secondary_text_material_light" />
 
-            <!-- TODO Annoying text formatting error -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,14 +55,14 @@
                 android:id="@+id/accLineGraph"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
-                android:layout_width="320dp" />
+                android:layout_width="322dp" />
 
             <com.github.mikephil.charting.charts.BarChart
                 android:layout_height="200dp"
                 android:id="@+id/movementBarGraph"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
-                android:layout_width="320dp" />
+                android:layout_width="322dp" />
 
             <Switch
                 android:layout_width="match_parent"
