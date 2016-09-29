@@ -150,7 +150,7 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
      */
     private Bitmap getIconFromAssets() {
         try {
-            InputStream is = activity.getAssets().open("large_icon.bmp");
+            InputStream is = activity.getAssets().open("icon.bmp");
             return BitmapFactory.decodeStream(is);
         } catch (IOException e) {
             e.printStackTrace();

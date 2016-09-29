@@ -23,7 +23,7 @@ public class ProjectClient {
     private final AccSensor projectAcc;
 
     private UUID tileId, pageId;
-    private int moveCount;
+    private int moveCount; // TODO Refactor this to be replaced by WearableApplication variables
 
     public ProjectClient(BandClient c, SpecialEventListener e) {
         bandClient = c;
@@ -103,7 +103,7 @@ public class ProjectClient {
                 setMovePageData();
             }
         }).start();
-    } // end setMoveCount()
+    } // end setTotalMoveCount()
 
     void setTileId(UUID id) { tileId = id; }
     void setPageId(UUID id) { pageId = id; }

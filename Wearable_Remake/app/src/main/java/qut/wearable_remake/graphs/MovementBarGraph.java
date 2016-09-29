@@ -42,6 +42,7 @@ public class MovementBarGraph extends AbstractGraph {
         dataSet.setBarBorderWidth((float) 0.2);
         dataSet.setBarBorderColor(Color.BLACK);
         dataSet.setDrawValues(false);
+
         return new BarData(dataSet);
     } // end convertEntries()
 
