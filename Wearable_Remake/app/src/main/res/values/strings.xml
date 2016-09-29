@@ -3,11 +3,14 @@
     <string name="app_name">Wearable_Remake</string>
     <string name="todayLbl">Today</string>
     <string name="movesTodayLbl">Movements Today</string>
-    <string name="zeroLbl">0</string>
+    <string name="hundredLbl">100</string>
 
     <!-- Settings Strings -->
     <string name="removeTileLbl">Remove Tile</string>
     <string name="recDataLbl">Record Data</string>
     <string name="liveGraphLbl">Live Graphing</string>
+    <string name="sendHapticsLbl">Vibrate</string>
+    <string name="moveGoalLbl">Movement Goal</string>
+    <string name="moveGoalBtn">Set Movement Goal</string>
 
 </resources>

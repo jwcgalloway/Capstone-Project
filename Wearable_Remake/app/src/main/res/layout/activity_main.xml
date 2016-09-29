@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center" >
+            android:gravity="center"
+            android:weightSum="1">
 
             <TextView
                 android:layout_width="match_parent"
@@ -31,16 +32,12 @@
                 android:textSize="30sp"
                 android:textColor="@color/abc_secondary_text_material_light" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/moveCountTxt"
-                android:textSize="70sp"
-                android:gravity="center"
-                android:background="@drawable/info_clock"
-                android:layout_margin="18dp"
-                android:text="@string/zeroLbl" />
+            <view
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                class="qut.wearable_remake.ProgressClock"
+                android:layout_margin="10dp"
+                android:id="@+id/progressClock" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -64,6 +61,32 @@
                 android:layout_marginBottom="12dp"
                 android:layout_width="322dp" />
 
+            <TextView
+                android:text="@string/moveGoalLbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/moveGoalLbl"
+                android:layout_weight="0.13"
+                android:textAlignment="center"
+                android:labelFor="@+id/moveGoalEditTxt" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/moveGoalEditTxt"
+                android:layout_weight="0.18"
+                android:text="@string/hundredLbl"
+                android:textAlignment="center" />
+
+            <Button
+                android:text="@string/moveGoalBtn"
+                android:layout_width="307dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/moveGoalBtn"
+                android:layout_weight="0.20" />
+
             <Switch
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,7 +99,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/liveGraphLbl"
                 android:id="@+id/liveGraphSwitch"
-                android:checked="false" />
+                android:checked="true" />
+
+            <Switch
+                android:text="@string/sendHapticsLbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/sendHapticsSwitch"
+                android:checked="true" />
 
             <Button
                 style="?android:attr/buttonStyleSmall"

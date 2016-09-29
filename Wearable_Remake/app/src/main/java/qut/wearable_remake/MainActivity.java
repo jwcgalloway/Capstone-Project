@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -28,12 +28,15 @@ import qut.wearable_remake.sensors.SensorInterface;
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
     private static final long GRAPH_REFRESH_TIME = 1000;
 
+    private View progressClock;
+    private Switch liveGraphingSwitch;
+    private Switch sendHapticsSwitch;
+
     private ProjectClient projectClient;
     private AccLineGraph accLineGraph;
     private MovementBarGraph movementBarGraph;
 
     private long lastRefreshed;
-    private boolean liveGraphing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +45,25 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
 
         new ConnectAsync(MainActivity.this, this).execute();
 
-        Button removeTileBtn = (Button) findViewById(R.id.removeTileBtn);
-        removeTileBtn.setOnClickListener(new View.OnClickListener() {
+        progressClock = findViewById(R.id.progressClock);
+
+        LineChart accChartView = (LineChart) findViewById(R.id.accLineGraph);
+        accLineGraph = new AccLineGraph(accChartView, this);
+
+        BarChart movementChartView = (BarChart) findViewById(R.id.movementBarGraph);
+        movementBarGraph = new MovementBarGraph(movementChartView, this);
+
+        final EditText moveGoalEditTxt = (EditText) findViewById(R.id.moveGoalEditTxt);
+
+        ((WearableApplication) this.getApplication())
+                .setMoveGoal(Integer.parseInt(moveGoalEditTxt.getText().toString()));
+
+        Button moveGoalBtn = (Button) findViewById(R.id.moveGoalBtn);
+        moveGoalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                projectClient.removeTile();
+                ((WearableApplication) getApplication())
+                        .setMoveGoal(Integer.parseInt(moveGoalEditTxt.getText().toString()));
             }
         });
 
@@ -68,19 +85,16 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             }
         });
 
-        Switch liveGraphingSwitch = (Switch) findViewById(R.id.liveGraphSwitch);
-        liveGraphingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        liveGraphingSwitch = (Switch) findViewById(R.id.liveGraphSwitch);
+        sendHapticsSwitch = (Switch) findViewById(R.id.sendHapticsSwitch);
+
+        Button removeTileBtn = (Button) findViewById(R.id.removeTileBtn);
+        removeTileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                liveGraphing = isChecked;
+            public void onClick(View v) {
+                projectClient.removeTile();
             }
         });
-
-        LineChart accChartView = (LineChart) findViewById(R.id.accLineGraph);
-        accLineGraph = new AccLineGraph(accChartView, this);
-
-        BarChart movementChartView = (BarChart) findViewById(R.id.movementBarGraph);
-        movementBarGraph = new MovementBarGraph(movementChartView, this);
     }
 
     /**
@@ -114,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      */
     @Override
     public void onMoveCountChanged(int moveCount) {
+        ((WearableApplication) this.getApplication()).setMoveCount(moveCount);
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy:HH", Locale.getDefault());
         Date date = Calendar.getInstance().getTime();
         final String countStr = String.format(Locale.getDefault(), "%d", moveCount);
@@ -121,19 +137,17 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         String str = dateFormat.format(date) + "," + countStr + "\n";
         HelperMethods.writeToFile("move_count", str, MainActivity.this);
 
-        //if (sendHaptics) { // TODO Add to settings
+        if (sendHapticsSwitch.isChecked()) {
             projectClient.sendHaptic();
-        //}
+        }
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                TextView moveCountTxt = (TextView) findViewById(R.id.moveCountTxt);
-                moveCountTxt.setText(countStr);
-
-                if (liveGraphing) {
+                if (liveGraphingSwitch.isChecked()) {
                     movementBarGraph.updateGraph();
                 }
+                progressClock.invalidate();
             }
         });
     } // end onMoveCountChanged()
@@ -156,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (timestamp > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphing) {
+                if (timestamp > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphingSwitch.isChecked()) {
                     lastRefreshed = timestamp;
                     accLineGraph.updateGraph();
                 }
