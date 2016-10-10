@@ -47,6 +47,12 @@
                 android:id="@+id/moveCountLbl"
                 android:gravity="center" />
 
+            <TextView
+                android:text="TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/uuid_text" />
+
             <com.github.mikephil.charting.charts.LineChart
                 android:layout_height="200dp"
                 android:id="@+id/accChartView"

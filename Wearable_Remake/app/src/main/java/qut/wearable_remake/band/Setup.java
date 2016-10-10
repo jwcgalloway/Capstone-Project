@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
+import qut.wearable_remake.HelperMethods;
 
 /**
  * Group of static methods relating to the installation and setup of the app on both the device and
@@ -39,6 +40,8 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
         projectClient = pc;
         tileId = UUID.randomUUID();
         pageId = UUID.randomUUID();
+        String str = tileId.toString() + "," + pageId.toString();
+        HelperMethods.writeToFile("app_id", str, a);
     }
 
     /**

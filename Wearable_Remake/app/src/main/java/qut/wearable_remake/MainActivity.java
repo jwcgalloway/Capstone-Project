@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Switch;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -18,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.io.IOException;
 
 import qut.wearable_remake.band.ConnectAsync;
 import qut.wearable_remake.band.ProjectClient;
@@ -94,6 +96,17 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         liveGraphingSwitch = (Switch) findViewById(R.id.liveGraphSwitch);
         sendHapticsSwitch = (Switch) findViewById(R.id.sendHapticsSwitch);
 
+        //testing uuid save function
+        TextView uuid = (TextView) findViewById(R.id.uuid_text);
+
+        String uuid_str = null;
+        try {
+            uuid_str = HelperMethods.getDataFromFile("app_id", MainActivity.this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        uuid.setText(uuid_str);
+
         Button removeTileBtn = (Button) findViewById(R.id.removeTileBtn);
         removeTileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             projectClient = new ProjectClient(bandClient, this);
             if (HelperMethods.isInstalled(this, "acc_data")
                 && HelperMethods.isInstalled(this, "move_count")
+                && HelperMethods.isInstalled(this, "app_id")
                 && HelperMethods.isInstalled(this, "please_fail")) { // Intentional fail until load data works
                 // TODO Load previous
                 projectClient.sendDialog("Device status", "Connected to existing data.");

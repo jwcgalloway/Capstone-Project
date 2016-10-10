@@ -35,7 +35,7 @@ public class HelperMethods {
      * @param content The string that will be written.
      * @param activity The activity used to obtain the filepath.
      */
-    static void writeToFile(String filename, String content, Activity activity) {
+    public static void writeToFile(String filename, String content, Activity activity) {
         try {
             FileOutputStream fos = activity.openFileOutput(filename, Context.MODE_APPEND);
             fos.write(content.getBytes());
