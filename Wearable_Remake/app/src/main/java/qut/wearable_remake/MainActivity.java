@@ -99,13 +99,14 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         //testing uuid save function
         TextView uuid = (TextView) findViewById(R.id.uuid_text);
 
-        String uuid_str = null;
+        String uuid_str = "default";
         try {
             uuid_str = HelperMethods.getDataFromFile("app_id", MainActivity.this);
         } catch (IOException e) {
             e.printStackTrace();
         }
         uuid.setText(uuid_str);
+        //end testing
 
         Button removeTileBtn = (Button) findViewById(R.id.removeTileBtn);
         removeTileBtn.setOnClickListener(new View.OnClickListener() {
@@ -131,7 +132,8 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
                 && HelperMethods.isInstalled(this, "move_count")
                 && HelperMethods.isInstalled(this, "app_id")
                 && HelperMethods.isInstalled(this, "please_fail")) { // Intentional fail until load data works
-                // TODO Load previous
+                // loads previous files
+
                 projectClient.sendDialog("Device status", "Connected to existing data.");
             } else {
                 new Setup(MainActivity.this, projectClient).execute();

@@ -11,6 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public class HelperMethods {
 
@@ -85,4 +89,27 @@ public class HelperMethods {
 
         return str;
     } // end getDataFromFile()
+
+    /**
+     * Reads the saved UUID data and returns an array of 2 consisting the UUID and pageID.
+     *
+     * @param a Activity for the read file function.
+     * @return The array of type UUID of the app's saved UUID and pageID
+     * @throws IOException If file is not found.
+     */
+    public List<UUID> getUUID (Activity a) {
+        String uuid_str = null;
+        try {
+            uuid_str = HelperMethods.getDataFromFile("app_id", a);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<String> strings = Arrays.asList(uuid_str.split(","));
+        List<UUID> uuid_list = new ArrayList<>();
+        for (String i:strings) {
+            UUID val = UUID.fromString(i);
+            uuid_list.add(val);
+        }
+        return uuid_list;
+    };
 }
