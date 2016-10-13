@@ -62,7 +62,7 @@ class ProgressClock extends View {
         int moveGoal = 80;
 
         if (!isInEditMode()) {
-            moveCount = ((WearableApplication) context.getApplicationContext()).getTotalMoveCount();
+            moveCount = ((WearableApplication) context.getApplicationContext()).getTotalMovesToday();
             moveGoal = ((WearableApplication) context.getApplicationContext()).getMoveGoal();
         }
 

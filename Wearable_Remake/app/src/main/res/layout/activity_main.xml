@@ -67,12 +67,6 @@
                 android:layout_marginBottom="12dp"
                 android:layout_width="322dp" />
 
-            <view
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                class="com.github.mikephil.charting.charts.HorizontalBarChart"
-                android:id="@+id/moveBulletGraph" />
-
             <TextView
                 android:text="@string/moveGoalLbl"
                 android:layout_width="match_parent"

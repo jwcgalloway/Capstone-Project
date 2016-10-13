@@ -2,6 +2,7 @@ package qut.wearable_remake;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -10,23 +11,17 @@ import android.widget.TextView;
 import android.widget.Switch;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
 
 import com.microsoft.band.BandClient;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 import java.io.IOException;
 
 import qut.wearable_remake.band.ConnectAsync;
 import qut.wearable_remake.band.ProjectClient;
 import qut.wearable_remake.band.Setup;
 import qut.wearable_remake.graphs.AccLineGraph;
-import qut.wearable_remake.graphs.MoveBulletGraph;
-import qut.wearable_remake.graphs.MovementBarGraph;
+import qut.wearable_remake.graphs.MovesBarGraph;
 import qut.wearable_remake.sensors.SensorInterface;
 
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
@@ -38,8 +33,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
 
     private ProjectClient projectClient;
     private AccLineGraph accLineGraph;
-    private MovementBarGraph movementBarGraph;
-    private MoveBulletGraph moveBulletGraph;
+    private MovesBarGraph movesBarGraph;
 
     private long lastRefreshed;
 
@@ -56,10 +50,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         accLineGraph = new AccLineGraph(accChartView, this);
 
         BarChart movementChartView = (BarChart) findViewById(R.id.moveChartView);
-        movementBarGraph = new MovementBarGraph(movementChartView, this);
-
-        HorizontalBarChart moveBulletChartView = (HorizontalBarChart) findViewById(R.id.moveBulletGraph);
-        moveBulletGraph = new MoveBulletGraph(moveBulletChartView, this);
+        movesBarGraph = new MovesBarGraph(movementChartView, this);
 
         final EditText moveGoalEditTxt = (EditText) findViewById(R.id.moveGoalEditTxt);
 
@@ -145,22 +136,11 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      * Called when the moveCount variable has been updated.
      * Writes the new count to the 'move_count' local file and updates the value displayed
      * on the info clock and the graph device.
-     *
-     * @param moveCount The movement count.
      */
     @Override
-    public void onMoveCountChanged(int moveCount) {
-        ((WearableApplication) this.getApplication()).setTotalMoveCount(moveCount);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy:HH", Locale.getDefault());
-
-        Date date = Calendar.getInstance().getTime();
-        ((WearableApplication) this.getApplication()).updateMoveCounts(date, moveCount);
-
-//        final String countStr = String.format(Locale.getDefault(), "%d", moveCount);
-
-//        String str = dateFormat.format(date) + "," + countStr + "\n";
-//        HelperMethods.writeToFile("move_count", str, MainActivity.this);
+    public void onMoveCountChanged() {
+        final int moveCount = ((WearableApplication) this.getApplication()).getTotalMovesToday() + 1;
+        ((WearableApplication) this.getApplication()).setTotalMovesToday(moveCount);
 
         if (sendHapticsSwitch.isChecked()) {
             projectClient.sendHaptic();
@@ -170,7 +150,9 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             @Override
             public void run() {
                 if (liveGraphingSwitch.isChecked()) {
-                    movementBarGraph.updateGraph();
+                    movesBarGraph.incrementGraphData(HelperMethods.getCurrentDate());
+                    movesBarGraph.updateDisplay();
+                    projectClient.setMovePageData(moveCount);
                 }
                 progressClock.invalidate();
             }
@@ -186,18 +168,14 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      * @param accData The accelerometer data.
      */
     @Override
-    public void onAccChanged(final long timestamp, float accData) {
-        String str = String.format(Locale.getDefault(), "%d,", timestamp)
-                + String.format(Locale.getDefault(), "%f\n", accData);
-
-        HelperMethods.writeToFile("acc_data", str, MainActivity.this);
-
+    public void onAccChanged(final long timestamp, final float accData) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (timestamp > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphingSwitch.isChecked()) {
                     lastRefreshed = timestamp;
-                    accLineGraph.updateGraph();
+                    accLineGraph.addToGraphData(timestamp, accData);
+                    accLineGraph.updateDisplay();
                 }
             }
         });

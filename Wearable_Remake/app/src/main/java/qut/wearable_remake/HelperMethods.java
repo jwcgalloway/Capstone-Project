@@ -11,9 +11,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class HelperMethods {
@@ -95,9 +99,8 @@ public class HelperMethods {
      *
      * @param a Activity for the read file function.
      * @return The array of type UUID of the app's saved UUID and pageID
-     * @throws IOException If file is not found.
      */
-    public List<UUID> getUUID (Activity a) {
+    public static List<UUID> getUUID (Activity a) {
         String uuid_str = null;
         try {
             uuid_str = HelperMethods.getDataFromFile("app_id", a);
@@ -111,5 +114,17 @@ public class HelperMethods {
             uuid_list.add(val);
         }
         return uuid_list;
-    };
+    }
+
+    /**
+     * Gets the current date & time and returns it in string form using the following format:
+     * dd.MM.yyyy:HH
+     *
+     * @return The string representation of the current date & time
+     */
+    public static String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy:HH", Locale.getDefault());
+        Date currentDate = Calendar.getInstance().getTime();
+        return dateFormat.format(currentDate);
+    } // end getCurrentDate()
 }

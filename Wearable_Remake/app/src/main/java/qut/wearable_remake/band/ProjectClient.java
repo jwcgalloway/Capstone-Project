@@ -72,7 +72,7 @@ public class ProjectClient {
     /**
      * Sets the initial content of the pages on the Band.
      */
-    private void setMovePageData() {
+    public void setMovePageData(int moveCount) {
         WrappedTextBlockData headingData = new WrappedTextBlockData(1, "Movements:");
 
         WrappedTextBlockData contentData =
@@ -88,28 +88,10 @@ public class ProjectClient {
         }
     } // end setMovePageData()
 
-    /**
-     * Sets the moveCount variable to the value contained in 'count' and updates the Band
-     * page data.
-     *
-     * @param count The value moveCount will be set to.
-     */
-    public void setMoveCount(int count) {
-        moveCount = count;
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                setMovePageData();
-            }
-        }).start();
-    } // end setTotalMoveCount()
-
     void setTileId(UUID id) { tileId = id; }
     void setPageId(UUID id) { pageId = id; }
 
     public BandClient getBandClient() { return bandClient; }
-    public int getMoveCount() { return moveCount; }
     public ContactSensor getProjectContact() { return projectContact; }
     public SensorInterface[] getSensors() { return new SensorInterface[]{projectContact, projectAcc}; }
 }

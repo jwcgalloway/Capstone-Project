@@ -1,6 +1,7 @@
 package qut.wearable_remake.graphs;
 
 import android.app.Activity;
+import android.graphics.Color;
 
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.data.ChartData;
@@ -12,15 +13,28 @@ import java.util.Scanner;
 import qut.wearable_remake.HelperMethods;
 
 abstract class AbstractGraph {
-    private final Chart MPChart;
+    private final Chart chart;
+    private final String saveFilename;
     private final Activity activity;
-    private final String dataFilename;
 
-    AbstractGraph(Chart c, Activity a, String dfn) {
-        MPChart = c;
+    AbstractGraph(Chart c, Activity a, String sfn) {
+        chart = c;
         activity = a;
-        dataFilename = dfn;
+        saveFilename = sfn;
     }
+
+
+    /**
+     * Reads the data saved in the graph's save file, parses and returns it in Chart Data form.
+     *
+     * @return Chart Data representing the data stored in the graph's save file.
+     */
+    abstract ChartData loadSavedData();
+
+    /**
+     * Saves the current state of the graph's data to the save file.
+     */
+    abstract void saveData();
 
     /**
      * Converts the current data set into chart data.
@@ -30,30 +44,14 @@ abstract class AbstractGraph {
     abstract ChartData convertEntries();
 
     /**
-     * Parses string value pairs (X,Y) in the provided array list into entries and adds
-     * the entries to the entries list.
-     *
-     */
-    abstract void parseGraphData();
-
-
-    /**
-     * Updates the graph with the latest data available.
-     */
-    public void updateGraph() {
-        parseGraphData();
-        refreshDisplay(convertEntries());
-    } // end parseGraphData()
-
-    /**
      * Gets, splits and returns the value pairs (X,Y) from the graph's data file.
      *
      * @return An array list containing each value pair.
      */
-    ArrayList<String[]> getGraphData() {
+    ArrayList<String[]> getDataFromFile() {
         String dataStr = "";
         try {
-            dataStr = HelperMethods.getDataFromFile(dataFilename, activity);
+            dataStr = HelperMethods.getDataFromFile(saveFilename, activity);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,14 +68,16 @@ abstract class AbstractGraph {
         scanner.close();
 
         return strValuePairs;
-    } // end getGraphData()
+    } // end getDataFromFile()
 
     /**
      * Updates the graphical display of the graph with the provided data.
      */
     @SuppressWarnings("unchecked")
-    void refreshDisplay(ChartData data) {
-        MPChart.setData(data);
-        MPChart.invalidate();
-    } // end refreshDisplay()
+    public void updateDisplay() {
+        chart.setData(convertEntries());
+        chart.invalidate();
+    } // end updateDisplay()
+
+    Activity getActivity() { return activity; }
 }

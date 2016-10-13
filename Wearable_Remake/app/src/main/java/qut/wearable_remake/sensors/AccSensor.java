@@ -56,10 +56,8 @@ public class AccSensor implements SensorInterface {
                     moving = true;
                 } else {
                     if (moving && time > lastMovement + BOUNCE_TIME) {
-                        int moveCount = projectClient.getMoveCount() + 1;
-                        projectClient.setMoveCount(moveCount);
                         lastMovement = time;
-                        specialEvent.onMoveCountChanged(moveCount);
+                        specialEvent.onMoveCountChanged();
                     }
                     moving = false;
                     offset = sum;
