@@ -2,6 +2,7 @@ package qut.wearable_remake.graphs;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.util.Log;
 import android.util.LongSparseArray;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -41,7 +42,7 @@ public class AccLineGraph extends AbstractGraph {
      */
     public void addToGraphData(long x, float y) {
         graphData.append(x, y);
-    } // end incrementGraphData()
+    } // end addToGraphData()
 
     /**
      * Reads the data saved in the graph's save file, parses and returns it in Chart Data form.
@@ -53,7 +54,7 @@ public class AccLineGraph extends AbstractGraph {
         for (String[] pair : this.getDataFromFile()) {
             long xVal = Long.parseLong(pair[0]); // TODO Fix timestamp parsing
             float yVal = Float.parseFloat(pair[1]);
-            graphData.put(xVal, yVal);
+            graphData.append(xVal, yVal);
         }
 
         return convertEntries();
@@ -76,7 +77,7 @@ public class AccLineGraph extends AbstractGraph {
     ChartData convertEntries() {
         ArrayList<Entry> entries = new ArrayList<>();
         for (int i = 0; i < graphData.size(); i++) {
-            entries.add(new Entry(graphData.keyAt(i), graphData.valueAt(i)));
+            entries.add(new Entry((int) graphData.keyAt(i), graphData.valueAt(i)));
         }
 
         LineDataSet dataSet = new LineDataSet(entries, "");
