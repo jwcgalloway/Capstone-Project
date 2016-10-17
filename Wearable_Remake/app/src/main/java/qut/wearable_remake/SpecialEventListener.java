@@ -14,6 +14,12 @@ public interface SpecialEventListener {
     void onConnectDone(BandClient bandClient);
 
     /**
+     * Called after the app has been fully setup or fully loaded.
+     * Initialises all save-dependent page data, such as graphs.
+     */
+    void onSetupDone();
+
+    /**
      * Called when the moveCount variable has been updated.
      * Writes the new count to the 'move_count' local file and updates the value displayed
      * on the device.
@@ -29,4 +35,6 @@ public interface SpecialEventListener {
      * @param accData The accelerometer data.
      */
     void onAccChanged(long timestamp, float accData);
+
+
 }

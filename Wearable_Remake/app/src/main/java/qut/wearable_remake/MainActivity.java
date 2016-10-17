@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Switch;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
 
 import com.microsoft.band.BandClient;
@@ -21,7 +22,8 @@ import qut.wearable_remake.band.ConnectAsync;
 import qut.wearable_remake.band.ProjectClient;
 import qut.wearable_remake.band.Setup;
 import qut.wearable_remake.graphs.AccLineGraph;
-import qut.wearable_remake.graphs.MovesBarGraph;
+import qut.wearable_remake.graphs.DailyMovesBullet;
+import qut.wearable_remake.graphs.HourlyMovesBar;
 import qut.wearable_remake.sensors.SensorInterface;
 
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
 
     private ProjectClient projectClient;
     private AccLineGraph accLineGraph;
-    private MovesBarGraph movesBarGraph;
+    private HourlyMovesBar hourlyMovesBar;
 
     private long lastRefreshed;
 
@@ -45,12 +47,6 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         new ConnectAsync(MainActivity.this, this).execute();
 
         progressClock = findViewById(R.id.progressClock);
-
-        LineChart accChartView = (LineChart) findViewById(R.id.accChartView);
-        accLineGraph = new AccLineGraph(accChartView, this);
-
-        BarChart movementChartView = (BarChart) findViewById(R.id.moveChartView);
-        movesBarGraph = new MovesBarGraph(movementChartView, this);
 
         final EditText moveGoalEditTxt = (EditText) findViewById(R.id.moveGoalEditTxt);
 
@@ -66,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             }
         });
 
-        Switch recordDataSwitch = (Switch) findViewById(R.id.recAccSwitch);
+        Switch recordDataSwitch = (Switch) findViewById(R.id.recordDataSwitch);
         recordDataSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -124,18 +120,28 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
                 && HelperMethods.isInstalled(this, "app_id")
                 && HelperMethods.isInstalled(this, "please_fail")) { // Intentional fail until load data works
                 // loads previous files
-
+                initGraphs();
                 projectClient.sendDialog("Device status", "Connected to existing data.");
             } else {
-                new Setup(MainActivity.this, projectClient).execute();
+                new Setup(MainActivity.this, projectClient, this).execute();
             }
         }
     } // end onConnectDone()
 
     /**
+     * Called after the app has been fully setup or fully loaded.
+     * Initialises all save-dependent page data, such as graphs.
+     */
+    @Override
+    public void onSetupDone() {
+        initGraphs();
+        findViewById(R.id.recordDataSwitch).setEnabled(true);
+        Log.d("SWITCHFLAG", "");
+    } // end onSetupDone
+
+    /**
      * Called when the moveCount variable has been updated.
-     * Writes the new count to the 'move_count' local file and updates the value displayed
-     * on the info clock and the graph device.
+     * Updates page values and graphs relating to the movement count.
      */
     @Override
     public void onMoveCountChanged() {
@@ -150,8 +156,8 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             @Override
             public void run() {
                 if (liveGraphingSwitch.isChecked()) {
-                    movesBarGraph.incrementGraphData(HelperMethods.getCurrentDate());
-                    movesBarGraph.updateDisplay();
+                    hourlyMovesBar.incrementDataSet(HelperMethods.getCurrentDate());
+                    hourlyMovesBar.updateDisplay();
                     projectClient.setMovePageData(moveCount);
                 }
                 progressClock.invalidate();
@@ -161,8 +167,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
 
     /**
      * Called when the accelerometer data has changed.
-     * Writes the accelerometer data to the 'acc_data' local file, sets the orientation text view to
-     * the given string, and refreshes the graph, provided live graphing is checked.
+     * Updates page values and graphs relating to accelerometer data.
      *
      * @param timestamp The timestamp that the accelerometer data was taken at.
      * @param accData The accelerometer data.
@@ -174,10 +179,24 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             public void run() {
                 if (timestamp > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphingSwitch.isChecked()) {
                     lastRefreshed = timestamp;
-                    accLineGraph.addToGraphData(timestamp, accData);
+                    accLineGraph.addToDataSet(accData);
                     accLineGraph.updateDisplay();
                 }
             }
         });
     } // end onAccChanged()
+
+    /**
+     * Initialise all graphs.
+     */
+    private void initGraphs() {
+        LineChart accLineView = (LineChart) findViewById(R.id.accLineView);
+        accLineGraph = new AccLineGraph(accLineView, this);
+
+        BarChart hourlyBarView = (BarChart) findViewById(R.id.hourlyBarView);
+        hourlyMovesBar = new HourlyMovesBar(hourlyBarView, this);
+
+        HorizontalBarChart dailyBulletView = (HorizontalBarChart) findViewById(R.id.dailyBulletView);
+        DailyMovesBullet dailyMovesBullet = new DailyMovesBullet(dailyBulletView, this);
+    } // end initGraphs
 }

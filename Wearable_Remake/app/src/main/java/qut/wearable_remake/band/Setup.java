@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.microsoft.band.BandException;
@@ -25,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 import qut.wearable_remake.HelperMethods;
+import qut.wearable_remake.SpecialEventListener;
 
 /**
  * Group of static methods relating to the installation and setup of the app on both the device and
@@ -34,13 +34,16 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
     private final Activity activity;
     private final ProjectClient projectClient;
     private final UUID tileId, pageId;
+    private final SpecialEventListener listener;
     private ProgressDialog setupDialog;
 
-    public Setup(Activity a, ProjectClient pc) {
+    public Setup(Activity a, ProjectClient pc, SpecialEventListener l) {
         activity = a;
         projectClient = pc;
         tileId = UUID.randomUUID();
         pageId = UUID.randomUUID();
+        listener = l;
+
         String str = tileId.toString() + "," + pageId.toString();
         HelperMethods.writeToFile("app_id", str, a);
     }
@@ -67,7 +70,6 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
             HelperMethods.writeToFile("acc_data", "0,0", activity);
             for (int i = 1; i <= 24; i++) {
                 String[] splitDate = HelperMethods.getCurrentDate().split(":");
-                Log.d("DATE: ", splitDate[0] + ":" + Integer.toString(i));
                 HelperMethods.writeToFile("move_count", splitDate[0] + ":" + Integer.toString(i) + ",0\n", activity);
             }
 
@@ -88,6 +90,7 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
             Toast.makeText(activity, "Setup Failed.", Toast.LENGTH_LONG).show();
         }
         setupDialog.dismiss();
+        listener.onSetupDone();
     } // end onPostExecute()
 
     /**

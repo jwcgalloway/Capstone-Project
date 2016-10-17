@@ -1,10 +1,9 @@
 package qut.wearable_remake.graphs;
 
 import android.app.Activity;
-import android.graphics.Color;
 
 import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.data.ChartData;
+import com.github.mikephil.charting.data.DataSet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,25 +22,17 @@ abstract class AbstractGraph {
         saveFilename = sfn;
     }
 
-
     /**
      * Reads the data saved in the graph's save file, parses and returns it in Chart Data form.
      *
      * @return Chart Data representing the data stored in the graph's save file.
      */
-    abstract ChartData loadSavedData();
+    abstract DataSet loadSavedData();
 
     /**
      * Saves the current state of the graph's data to the save file.
      */
     abstract void saveData();
-
-    /**
-     * Converts the current data set into chart data.
-     *
-     * @return The current data set converted into chart data.
-     */
-    abstract ChartData convertEntries();
 
     /**
      * Gets, splits and returns the value pairs (X,Y) from the graph's data file.
@@ -73,9 +64,8 @@ abstract class AbstractGraph {
     /**
      * Updates the graphical display of the graph with the provided data.
      */
-    @SuppressWarnings("unchecked")
     public void updateDisplay() {
-        chart.setData(convertEntries());
+        chart.notifyDataSetChanged();
         chart.invalidate();
     } // end updateDisplay()
 

@@ -127,4 +127,15 @@ public class HelperMethods {
         Date currentDate = Calendar.getInstance().getTime();
         return dateFormat.format(currentDate);
     } // end getCurrentDate()
+
+    /**
+     * Separates the hour segment from a date string and converts and returns it as an int.
+     * The hour string must be the last segment, preceded by a colon, eg: dd.MM.yyyy:HH.
+     *
+     * @param date The string representation of the date.
+     * @return The hour segment in int form.
+     */
+    public static int getHourFromDate(String date) {
+        return Integer.parseInt(date.split(":")[1]);
+    } // end getHourFromDate
 }
