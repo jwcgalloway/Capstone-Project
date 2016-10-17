@@ -1,6 +1,7 @@
 package qut.wearable_remake.graphs;
 
 import android.app.Activity;
+import android.graphics.Color;
 
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.data.DataSet;

@@ -1,6 +1,7 @@
 package qut.wearable_remake.graphs;
 
 import android.app.Activity;
+import android.graphics.Color;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -20,8 +21,14 @@ public class AccLineGraph extends AbstractGraph {
         pointCount = 0;
         chart = lc;
         dataSet = this.loadSavedData();
+        dataSet.setColor(Color.rgb(170, 182, 84));
+        dataSet.setDrawCircles(false);
+        dataSet.setDrawValues(false);
+        dataSet.setLineWidth(2);
+
         LineData chartData = new LineData(dataSet);
         lc.setData(chartData);
+        lc.setClickable(false);
 
         lc.setDescription("");
         lc.getLegend().setEnabled(false);

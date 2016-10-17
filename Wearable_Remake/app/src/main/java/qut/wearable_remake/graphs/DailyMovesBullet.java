@@ -19,22 +19,15 @@ public class DailyMovesBullet extends AbstractGraph {
     public DailyMovesBullet(HorizontalBarChart hc, Activity a) {
         super(hc, a, "some_thing");
 
-        hc.setDrawBorders(true);
-        hc.setBorderColor(Color.BLACK);
-        hc.setBorderWidth((float) 0.2);
         hc.setDescription("");
-        hc.setDrawValueAboveBar(false);
+        hc.getLegend().setEnabled(false);
+        hc.getAxisRight().setEnabled(false);
 
         XAxis xAxis = hc.getXAxis();
         xAxis.setGranularity(10);
         xAxis.setDrawLabels(false);
 
         int moveGoal = ((WearableApplication) this.getActivity().getApplication()).getMoveGoal();
-        LimitLine moveGoalLimitLine = new LimitLine(moveGoal);
-        xAxis.addLimitLine(moveGoalLimitLine);
-
-        hc.getLegend().setEnabled(false);
-        hc.getAxisRight().setEnabled(false);
 
         int segmentSize = moveGoal / 5;
         ArrayList<BarEntry> defaultEntries = new ArrayList<>();
@@ -50,18 +43,26 @@ public class DailyMovesBullet extends AbstractGraph {
         BarDataSet dataSet = new BarDataSet(defaultEntries, "");
 
         ArrayList<Integer> colourScheme = new ArrayList<>();
-        colourScheme.add(Color.argb(60, 150, 0, 150));
-        colourScheme.add(Color.argb(50, 150, 0, 150));
-        colourScheme.add(Color.argb(40, 150, 0, 150));
-        colourScheme.add(Color.argb(30, 150, 0, 150));
-        colourScheme.add(Color.argb(20, 150, 0, 150));
-        colourScheme.add(Color.argb(10, 150, 0, 150));
+        colourScheme.add(Color.argb(100, 113, 167, 164));
+        colourScheme.add(Color.argb(80, 113, 167, 164));
+        colourScheme.add(Color.argb(60, 113, 167, 164));
+        colourScheme.add(Color.argb(40, 113, 167, 164));
+        colourScheme.add(Color.argb(20, 113, 167, 164));
+        colourScheme.add(Color.argb(10, 113, 167, 164));
         colourScheme.add(Color.BLACK);
 
         dataSet.setColors(colourScheme);
+        dataSet.setDrawValues(false);
+
         BarData graphData = new BarData(dataSet);
         hc.setData(graphData);
 
+        LimitLine limitLine = new LimitLine(moveGoal, "");
+        limitLine.setLineWidth(1);
+        limitLine.setLineColor(Color.BLACK);
+        hc.getAxisRight().addLimitLine(limitLine);
+
+        dataSet.notifyDataSetChanged();
         this.updateDisplay();
     }
 

@@ -2,7 +2,6 @@ package qut.wearable_remake.graphs;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.util.Log;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -28,9 +27,10 @@ public class HourlyMovesBar extends AbstractGraph {
         dataSet.setDrawValues(false);
 
         ArrayList<Integer> colourScheme = new ArrayList<>();
-        colourScheme.add(Color.parseColor("#1cbc81"));
-        colourScheme.add(Color.parseColor("#159466"));
-        colourScheme.add(Color.parseColor("#117651"));
+        colourScheme.add(Color.rgb(224, 84, 54));
+        colourScheme.add(Color.rgb(170, 182, 84));
+        colourScheme.add(Color.rgb(254, 142, 55));
+        colourScheme.add(Color.rgb(113, 167, 164));
         dataSet.setColors(colourScheme);
 
         BarData graphData = new BarData(dataSet);
@@ -69,9 +69,10 @@ public class HourlyMovesBar extends AbstractGraph {
         if (entry == null) {
             dataSet.addEntry(new BarEntry(hour, 1));
         } else {
-           entry.setY(entry.getY() + 1);
+            entry.setY(entry.getY() + 1);
         }
 
+        dataSet.notifyDataSetChanged();
         chart.setData(new BarData(dataSet));
     } // end incrementDataSet()
 

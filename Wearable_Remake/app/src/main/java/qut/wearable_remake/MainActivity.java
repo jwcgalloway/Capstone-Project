@@ -1,22 +1,17 @@
 package qut.wearable_remake;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Switch;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
-
 import com.microsoft.band.BandClient;
-
-import java.io.IOException;
 
 import qut.wearable_remake.band.ConnectAsync;
 import qut.wearable_remake.band.ProjectClient;
@@ -83,18 +78,6 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         liveGraphingSwitch = (Switch) findViewById(R.id.liveGraphSwitch);
         sendHapticsSwitch = (Switch) findViewById(R.id.sendHapticsSwitch);
 
-        //testing uuid save function
-        TextView uuid = (TextView) findViewById(R.id.uuid_text);
-
-        String uuid_str = "default";
-        try {
-            uuid_str = HelperMethods.getDataFromFile("app_id", MainActivity.this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        uuid.setText(uuid_str);
-        //end testing
-
         Button removeTileBtn = (Button) findViewById(R.id.removeTileBtn);
         removeTileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     public void onSetupDone() {
         initGraphs();
         findViewById(R.id.recordDataSwitch).setEnabled(true);
-        Log.d("SWITCHFLAG", "");
     } // end onSetupDone
 
     /**
@@ -152,13 +134,14 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             projectClient.sendHaptic();
         }
 
+        hourlyMovesBar.incrementDataSet(HelperMethods.getCurrentDate());
+        projectClient.setMovePageData(moveCount);
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (liveGraphingSwitch.isChecked()) {
-                    hourlyMovesBar.incrementDataSet(HelperMethods.getCurrentDate());
                     hourlyMovesBar.updateDisplay();
-                    projectClient.setMovePageData(moveCount);
                 }
                 progressClock.invalidate();
             }
@@ -174,12 +157,12 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      */
     @Override
     public void onAccChanged(final long timestamp, final float accData) {
+        accLineGraph.addToDataSet(accData);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (timestamp > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphingSwitch.isChecked()) {
                     lastRefreshed = timestamp;
-                    accLineGraph.addToDataSet(accData);
                     accLineGraph.updateDisplay();
                 }
             }
