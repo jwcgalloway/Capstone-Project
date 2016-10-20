@@ -27,8 +27,11 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     private View progressClock;
     private Switch liveGraphingSwitch;
     private Switch sendHapticsSwitch;
+    private Switch dualBandSwitch;
 
-    private ProjectClient projectClient;
+    private ProjectClient projectClient1;
+    private ProjectClient projectClient2;
+
     private AccLineGraph accLineGraph;
     private HourlyMovesBar hourlyMovesBar;
 
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new ConnectAsync(MainActivity.this, this).execute();
+        new ConnectAsync(this, this).execute();
 
         progressClock = findViewById(R.id.progressClock);
 
@@ -61,8 +64,8 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         recordDataSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                BandClient bandClient = projectClient.getBandClient();
-                SensorInterface[] sensors = projectClient.getSensors();
+                BandClient bandClient = projectClient1.getBandClient();
+                SensorInterface[] sensors = projectClient1.getSensors();
                 if (isChecked) {
                     for (SensorInterface sensor : sensors) {
                         sensor.registerListener(bandClient);
@@ -75,6 +78,17 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             }
         });
 
+        dualBandSwitch = (Switch) findViewById(R.id.dualBandSwitch);
+        dualBandSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ((WearableApplication) MainActivity.this.getApplication()).setDualBands(isChecked);
+                if (isChecked) {
+                    new ConnectAsync(MainActivity.this, MainActivity.this).execute();
+                }
+            }
+        });
+
         liveGraphingSwitch = (Switch) findViewById(R.id.liveGraphSwitch);
         sendHapticsSwitch = (Switch) findViewById(R.id.sendHapticsSwitch);
 
@@ -82,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         removeTileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                projectClient.removeTile();
+                projectClient1.removeTile();
             }
         });
     }
@@ -92,21 +106,32 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      * Checks to see if a previous setup exists on the device and/or Band.  If a previous setup is
      * found, the existing data is loaded otherwise a fresh setup is undertaken.
      *
-     * @param bandClient The Band client returned from the ConnectAsync task
+     * @param bandClients The Band client returned from the ConnectAsync task
      */
     @Override
-    public void onConnectDone(BandClient bandClient) {
-        if (bandClient != null) {
-            projectClient = new ProjectClient(bandClient, this);
-            if (HelperMethods.isInstalled(this, "acc_data")
+    public void onConnectDone(BandClient[] bandClients) {
+        projectClient1 = new ProjectClient(bandClients[0], this);
+        boolean isDualBands = ((WearableApplication) MainActivity.this.getApplication()).isDualBands();
+
+        if (isDualBands) {
+            if (bandClients.length > 1) {
+                projectClient2 = new ProjectClient(bandClients[1], this);
+            } else {
+                dualBandSwitch.setChecked(false);
+            }
+        }
+
+        if (HelperMethods.isInstalled(this, "acc_data")
                 && HelperMethods.isInstalled(this, "move_count")
                 && HelperMethods.isInstalled(this, "app_id")
                 && HelperMethods.isInstalled(this, "please_fail")) { // Intentional fail until load data works
-                // loads previous files
-                initGraphs();
-                projectClient.sendDialog("Device status", "Connected to existing data.");
-            } else {
-                new Setup(MainActivity.this, projectClient, this).execute();
+            // loads previous files
+            initGraphs();
+            projectClient1.sendDialog("Device status", "Connected to existing data.");
+        } else {
+            new Setup(MainActivity.this, projectClient1, this).execute();
+            if (isDualBands) {
+                new Setup(MainActivity.this, projectClient2, this).execute();
             }
         }
     } // end onConnectDone()
@@ -131,11 +156,11 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         ((WearableApplication) this.getApplication()).setTotalMovesToday(moveCount);
 
         if (sendHapticsSwitch.isChecked()) {
-            projectClient.sendHaptic();
+            projectClient1.sendHaptic();
         }
 
         hourlyMovesBar.incrementDataSet(HelperMethods.getCurrentDate());
-        projectClient.setMovePageData(moveCount);
+        projectClient1.setMovePageData(moveCount);
 
         runOnUiThread(new Runnable() {
             @Override

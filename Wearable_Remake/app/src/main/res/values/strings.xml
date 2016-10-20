@@ -4,6 +4,7 @@
     <string name="todayLbl">Today</string>
     <string name="movesTodayLbl">Movements Today</string>
     <string name="hundredLbl">100</string>
+    <string name="dualBandLbl">Dual Bands</string>
 
     <!-- Settings Strings -->
     <string name="removeTileLbl">Remove Tile</string>
