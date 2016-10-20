@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     private ProjectClient projectClient;
     private AccLineGraph accLineGraph;
     private HourlyMovesBar hourlyMovesBar;
+    private DailyMovesBullet dailyMovesBullet;
 
     private long lastRefreshed;
 
@@ -135,13 +136,16 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         }
 
         hourlyMovesBar.incrementDataSet(HelperMethods.getCurrentDate());
+
         projectClient.setMovePageData(moveCount);
+
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (liveGraphingSwitch.isChecked()) {
                     hourlyMovesBar.updateDisplay();
+                    //dailyMovesBullet.updateDataSet(moveCount);
                 }
                 progressClock.invalidate();
             }
@@ -179,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         BarChart hourlyBarView = (BarChart) findViewById(R.id.hourlyBarView);
         hourlyMovesBar = new HourlyMovesBar(hourlyBarView, this);
 
-        HorizontalBarChart dailyBulletView = (HorizontalBarChart) findViewById(R.id.dailyBulletView);
-        DailyMovesBullet dailyMovesBullet = new DailyMovesBullet(dailyBulletView, this);
+        //HorizontalBarChart dailyBulletView = (HorizontalBarChart) findViewById(R.id.dailyBulletView);
+       // dailyMovesBullet = new DailyMovesBullet(dailyBulletView, this);
     } // end initGraphs
 }
