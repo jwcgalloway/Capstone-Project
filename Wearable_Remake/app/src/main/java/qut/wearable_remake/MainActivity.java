@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             public void onClick(View v) {
                 ((WearableApplication) getApplication())
                         .setMoveGoal(Integer.parseInt(moveGoalEditTxt.getText().toString()));
+                dailyMovesBullet.updateMoveGoalLine();
             }
         });
 
@@ -135,17 +136,18 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             projectClient.sendHaptic();
         }
 
-        hourlyMovesBar.incrementDataSet(HelperMethods.getCurrentDate());
 
-        projectClient.setMovePageData(moveCount);
 
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                hourlyMovesBar.incrementDataSet(HelperMethods.getCurrentDate());
+
                 if (liveGraphingSwitch.isChecked()) {
+                    projectClient.setMovePageData(moveCount);
                     hourlyMovesBar.updateDisplay();
-                    //dailyMovesBullet.updateDataSet(moveCount);
+                    dailyMovesBullet.updateDataSet();
                 }
                 progressClock.invalidate();
             }
@@ -183,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         BarChart hourlyBarView = (BarChart) findViewById(R.id.hourlyBarView);
         hourlyMovesBar = new HourlyMovesBar(hourlyBarView, this);
 
-        //HorizontalBarChart dailyBulletView = (HorizontalBarChart) findViewById(R.id.dailyBulletView);
-       // dailyMovesBullet = new DailyMovesBullet(dailyBulletView, this);
+        HorizontalBarChart dailyBulletView = (HorizontalBarChart) findViewById(R.id.dailyBulletView);
+        dailyMovesBullet = new DailyMovesBullet(dailyBulletView, this);
     } // end initGraphs
 }
