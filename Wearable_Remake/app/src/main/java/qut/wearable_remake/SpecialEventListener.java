@@ -9,9 +9,9 @@ public interface SpecialEventListener {
      * Checks to see if a previous setup exists on the device and/or Band.  If a previous setup is
      * found, the existing data is loaded otherwise a fresh setup is undertaken.
      *
-     * @param bandClient The Band client returned from the ConnectAsync task
+     * @param bandClients The Band client returned from the ConnectAsync task
      */
-    void onConnectDone(BandClient bandClient);
+    void onConnectDone(BandClient[] bandClients);
 
     /**
      * Called after the app has been fully setup or fully loaded.
