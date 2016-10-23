@@ -44,7 +44,7 @@ public class DailyMovesBullet extends AbstractGraph {
         defaultEntries.add(new BarEntry(1, segmentSize));
 
         moveCount = ((WearableApplication) this.getActivity().getApplication()).getTotalMovesToday();
-        defaultEntries.add(new BarEntry(1, moveCount));
+        defaultEntries.add(new BarEntry(1, 1));
         dataSet = new BarDataSet(defaultEntries, "");
 
         ArrayList<Integer> colourScheme = new ArrayList<>();
@@ -71,14 +71,29 @@ public class DailyMovesBullet extends AbstractGraph {
         this.updateDisplay();
     }
 
-    private void updateMoveGoal(){
-        //Todo
-        moveCount = ((WearableApplication) this.getActivity().getApplication()).getTotalMovesToday();
+    //called after update move goal
+    private void adjustSegments(){
+        int segmentSize = moveGoal / 5;
+        for(int i = 0; i < 6; i++){
+            BarEntry entry = dataSet.getEntryForIndex(i);
+            entry.setY(segmentSize *(6-i));
+        }
+        dataSet.notifyDataSetChanged();
+        hc.setData(new BarData(dataSet));
 
     }
+    private void updateMoveGoal(){
+        //Todo
+        moveGoal = ((WearableApplication) this.getActivity().getApplication()).getMoveGoal();
 
+    }
     private void updateMoveCount(){
+         moveCount = ((WearableApplication) this.getActivity().getApplication()).getTotalMovesToday();
+    }
+    public void updateMoveGoalLine(){
         //remove limitLines
+        updateMoveGoal();
+        adjustSegments();
         hc.getAxisRight().removeAllLimitLines();
         limitLine = new LimitLine(moveGoal, "");
         limitLine.setLineWidth(1);
@@ -87,9 +102,11 @@ public class DailyMovesBullet extends AbstractGraph {
         this.updateDisplay();
     }
 
-    public void updateDataSet(int moveCount){
-        BarEntry entry = dataSet.getEntryForIndex(5);
-        entry.setY(this.moveCount);
+    public void updateDataSet(){
+        updateMoveCount();
+
+        BarEntry entry = dataSet.getEntryForIndex(6);
+        entry.setY(entry.getY()+1);
         dataSet.notifyDataSetChanged();
         this.updateDisplay();
     }
