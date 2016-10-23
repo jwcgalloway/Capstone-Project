@@ -11,6 +11,7 @@ import android.widget.Switch;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
+
 import com.microsoft.band.BandClient;
 
 import qut.wearable_remake.band.ConnectAsync;
@@ -20,6 +21,9 @@ import qut.wearable_remake.graphs.AccLineGraph;
 import qut.wearable_remake.graphs.DailyMovesBullet;
 import qut.wearable_remake.graphs.HourlyMovesBar;
 import qut.wearable_remake.sensors.SensorInterface;
+
+import java.io.IOException;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
     private static final long GRAPH_REFRESH_TIME = 1000;
@@ -94,6 +98,18 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         liveGraphingSwitch = (Switch) findViewById(R.id.liveGraphSwitch);
         sendHapticsSwitch = (Switch) findViewById(R.id.sendHapticsSwitch);
 
+        //testing uuid save function
+        TextView uuid = (TextView) findViewById(R.id.uuid_text);
+
+        String uuid_str = "default";
+        try {
+            uuid_str = HelperMethods.getDataFromFile("app_id", MainActivity.this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        uuid.setText(uuid_str);
+        //end testing
+
         Button removeTileBtn = (Button) findViewById(R.id.removeTileBtn);
         removeTileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,12 +144,24 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
                 && HelperMethods.isInstalled(this, "app_id")
                 && HelperMethods.isInstalled(this, "please_fail")) { // Intentional fail until load data works
             // loads previous files
+            List<UUID> uuids = HelperMethods.getUUID(MainActivity.this);
+            UUID app_uuid = uuids.get(0);
+            UUID app_pageid = uuids.get(1);
+            projectClient.setTileId(app_uuid);
+            projectClient.setPageId(app_pageid);
+
+            projectClient.sendDialog("Device status", "Connected to existing data.");
+
             initGraphs();
             projectClient1.sendDialog("Device status", "Connected to existing data.");
         } else {
             new Setup(MainActivity.this, projectClient1, this).execute();
             if (isDualBands) {
                 new Setup(MainActivity.this, projectClient2, this).execute();
+            }
+
+             else {
+                new Setup(MainActivity.this, projectClient).execute();
             }
         }
     } // end onConnectDone()

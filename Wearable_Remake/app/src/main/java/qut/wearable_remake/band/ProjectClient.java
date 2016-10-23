@@ -1,14 +1,18 @@
 package qut.wearable_remake.band;
 
+import android.app.Activity;
+
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandException;
 import com.microsoft.band.notifications.VibrationType;
 import com.microsoft.band.tiles.pages.PageData;
 import com.microsoft.band.tiles.pages.WrappedTextBlockData;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import qut.wearable_remake.HelperMethods;
 import qut.wearable_remake.SpecialEventListener;
 import qut.wearable_remake.sensors.AccSensor;
 import qut.wearable_remake.sensors.ContactSensor;
@@ -26,7 +30,7 @@ public class ProjectClient {
 
     public ProjectClient(BandClient c, SpecialEventListener e) {
         bandClient = c;
-        pageId = UUID.randomUUID();
+        //pageId = UUID.randomUUID();
 
         projectAcc = new AccSensor(this, e);
         projectContact = new ContactSensor();
@@ -87,8 +91,26 @@ public class ProjectClient {
         }
     } // end setMovePageData()
 
-    void setTileId(UUID id) { tileId = id; }
-    void setPageId(UUID id) { pageId = id; }
+    /**
+     * Sets the moveCount variable to the value contained in 'count' and updates the Band
+     * page data.
+     *
+     * @param count The value moveCount will be set to.
+     */
+    public void setMoveCount(int count) {
+        moveCount = count;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //setMovePageData();
+            }
+        }).start();
+    } // end setTotalMoveCount()
+
+
+    public void setTileId(UUID id) { tileId = id; }
+    public void setPageId(UUID id) { pageId = id; }
 
     public BandClient getBandClient() { return bandClient; }
     public ContactSensor getProjectContact() { return projectContact; }
