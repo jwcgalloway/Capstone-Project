@@ -69,6 +69,12 @@
                 android:layout_height="80dp"
                 android:id="@+id/dailyBulletView" />
 
+            <view
+                android:layout_width="322dp"
+                class="com.github.mikephil.charting.charts.HorizontalBarChart"
+                android:id="@+id/moveBulletGraph"
+                android:layout_height="75dp" />
+
             <TextView
                 android:text="@string/moveGoalLbl"
                 android:layout_width="match_parent"
