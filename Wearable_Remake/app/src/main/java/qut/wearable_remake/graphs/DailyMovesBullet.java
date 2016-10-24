@@ -7,6 +7,7 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -26,7 +27,11 @@ public class DailyMovesBullet extends AbstractGraph {
         this.hc = hc;
         hc.setDescription("");
         hc.getLegend().setEnabled(false);
-        hc.getAxisRight().setEnabled(false);
+        hc.getAxisLeft().setDrawLabels(false);
+
+        YAxis yAxisRight = hc.getAxisRight();
+        yAxisRight.setEnabled(true);
+
 
         XAxis xAxis = hc.getXAxis();
         xAxis.setGranularity(10);
@@ -44,17 +49,17 @@ public class DailyMovesBullet extends AbstractGraph {
         defaultEntries.add(new BarEntry(1, segmentSize));
 
         moveCount = ((WearableApplication) this.getActivity().getApplication()).getTotalMovesToday();
-        defaultEntries.add(new BarEntry(1, 1));
+        defaultEntries.add(new BarEntry(1, moveCount));
         dataSet = new BarDataSet(defaultEntries, "");
 
         ArrayList<Integer> colourScheme = new ArrayList<>();
-        colourScheme.add(Color.argb(100, 113, 167, 164));
-        colourScheme.add(Color.argb(80, 113, 167, 164));
-        colourScheme.add(Color.argb(60, 113, 167, 164));
-        colourScheme.add(Color.argb(40, 113, 167, 164));
-        colourScheme.add(Color.argb(20, 113, 167, 164));
-        colourScheme.add(Color.argb(10, 113, 167, 164));
-        colourScheme.add(Color.BLACK);
+        colourScheme.add(Color.argb(75, 51, 188, 161));
+        colourScheme.add(Color.argb(100, 51, 188, 161));
+        colourScheme.add(Color.argb(125, 51, 188, 161));
+        colourScheme.add(Color.argb(150, 51, 188, 161));
+        colourScheme.add(Color.argb(175, 51, 188, 161));
+        colourScheme.add(Color.argb(255, 51, 188, 161));
+        colourScheme.add(Color.rgb(124, 124, 124));
 
         dataSet.setColors(colourScheme);
         dataSet.setDrawValues(false);
@@ -64,8 +69,8 @@ public class DailyMovesBullet extends AbstractGraph {
 
         limitLine = new LimitLine(moveGoal, "");
         limitLine.setLineWidth(1);
-        limitLine.setLineColor(Color.BLACK);
-        hc.getAxisRight().addLimitLine(limitLine);
+        limitLine.setLineColor(Color.rgb(124, 124, 124));
+        yAxisRight.addLimitLine(limitLine);
 
         dataSet.notifyDataSetChanged();
         this.updateDisplay();
@@ -104,28 +109,9 @@ public class DailyMovesBullet extends AbstractGraph {
 
     public void updateDataSet(){
         updateMoveCount();
-
         BarEntry entry = dataSet.getEntryForIndex(6);
         entry.setY(entry.getY()+1);
         dataSet.notifyDataSetChanged();
         this.updateDisplay();
     }
-
-    /**
-     * Reads the data saved in the chart's save file, parses and returns it in Chart Data form.
-     *
-     * @return Chart Data representing the data stored in the chart's save file.
-     */
-    @Override
-    BarDataSet loadSavedData() {
-        return null;
-    } // loadSavedData()
-
-    /**
-     * Saves the current state of the chart's data to the save file.
-     */
-    @Override
-    void saveData() {
-
-    } // end saveData()
 }

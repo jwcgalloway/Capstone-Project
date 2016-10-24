@@ -31,41 +31,37 @@
                 android:textColor="@color/abc_secondary_text_material_light" />
 
             <view
-                android:layout_width="180dp"
-                android:layout_height="180dp"
+                android:layout_width="match_parent"
                 class="qut.wearable_remake.ProgressClock"
-                android:layout_margin="10dp"
-                android:id="@+id/progressClock" />
+                android:id="@+id/progressClock"
+                android:layout_height="170dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/movesTodayLbl"
-                android:id="@+id/moveCountLbl"
-                android:gravity="center" />
+                android:text="@string/moveByHourLbl"
+                android:gravity="center"
+                android:id="@+id/moveByHourTxt"
+                android:layout_weight="2.66"
+                android:layout_marginTop="20dp" />
 
-            <com.github.mikephil.charting.charts.LineChart
-                android:layout_height="200dp"
-                android:id="@+id/accLineView"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:addStatesFromChildren="false"
-                android:layout_width="match_parent" />
-
-            <com.github.mikephil.charting.charts.BarChart
-                android:layout_height="200dp"
-                android:id="@+id/hourlyBarView"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:layout_width="match_parent" />
-
-            <com.github.mikephil.charting.charts.HorizontalBarChart
+            <ViewSwitcher
                 android:layout_width="match_parent"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:layout_height="80dp"
-                android:id="@+id/dailyBulletView" />
+                android:layout_height="200dp"
+                android:id="@+id/chartSwitcher">
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/hourlyBarView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="-10dp" />
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:layout_height="match_parent"
+                    android:id="@+id/accLineView"
+                    android:addStatesFromChildren="false"
+                    android:layout_width="match_parent" />
+            </ViewSwitcher>
 
             <TextView
                 android:text="@string/moveGoalLbl"
@@ -74,7 +70,14 @@
                 android:id="@+id/moveGoalLbl"
                 android:layout_weight="0.13"
                 android:textAlignment="center"
-                android:labelFor="@+id/moveGoalEditTxt" />
+                android:labelFor="@+id/moveGoalEditTxt"
+                android:layout_marginTop="20dp" />
+
+            <com.github.mikephil.charting.charts.HorizontalBarChart
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/dailyBulletView"
+                android:layout_marginTop="-10dp" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -113,12 +116,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/sendHapticsSwitch"
                 android:checked="true" />
-
-            <Switch
-                android:text="@string/dualBandLbl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/dualBandSwitch" />
 
             <Button
                 style="?android:attr/buttonStyleSmall"

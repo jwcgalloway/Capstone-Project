@@ -11,7 +11,7 @@ public interface SpecialEventListener {
      *
      * @param bandClients The Band client returned from the ConnectAsync task
      */
-    void onConnectDone(BandClient[] bandClients);
+    void onConnectDone(BandClient bandClients);
 
     /**
      * Called after the app has been fully setup or fully loaded.

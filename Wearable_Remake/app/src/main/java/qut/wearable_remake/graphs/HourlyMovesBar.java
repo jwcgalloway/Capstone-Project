@@ -23,33 +23,30 @@ public class HourlyMovesBar extends AbstractGraph {
         super(bc, a, "move_count");
 
         chart = bc;
-        dataSet = this.loadSavedData();
+        dataSet = loadSavedData();
         dataSet.setDrawValues(false);
 
         ArrayList<Integer> colourScheme = new ArrayList<>();
-        colourScheme.add(Color.rgb(224, 84, 54));
-        colourScheme.add(Color.rgb(170, 182, 84));
-        colourScheme.add(Color.rgb(254, 142, 55));
-        colourScheme.add(Color.rgb(113, 167, 164));
+        colourScheme.add(Color.argb(255, 51, 188, 161));
+        colourScheme.add(Color.argb(235, 51, 188, 161));
+        colourScheme.add(Color.argb(215, 51, 188, 161));
+        colourScheme.add(Color.argb(195, 51, 188, 161));
+        colourScheme.add(Color.argb(175, 51, 188, 161));
+        colourScheme.add(Color.argb(165, 51, 188, 161));
         dataSet.setColors(colourScheme);
 
         BarData graphData = new BarData(dataSet);
+        graphData.setBarWidth(0.95f);
         bc.setData(graphData);
-
         bc.setDescription("");
-
-        bc.setDrawBorders(true);
-        bc.setBorderColor(Color.BLACK);
-        bc.setBorderWidth((float) 0.2);
-
         bc.setDrawValueAboveBar(true);
         bc.getLegend().setEnabled(false);
-        bc.getAxisRight().setEnabled(false);
+        bc.getAxisRight().setDrawLabels(false);
 
         XAxis xAxis = bc.getXAxis();
         xAxis.setValueFormatter(new DateFormatter());
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
+        xAxis.setDrawGridLines(true);
 
         YAxis yAxisLeft = bc.getAxisLeft();
         yAxisLeft.setGranularity(10);
@@ -79,8 +76,7 @@ public class HourlyMovesBar extends AbstractGraph {
     /**
      * Reads the data saved in the chart's save file, parses and returns it in Chart Data form.
      */
-    @Override
-    BarDataSet loadSavedData() {
+    private BarDataSet loadSavedData() {
         int totalMoves = 0;
         ArrayList<BarEntry> loadedEntries = new ArrayList<>();
 
@@ -99,8 +95,7 @@ public class HourlyMovesBar extends AbstractGraph {
     /**
      * Saves the current state of the chart's data to the save file.
      */
-    @Override
-    void saveData() {
+    private void saveData() {
         String date = HelperMethods.getCurrentDate().split(":")[0];
         for (int i = 0; i < dataSet.getEntryCount(); i++) {
             BarEntry entry = dataSet.getEntryForIndex(i);
