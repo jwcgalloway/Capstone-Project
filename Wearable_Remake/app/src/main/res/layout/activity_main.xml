@@ -1,128 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="qut.wearable_remake.MainActivity"
-    android:id="@+id/mainLayout"
-    android:scrollbarStyle="outsideInset"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentStart="true"
-    android:layout_centerHorizontal="true"
-    android:layout_centerVertical="true"
-    android:padding="8dp"
-    android:background="#32e1dbcd" >
+    android:layout_height="match_parent" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:weightSum="1">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/todayLbl"
-                android:id="@+id/todayLbl"
-                android:gravity="center"
-                android:textSize="30sp"
-                android:textColor="@color/abc_secondary_text_material_light" />
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <include layout="@layout/main_activity_content"/>
+    </FrameLayout>
 
-            <view
-                android:layout_width="match_parent"
-                class="qut.wearable_remake.ProgressClock"
-                android:id="@+id/progressClock"
-                android:layout_height="170dp" />
+    <ListView android:id="@+id/left_drawer"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:background="#111"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/moveByHourLbl"
-                android:gravity="center"
-                android:id="@+id/moveByHourTxt"
-                android:layout_weight="2.66"
-                android:layout_marginTop="20dp" />
-
-            <ViewSwitcher
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:id="@+id/chartSwitcher">
-
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/hourlyBarView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="-10dp" />
-
-                <com.github.mikephil.charting.charts.LineChart
-                    android:layout_height="match_parent"
-                    android:id="@+id/accLineView"
-                    android:addStatesFromChildren="false"
-                    android:layout_width="match_parent" />
-            </ViewSwitcher>
-
-            <TextView
-                android:text="@string/moveGoalLbl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/moveGoalLbl"
-                android:layout_weight="0.13"
-                android:textAlignment="center"
-                android:labelFor="@+id/moveGoalEditTxt"
-                android:layout_marginTop="20dp" />
-
-            <com.github.mikephil.charting.charts.HorizontalBarChart
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:id="@+id/dailyBulletView"
-                android:layout_marginTop="-10dp" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:ems="10"
-                android:id="@+id/moveGoalEditTxt"
-                android:layout_weight="0.18"
-                android:text="@string/hundredLbl"
-                android:textAlignment="center" />
-
-            <Button
-                android:text="@string/moveGoalBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/moveGoalBtn"
-                android:layout_weight="0.20" />
-
-            <Switch
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/recDataLbl"
-                android:id="@+id/recordDataSwitch"
-                android:checked="false" />
-
-            <Switch
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/liveGraphLbl"
-                android:id="@+id/liveGraphSwitch"
-                android:checked="true" />
-
-            <Switch
-                android:text="@string/sendHapticsLbl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/sendHapticsSwitch"
-                android:checked="true" />
-
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/removeTileLbl"
-                android:id="@+id/removeTileBtn" />
-
-        </LinearLayout>
-</ScrollView>
+</android.support.v4.widget.DrawerLayout>

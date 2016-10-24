@@ -91,23 +91,6 @@ public class ProjectClient {
         }
     } // end setMovePageData()
 
-    /**
-     * Sets the moveCount variable to the value contained in 'count' and updates the Band
-     * page data.
-     *
-     * @param count The value moveCount will be set to.
-     */
-    public void setMoveCount(int count) {
-        moveCount = count;
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //setMovePageData();
-            }
-        }).start();
-    } // end setTotalMoveCount()
-
 
     public void setTileId(UUID id) { tileId = id; }
     public void setPageId(UUID id) { pageId = id; }

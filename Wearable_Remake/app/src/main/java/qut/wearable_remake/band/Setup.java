@@ -35,7 +35,7 @@ import qut.wearable_remake.SpecialEventListener;
 public class Setup extends AsyncTask<Void, Void, Boolean> {
     private final Activity activity;
     private final ProjectClient projectClient;
-    private final UUID tileId, pageId;
+    //private UUID tileId, pageId;
     private final SpecialEventListener listener;
     private UUID tileId, pageId;
     private ProgressDialog setupDialog;

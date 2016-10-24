@@ -138,4 +138,6 @@ public class HelperMethods {
     public static int getHourFromDate(String date) {
         return Integer.parseInt(date.split(":")[1]);
     } // end getHourFromDate
+
+
 }

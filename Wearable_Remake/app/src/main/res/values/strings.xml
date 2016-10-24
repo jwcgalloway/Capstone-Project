@@ -14,4 +14,9 @@
     <string name="moveGoalLbl">Movement Goal</string>
     <string name="moveGoalBtn">Set Movement Goal</string>
 
+    <!-- Nav menu items -->
+    <string-array name="navigation_drawer_items_array">
+        <item>Settings</item>
+    </string-array>
+
 </resources>

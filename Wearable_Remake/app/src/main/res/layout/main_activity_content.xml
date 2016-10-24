@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="qut.wearable_remake.MainActivity"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbarStyle="outsideInset"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentStart="true"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:padding="8dp"
+    android:background="#32e1dbcd" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/todayLbl"
+            android:id="@+id/todayLbl"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="@color/abc_secondary_text_material_light" />
+
+        <view
+            android:layout_width="match_parent"
+            class="qut.wearable_remake.ProgressClock"
+            android:id="@+id/progressClock"
+            android:layout_height="170dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/moveByHourLbl"
+            android:gravity="center"
+            android:id="@+id/moveByHourTxt"
+            android:layout_weight="2.66"
+            android:layout_marginTop="20dp" />
+
+        <ViewSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/chartSwitcher">
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/hourlyBarView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="-10dp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:layout_height="match_parent"
+                android:id="@+id/accLineView"
+                android:addStatesFromChildren="false"
+                android:layout_width="match_parent" />
+        </ViewSwitcher>
+
+
+
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/dailyBulletView"
+            android:layout_marginTop="-10dp" />
+
+
+
+    </LinearLayout>
+</ScrollView>

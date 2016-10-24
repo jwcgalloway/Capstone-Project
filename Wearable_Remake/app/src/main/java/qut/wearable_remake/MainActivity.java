@@ -1,18 +1,29 @@
 package qut.wearable_remake;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.ViewSwitcher;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
+
 import com.microsoft.band.BandClient;
 
 import qut.wearable_remake.band.ConnectAsync;
@@ -24,10 +35,15 @@ import qut.wearable_remake.graphs.HourlyMovesBar;
 import qut.wearable_remake.sensors.SensorInterface;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
     private static final long GRAPH_REFRESH_TIME = 1000;
+
+    private String[] mNavigationDrawerItemTitles;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
 
     private View progressClock;
     private Switch liveGraphingSwitch;
@@ -51,12 +67,15 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         progressClock = findViewById(R.id.progressClock);
         chartSwitcher = (ViewSwitcher) findViewById(R.id.chartSwitcher);
 
-        final EditText moveGoalEditTxt = (EditText) findViewById(R.id.moveGoalEditTxt);
+        LayoutInflater ltInflater = getLayoutInflater();
+        View setting = ltInflater.inflate(R.layout.fragment_settings, null, false);
+
+        final EditText moveGoalEditTxt = (EditText) setting.findViewById(R.id.moveGoalEditTxt);
 
         ((WearableApplication) this.getApplication())
                 .setMoveGoal(Integer.parseInt(moveGoalEditTxt.getText().toString()));
 
-        Button moveGoalBtn = (Button) findViewById(R.id.moveGoalBtn);
+        Button moveGoalBtn = (Button) setting.findViewById(R.id.moveGoalBtn);
         moveGoalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             }
         });
 
-        Switch recordDataSwitch = (Switch) findViewById(R.id.recordDataSwitch);
+        Switch recordDataSwitch = (Switch) setting.findViewById(R.id.recordDataSwitch);
         recordDataSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -84,10 +103,11 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             }
         });
 
-        liveGraphingSwitch = (Switch) findViewById(R.id.liveGraphSwitch);
-        sendHapticsSwitch = (Switch) findViewById(R.id.sendHapticsSwitch);
+        liveGraphingSwitch = (Switch) setting.findViewById(R.id.liveGraphSwitch);
+        sendHapticsSwitch = (Switch) setting.findViewById(R.id.sendHapticsSwitch);
 
         //testing uuid save function
+        /*
         TextView uuid = (TextView) findViewById(R.id.uuid_text);
 
         String uuid_str = "default";
@@ -97,15 +117,30 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             e.printStackTrace();
         }
         uuid.setText(uuid_str);
-        //end testing
+        //end testing */
 
-        Button removeTileBtn = (Button) findViewById(R.id.removeTileBtn);
+        Button removeTileBtn = (Button) setting.findViewById(R.id.removeTileBtn);
         removeTileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 projectClient.removeTile();
             }
         });
+
+
+        // Setup nav drawer
+        mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[1];
+        drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_action_settings, "Settings");
+
+        DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.listview_item_row, drawerItem);
+        mDrawerList.setAdapter(adapter);
+
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
     }
 
     /**
@@ -145,8 +180,21 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     @Override
     public void onSetupDone() {
         initGraphs();
-        findViewById(R.id.recordDataSwitch).setEnabled(true);
+        //findViewById(R.id.recordDataSwitch).setEnabled(true);
     } // end onSetupDone
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            if (getFragmentManager().getBackStackEntryCount() == 0) {
+                super.onBackPressed();
+            } else {
+                getFragmentManager().popBackStack();
+            }
+        }
+    }
 
     /**
      * Called when the moveCount variable has been updated.
@@ -229,4 +277,41 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         HorizontalBarChart dailyBulletView = (HorizontalBarChart) findViewById(R.id.dailyBulletView);
         dailyMovesBullet = new DailyMovesBullet(dailyBulletView, this);
     } // end initGraphs
+
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+
+    }
+
+    private void selectItem(int position) {
+
+        Fragment fragment = null;
+
+        switch (position) {
+
+            default:
+                fragment = new SettingsFragment();
+                break;
+        }
+
+        if (fragment != null) {
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+            mDrawerList.setItemChecked(position, true);
+            mDrawerList.setSelection(position);
+            //getActionBar().setTitle(mNavigationDrawerItemTitles[position]);
+            mDrawerLayout.closeDrawer(mDrawerList);
+
+        } else {
+            Log.e("MainActivity", "Error in creating fragment");
+        }
+    }
+
 }

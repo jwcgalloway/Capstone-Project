@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:padding="8dp">
+
+    <TextView
+        android:text="@string/moveGoalLbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/moveGoalLbl"
+        android:layout_weight="0.13"
+        android:textAlignment="center"
+        android:labelFor="@+id/moveGoalEditTxt" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/moveGoalEditTxt"
+        android:layout_weight="0.18"
+        android:text="@string/hundredLbl"
+        android:textAlignment="center" />
+
+    <Button
+        android:text="@string/moveGoalBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/moveGoalBtn"
+        android:layout_weight="0.20" />
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/recDataLbl"
+        android:id="@+id/recordDataSwitch"
+        android:checked="false" />
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/liveGraphLbl"
+        android:id="@+id/liveGraphSwitch"
+        android:checked="true" />
+
+    <Switch
+        android:text="@string/sendHapticsLbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sendHapticsSwitch"
+        android:checked="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/removeTileLbl"
+        android:id="@+id/removeTileBtn" />
+
+</LinearLayout>
