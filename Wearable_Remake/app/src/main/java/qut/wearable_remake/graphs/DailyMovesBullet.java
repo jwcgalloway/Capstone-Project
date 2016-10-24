@@ -7,6 +7,7 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -26,7 +27,11 @@ public class DailyMovesBullet extends AbstractGraph {
         this.hc = hc;
         hc.setDescription("");
         hc.getLegend().setEnabled(false);
-        hc.getAxisRight().setEnabled(false);
+        hc.getAxisLeft().setDrawLabels(false);
+
+        YAxis yAxisRight = hc.getAxisRight();
+        yAxisRight.setEnabled(true);
+
 
         XAxis xAxis = hc.getXAxis();
         xAxis.setGranularity(10);
@@ -48,12 +53,12 @@ public class DailyMovesBullet extends AbstractGraph {
         dataSet = new BarDataSet(defaultEntries, "");
 
         ArrayList<Integer> colourScheme = new ArrayList<>();
+        colourScheme.add(Color.argb(75, 51, 188, 161));
         colourScheme.add(Color.argb(100, 51, 188, 161));
-        colourScheme.add(Color.argb(80, 51, 188, 161));
-        colourScheme.add(Color.argb(60, 51, 188, 161));
-        colourScheme.add(Color.argb(40, 51, 188, 161));
-        colourScheme.add(Color.argb(20, 51, 188, 161));
-        colourScheme.add(Color.argb(10, 51, 188, 161));
+        colourScheme.add(Color.argb(125, 51, 188, 161));
+        colourScheme.add(Color.argb(150, 51, 188, 161));
+        colourScheme.add(Color.argb(175, 51, 188, 161));
+        colourScheme.add(Color.argb(255, 51, 188, 161));
         colourScheme.add(Color.rgb(124, 124, 124));
 
         dataSet.setColors(colourScheme);
@@ -65,7 +70,7 @@ public class DailyMovesBullet extends AbstractGraph {
         limitLine = new LimitLine(moveGoal, "");
         limitLine.setLineWidth(1);
         limitLine.setLineColor(Color.rgb(124, 124, 124));
-        hc.getAxisRight().addLimitLine(limitLine);
+        yAxisRight.addLimitLine(limitLine);
 
         dataSet.notifyDataSetChanged();
         this.updateDisplay();

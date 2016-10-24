@@ -25,22 +25,28 @@ public class HourlyMovesBar extends AbstractGraph {
         chart = bc;
         dataSet = loadSavedData();
         dataSet.setDrawValues(false);
-        dataSet.setColor(Color.rgb(51, 188, 161));
+
+        ArrayList<Integer> colourScheme = new ArrayList<>();
+        colourScheme.add(Color.argb(255, 51, 188, 161));
+        colourScheme.add(Color.argb(235, 51, 188, 161));
+        colourScheme.add(Color.argb(215, 51, 188, 161));
+        colourScheme.add(Color.argb(195, 51, 188, 161));
+        colourScheme.add(Color.argb(175, 51, 188, 161));
+        colourScheme.add(Color.argb(165, 51, 188, 161));
+        dataSet.setColors(colourScheme);
 
         BarData graphData = new BarData(dataSet);
+        graphData.setBarWidth(0.95f);
         bc.setData(graphData);
         bc.setDescription("");
-        bc.setDrawBorders(true);
-        bc.setBorderColor(Color.BLACK);
-        bc.setBorderWidth((float) 0.2);
         bc.setDrawValueAboveBar(true);
         bc.getLegend().setEnabled(false);
-        bc.getAxisRight().setEnabled(false);
+        bc.getAxisRight().setDrawLabels(false);
 
         XAxis xAxis = bc.getXAxis();
         xAxis.setValueFormatter(new DateFormatter());
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
+        xAxis.setDrawGridLines(true);
 
         YAxis yAxisLeft = bc.getAxisLeft();
         yAxisLeft.setGranularity(10);

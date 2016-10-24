@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -34,8 +35,9 @@ public class AccLineGraph extends AbstractGraph {
 
         lc.setDescription("");
         lc.getLegend().setEnabled(false);
-        lc.getXAxis().setEnabled(false);
-        lc.getAxisRight().setEnabled(false);
+        lc.getXAxis().setDrawLabels(false);
+        lc.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        lc.getAxisRight().setDrawLabels(false);
 
         this.updateDisplay();
     }
