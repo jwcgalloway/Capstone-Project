@@ -45,20 +45,22 @@
                 android:id="@+id/moveCountLbl"
                 android:gravity="center" />
 
-            <com.github.mikephil.charting.charts.LineChart
+            <ViewSwitcher
+                android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:id="@+id/accLineView"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:addStatesFromChildren="false"
-                android:layout_width="match_parent" />
+                android:id="@+id/chartSwitcher">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:layout_height="200dp"
-                android:id="@+id/hourlyBarView"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:layout_width="match_parent" />
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/hourlyBarView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:layout_height="match_parent"
+                    android:id="@+id/accLineView"
+                    android:addStatesFromChildren="false"
+                    android:layout_width="match_parent" />
+            </ViewSwitcher>
 
             <com.github.mikephil.charting.charts.HorizontalBarChart
                 android:layout_width="match_parent"

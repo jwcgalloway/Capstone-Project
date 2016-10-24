@@ -2,11 +2,13 @@ package qut.wearable_remake;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.ViewSwitcher;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     private Switch liveGraphingSwitch;
     private Switch sendHapticsSwitch;
     private Switch dualBandSwitch;
+    private ViewSwitcher chartSwitcher;
 
     private ProjectClient projectClient1;
     private ProjectClient projectClient2;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         new ConnectAsync(this, this).execute();
 
         progressClock = findViewById(R.id.progressClock);
+        chartSwitcher = (ViewSwitcher) findViewById(R.id.chartSwitcher);
 
         final EditText moveGoalEditTxt = (EditText) findViewById(R.id.moveGoalEditTxt);
 
@@ -161,19 +165,10 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             projectClient1.sendHaptic();
         }
 
-
-
-
-
-
-
-
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                hourlyMovesBar.incrementDataSet(HelperMethods.getCurrentDate());
-
+                hourlyMovesBar.incrementBand1(HelperMethods.getCurrentDate());
                 if (liveGraphingSwitch.isChecked()) {
                     projectClient1.setMovePageData(moveCount);
                     hourlyMovesBar.updateDisplay();
@@ -211,9 +206,29 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     private void initGraphs() {
         LineChart accLineView = (LineChart) findViewById(R.id.accLineView);
         accLineGraph = new AccLineGraph(accLineView, this);
+        accLineView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    chartSwitcher.showNext();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         BarChart hourlyBarView = (BarChart) findViewById(R.id.hourlyBarView);
         hourlyMovesBar = new HourlyMovesBar(hourlyBarView, this);
+        hourlyBarView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    chartSwitcher.showPrevious();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         HorizontalBarChart dailyBulletView = (HorizontalBarChart) findViewById(R.id.dailyBulletView);
         dailyMovesBullet = new DailyMovesBullet(dailyBulletView, this);

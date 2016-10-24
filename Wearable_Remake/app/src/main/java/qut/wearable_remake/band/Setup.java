@@ -70,7 +70,7 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
             HelperMethods.writeToFile("acc_data", "0,0", activity);
             for (int i = 1; i <= 24; i++) {
                 String[] splitDate = HelperMethods.getCurrentDate().split(":");
-                HelperMethods.writeToFile("move_count", splitDate[0] + ":" + Integer.toString(i) + ",0\n", activity);
+                HelperMethods.writeToFile("move_count", splitDate[0] + ":" + Integer.toString(i) + ",0,"  + Integer.toString(1) + "\n", activity);
             }
 
             projectClient.setTileId(tileId);
