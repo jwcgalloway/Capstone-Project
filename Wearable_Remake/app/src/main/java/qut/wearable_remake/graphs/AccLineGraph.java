@@ -63,7 +63,6 @@ public class AccLineGraph extends AbstractGraph {
             loadedEntries.add(new Entry(pointCount, yVal));
             pointCount++;
         }
-
         return new LineDataSet(loadedEntries, "");
     } // end loadSavedData()
 

@@ -16,25 +16,19 @@ import qut.wearable_remake.HelperMethods;
 import qut.wearable_remake.WearableApplication;
 
 public class HourlyMovesBar extends AbstractGraph {
+    private final BarDataSet dataSet;
     private final BarChart chart;
-    private BarDataSet dataSet1;
-    private BarDataSet dataSet2;
 
     public HourlyMovesBar(BarChart bc, Activity a) {
         super(bc, a, "move_count");
 
         chart = bc;
-        loadSavedData();
-        dataSet1.setDrawValues(false);
-        dataSet2.setDrawValues(false);
-        dataSet1.setColor(Color.rgb(51, 188, 161));
-        dataSet2.setColor(Color.rgb(124, 124, 124));
+        dataSet = loadSavedData();
+        dataSet.setDrawValues(false);
+        dataSet.setColor(Color.rgb(51, 188, 161));
 
-        BarData graphData = new BarData(dataSet1, dataSet2);
-        graphData.setBarWidth(0.46f);
-
+        BarData graphData = new BarData(dataSet);
         bc.setData(graphData);
-        bc.groupBars(0, 0.04f, 0.02f);
         bc.setDescription("");
         bc.setDrawBorders(true);
         bc.setBorderColor(Color.BLACK);
@@ -46,9 +40,7 @@ public class HourlyMovesBar extends AbstractGraph {
         XAxis xAxis = bc.getXAxis();
         xAxis.setValueFormatter(new DateFormatter());
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(true);
-        xAxis.setGranularity(1f);
-        xAxis.setAxisMinValue(0);
+        xAxis.setDrawGridLines(false);
 
         YAxis yAxisLeft = bc.getAxisLeft();
         yAxisLeft.setGranularity(10);
@@ -61,50 +53,46 @@ public class HourlyMovesBar extends AbstractGraph {
      *
      * @param x The X value of the data point.
      */
-    public void incrementBand1(String x) {
+    public void incrementDataSet(String x) {
         int hour = HelperMethods.getHourFromDate(x);
-        BarEntry entry = dataSet1.getEntryForXPos(hour);
+        BarEntry entry = dataSet.getEntryForXPos(hour);
 
         if (entry == null) {
-            dataSet1.addEntry(new BarEntry(hour, 1));
+            dataSet.addEntry(new BarEntry(hour, 1));
         } else {
             entry.setY(entry.getY() + 1);
         }
 
-        dataSet1.notifyDataSetChanged();
-        chart.notifyDataSetChanged();
-    } // end incrementBand1()
+        dataSet.notifyDataSetChanged();
+        chart.setData(new BarData(dataSet));
+    } // end incrementDataSet()
 
     /**
      * Reads the data saved in the chart's save file, parses and returns it in Chart Data form.
      */
-    private void loadSavedData() {
+    private BarDataSet loadSavedData() {
         int totalMoves = 0;
-        ArrayList<BarEntry> entries1 = new ArrayList<>();
-        ArrayList<BarEntry> entries2 = new ArrayList<>();
+        ArrayList<BarEntry> loadedEntries = new ArrayList<>();
 
         for (String[] pair : this.getDataFromFile()) {
             int xVal = HelperMethods.getHourFromDate(pair[0]);
-            int yVal1 = Integer.parseInt(pair[1]);
-            int yVal2 = Integer.parseInt(pair[2]);
+            int yVal = Integer.parseInt(pair[1]);
 
-            totalMoves = totalMoves + yVal1;
-            entries1.add(new BarEntry(xVal, yVal1));
-            entries2.add(new BarEntry(xVal, yVal2));
+            totalMoves = totalMoves + yVal;
+            loadedEntries.add(new BarEntry(xVal, yVal));
         }
 
         ((WearableApplication) this.getActivity().getApplication()).setTotalMovesToday(totalMoves);
-        dataSet1 = new BarDataSet(entries1, "");
-        dataSet2 = new BarDataSet(entries2, "");
+        return new BarDataSet(loadedEntries, "");
     } // end loadSavedData()
 
     /**
      * Saves the current state of the chart's data to the save file.
      */
-    void saveData() {
+    private void saveData() {
         String date = HelperMethods.getCurrentDate().split(":")[0];
-        for (int i = 0; i < dataSet1.getEntryCount(); i++) {
-            BarEntry entry = dataSet1.getEntryForIndex(i);
+        for (int i = 0; i < dataSet.getEntryCount(); i++) {
+            BarEntry entry = dataSet.getEntryForIndex(i);
             String content = date + ":" + Float.toString(entry.getX()) + "," + Float.toString(entry.getY());
             HelperMethods.writeToFile("move_count", content, this.getActivity());
         }
