@@ -2,6 +2,8 @@ package qut.wearable_remake.graphs;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -21,7 +23,7 @@ public class AccLineGraph extends AbstractGraph {
         pointCount = 0;
         chart = lc;
         dataSet = this.loadSavedData();
-        dataSet.setColor(Color.rgb(170, 182, 84));
+        dataSet.setColor(Color.rgb(51, 188, 161));
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
         dataSet.setLineWidth(2);
@@ -47,29 +49,26 @@ public class AccLineGraph extends AbstractGraph {
         this.dataSet.addEntry((new Entry(pointCount, y)));
         chart.setData(new LineData(dataSet));
         pointCount++;
-    } // end incrementDataSet()
+    } // end incrementBand1()
 
     /**
      * Reads the data saved in the chart's save file, parses and returns it in Chart Data form.
      *
      * @return Chart Data representing the data stored in the chart's save file.
      */
-    @Override
-    LineDataSet loadSavedData() {
+    private LineDataSet loadSavedData() {
         ArrayList<Entry> loadedEntries = new ArrayList<>();
         for (String[] pair : this.getDataFromFile()) {
             float yVal = Float.parseFloat(pair[1]);
             loadedEntries.add(new Entry(pointCount, yVal));
             pointCount++;
         }
-
         return new LineDataSet(loadedEntries, "");
     } // end loadSavedData()
 
     /**
      * Saves the current state of the chart's data to the save file.
      */
-    @Override
     void saveData() {
         // TODO
     } // end saveData()

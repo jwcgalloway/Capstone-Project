@@ -23,18 +23,6 @@ abstract class AbstractGraph {
     }
 
     /**
-     * Reads the data saved in the graph's save file, parses and returns it in Chart Data form.
-     *
-     * @return Chart Data representing the data stored in the graph's save file.
-     */
-    abstract DataSet loadSavedData();
-
-    /**
-     * Saves the current state of the graph's data to the save file.
-     */
-    abstract void saveData();
-
-    /**
      * Gets, splits and returns the value pairs (X,Y) from the graph's data file.
      *
      * @return An array list containing each value pair.

@@ -44,17 +44,17 @@ public class DailyMovesBullet extends AbstractGraph {
         defaultEntries.add(new BarEntry(1, segmentSize));
 
         moveCount = ((WearableApplication) this.getActivity().getApplication()).getTotalMovesToday();
-        defaultEntries.add(new BarEntry(1, 1));
+        defaultEntries.add(new BarEntry(1, moveCount));
         dataSet = new BarDataSet(defaultEntries, "");
 
         ArrayList<Integer> colourScheme = new ArrayList<>();
-        colourScheme.add(Color.argb(100, 113, 167, 164));
-        colourScheme.add(Color.argb(80, 113, 167, 164));
-        colourScheme.add(Color.argb(60, 113, 167, 164));
-        colourScheme.add(Color.argb(40, 113, 167, 164));
-        colourScheme.add(Color.argb(20, 113, 167, 164));
-        colourScheme.add(Color.argb(10, 113, 167, 164));
-        colourScheme.add(Color.BLACK);
+        colourScheme.add(Color.argb(100, 51, 188, 161));
+        colourScheme.add(Color.argb(80, 51, 188, 161));
+        colourScheme.add(Color.argb(60, 51, 188, 161));
+        colourScheme.add(Color.argb(40, 51, 188, 161));
+        colourScheme.add(Color.argb(20, 51, 188, 161));
+        colourScheme.add(Color.argb(10, 51, 188, 161));
+        colourScheme.add(Color.rgb(124, 124, 124));
 
         dataSet.setColors(colourScheme);
         dataSet.setDrawValues(false);
@@ -64,7 +64,7 @@ public class DailyMovesBullet extends AbstractGraph {
 
         limitLine = new LimitLine(moveGoal, "");
         limitLine.setLineWidth(1);
-        limitLine.setLineColor(Color.BLACK);
+        limitLine.setLineColor(Color.rgb(124, 124, 124));
         hc.getAxisRight().addLimitLine(limitLine);
 
         dataSet.notifyDataSetChanged();
@@ -104,28 +104,9 @@ public class DailyMovesBullet extends AbstractGraph {
 
     public void updateDataSet(){
         updateMoveCount();
-
         BarEntry entry = dataSet.getEntryForIndex(6);
         entry.setY(entry.getY()+1);
         dataSet.notifyDataSetChanged();
         this.updateDisplay();
     }
-
-    /**
-     * Reads the data saved in the chart's save file, parses and returns it in Chart Data form.
-     *
-     * @return Chart Data representing the data stored in the chart's save file.
-     */
-    @Override
-    BarDataSet loadSavedData() {
-        return null;
-    } // loadSavedData()
-
-    /**
-     * Saves the current state of the chart's data to the save file.
-     */
-    @Override
-    void saveData() {
-
-    } // end saveData()
 }

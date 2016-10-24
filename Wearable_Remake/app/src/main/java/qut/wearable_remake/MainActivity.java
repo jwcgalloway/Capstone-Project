@@ -2,11 +2,13 @@ package qut.wearable_remake;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.ViewSwitcher;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -27,11 +29,9 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     private View progressClock;
     private Switch liveGraphingSwitch;
     private Switch sendHapticsSwitch;
-    private Switch dualBandSwitch;
+    private ViewSwitcher chartSwitcher;
 
-    private ProjectClient projectClient1;
-    private ProjectClient projectClient2;
-
+    private ProjectClient projectClient;
     private AccLineGraph accLineGraph;
     private HourlyMovesBar hourlyMovesBar;
     private DailyMovesBullet dailyMovesBullet;
@@ -43,9 +43,10 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new ConnectAsync(this, this).execute();
+        new ConnectAsync(MainActivity.this, this).execute();
 
         progressClock = findViewById(R.id.progressClock);
+        chartSwitcher = (ViewSwitcher) findViewById(R.id.chartSwitcher);
 
         final EditText moveGoalEditTxt = (EditText) findViewById(R.id.moveGoalEditTxt);
 
@@ -66,8 +67,8 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         recordDataSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                BandClient bandClient = projectClient1.getBandClient();
-                SensorInterface[] sensors = projectClient1.getSensors();
+                BandClient bandClient = projectClient.getBandClient();
+                SensorInterface[] sensors = projectClient.getSensors();
                 if (isChecked) {
                     for (SensorInterface sensor : sensors) {
                         sensor.registerListener(bandClient);
@@ -80,17 +81,6 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             }
         });
 
-        dualBandSwitch = (Switch) findViewById(R.id.dualBandSwitch);
-        dualBandSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ((WearableApplication) MainActivity.this.getApplication()).setDualBands(isChecked);
-                if (isChecked) {
-                    new ConnectAsync(MainActivity.this, MainActivity.this).execute();
-                }
-            }
-        });
-
         liveGraphingSwitch = (Switch) findViewById(R.id.liveGraphSwitch);
         sendHapticsSwitch = (Switch) findViewById(R.id.sendHapticsSwitch);
 
@@ -98,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         removeTileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                projectClient1.removeTile();
+                projectClient.removeTile();
             }
         });
     }
@@ -108,32 +98,21 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      * Checks to see if a previous setup exists on the device and/or Band.  If a previous setup is
      * found, the existing data is loaded otherwise a fresh setup is undertaken.
      *
-     * @param bandClients The Band client returned from the ConnectAsync task
+     * @param bandClient The Band client returned from the ConnectAsync task
      */
     @Override
-    public void onConnectDone(BandClient[] bandClients) {
-        projectClient1 = new ProjectClient(bandClients[0], this);
-        boolean isDualBands = ((WearableApplication) MainActivity.this.getApplication()).isDualBands();
-
-        if (isDualBands) {
-            if (bandClients.length > 1) {
-                projectClient2 = new ProjectClient(bandClients[1], this);
+    public void onConnectDone(BandClient bandClient) {
+        if (bandClient != null) {
+            projectClient = new ProjectClient(bandClient, this);
+            if (HelperMethods.isInstalled(this, "acc_data")
+                    && HelperMethods.isInstalled(this, "move_count")
+                    && HelperMethods.isInstalled(this, "app_id")
+                    && HelperMethods.isInstalled(this, "please_fail")) { // Intentional fail until load data works
+                // loads previous files
+                initGraphs();
+                projectClient.sendDialog("Device status", "Connected to existing data.");
             } else {
-                dualBandSwitch.setChecked(false);
-            }
-        }
-
-        if (HelperMethods.isInstalled(this, "acc_data")
-                && HelperMethods.isInstalled(this, "move_count")
-                && HelperMethods.isInstalled(this, "app_id")
-                && HelperMethods.isInstalled(this, "please_fail")) { // Intentional fail until load data works
-            // loads previous files
-            initGraphs();
-            projectClient1.sendDialog("Device status", "Connected to existing data.");
-        } else {
-            new Setup(MainActivity.this, projectClient1, this).execute();
-            if (isDualBands) {
-                new Setup(MainActivity.this, projectClient2, this).execute();
+                new Setup(MainActivity.this, projectClient, this).execute();
             }
         }
     } // end onConnectDone()
@@ -158,24 +137,15 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         ((WearableApplication) this.getApplication()).setTotalMovesToday(moveCount);
 
         if (sendHapticsSwitch.isChecked()) {
-            projectClient1.sendHaptic();
+            projectClient.sendHaptic();
         }
-
-
-
-
-
-
-
-
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 hourlyMovesBar.incrementDataSet(HelperMethods.getCurrentDate());
-
                 if (liveGraphingSwitch.isChecked()) {
-                    projectClient1.setMovePageData(moveCount);
+                    projectClient.setMovePageData(moveCount);
                     hourlyMovesBar.updateDisplay();
                     dailyMovesBullet.updateDataSet();
                 }
@@ -193,10 +163,10 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      */
     @Override
     public void onAccChanged(final long timestamp, final float accData) {
-        accLineGraph.addToDataSet(accData);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                accLineGraph.addToDataSet(accData);
                 if (timestamp > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphingSwitch.isChecked()) {
                     lastRefreshed = timestamp;
                     accLineGraph.updateDisplay();
@@ -211,9 +181,29 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     private void initGraphs() {
         LineChart accLineView = (LineChart) findViewById(R.id.accLineView);
         accLineGraph = new AccLineGraph(accLineView, this);
+        accLineView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    chartSwitcher.showNext();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         BarChart hourlyBarView = (BarChart) findViewById(R.id.hourlyBarView);
         hourlyMovesBar = new HourlyMovesBar(hourlyBarView, this);
+        hourlyBarView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    chartSwitcher.showPrevious();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         HorizontalBarChart dailyBulletView = (HorizontalBarChart) findViewById(R.id.dailyBulletView);
         dailyMovesBullet = new DailyMovesBullet(dailyBulletView, this);
