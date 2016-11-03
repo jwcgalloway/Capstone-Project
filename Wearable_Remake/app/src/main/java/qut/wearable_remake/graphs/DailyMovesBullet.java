@@ -59,7 +59,7 @@ public class DailyMovesBullet extends AbstractGraph {
         colourScheme.add(Color.argb(150, 51, 188, 161));
         colourScheme.add(Color.argb(175, 51, 188, 161));
         colourScheme.add(Color.argb(255, 51, 188, 161));
-        colourScheme.add(Color.rgb(124, 124, 124));
+        colourScheme.add(Color.BLACK);
 
         dataSet.setColors(colourScheme);
         dataSet.setDrawValues(false);

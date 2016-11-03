@@ -42,6 +42,9 @@ public class HourlyMovesBar extends AbstractGraph {
         bc.setDrawValueAboveBar(true);
         bc.getLegend().setEnabled(false);
         bc.getAxisRight().setDrawLabels(false);
+        bc.setBorderColor(Color.GRAY);
+        bc.setBorderWidth(0.5f);
+        bc.setHighlightPerTapEnabled(false);
 
         XAxis xAxis = bc.getXAxis();
         xAxis.setValueFormatter(new DateFormatter());
@@ -70,7 +73,9 @@ public class HourlyMovesBar extends AbstractGraph {
         }
 
         dataSet.notifyDataSetChanged();
-        chart.setData(new BarData(dataSet));
+        BarData graphData = new BarData(dataSet);
+        graphData.setBarWidth(0.95f);
+        chart.setData(graphData);
     } // end incrementDataSet()
 
     /**

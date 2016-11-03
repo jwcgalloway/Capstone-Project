@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.microsoft.band.BandException;
@@ -23,8 +22,9 @@ import com.microsoft.band.tiles.pages.WrappedTextBlockFont;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Random;
 import java.util.UUID;
+
 import qut.wearable_remake.HelperMethods;
 import qut.wearable_remake.SpecialEventListener;
 
@@ -35,9 +35,8 @@ import qut.wearable_remake.SpecialEventListener;
 public class Setup extends AsyncTask<Void, Void, Boolean> {
     private final Activity activity;
     private final ProjectClient projectClient;
-    //private UUID tileId, pageId;
+    private final UUID tileId, pageId;
     private final SpecialEventListener listener;
-    private UUID tileId, pageId;
     private ProgressDialog setupDialog;
 
     public Setup(Activity a, ProjectClient pc, SpecialEventListener l) {
@@ -71,10 +70,26 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
         if (setup) {
             // Write default values to save files
             HelperMethods.writeToFile("acc_data", "0,0", activity);
+
+            String[] splitDate = HelperMethods.getCurrentDate().split(":");
             for (int i = 1; i <= 24; i++) {
-                String[] splitDate = HelperMethods.getCurrentDate().split(":");
-                Log.d("DATE: ", splitDate[0] + ":" + Integer.toString(i));
-                HelperMethods.writeToFile("move_count", splitDate[0] + ":" + Integer.toString(i) + ",0\n", activity);
+
+                // Fake move counts for testing & demonstration
+                Random rand = new Random();
+                int fake;
+                if (i < 7) {
+                    fake = rand.nextInt(100) + 1;
+                } else if (i < 18) {
+                    fake = rand.nextInt(500) + 100;
+                } else {
+                    fake = 0;
+                }
+
+                HelperMethods.writeToFile("move_count", splitDate[0] + ":" + Integer.toString(i) +
+                        "," + Integer.toString(fake) + "\n", activity);
+                // End Fake
+
+                //HelperMethods.writeToFile("move_count", splitDate[0] + ":" + Integer.toString(i) + ",0\n", activity);
             }
 
             projectClient.setTileId(tileId);
