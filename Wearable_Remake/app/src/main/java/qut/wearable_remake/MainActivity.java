@@ -44,16 +44,17 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    public int fragId;
 
     private View progressClock;
     private Switch liveGraphingSwitch;
     private Switch sendHapticsSwitch;
     private ViewSwitcher chartSwitcher;
 
-    private ProjectClient projectClient;
+    public ProjectClient projectClient;
     private AccLineGraph accLineGraph;
     private HourlyMovesBar hourlyMovesBar;
-    private DailyMovesBullet dailyMovesBullet;
+    public DailyMovesBullet dailyMovesBullet;
 
     private long lastRefreshed;
 
@@ -133,13 +134,15 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[1];
-        drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_action_settings, "Settings");
+        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[2];
+        drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_action_home, "Home");
+        drawerItem[1] = new ObjectDrawerItem(R.drawable.ic_action_settings, "Settings");
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.listview_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        fragId = 0;
 
     }
 
@@ -185,14 +188,19 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
 
     @Override
     public void onBackPressed() {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
+
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if (currentFragment != null && fragId != 0) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new HomeFragment())
+                    .addToBackStack(null)
+                    .commit();
         } else {
-            if (getFragmentManager().getBackStackEntryCount() == 0) {
-                super.onBackPressed();
-            } else {
-                getFragmentManager().popBackStack();
-            }
+            finish();
+            super.onBackPressed();
         }
     }
 
@@ -294,15 +302,26 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
 
         switch (position) {
 
-            default:
+            case 0:
+                fragment = new HomeFragment();
+                break;
+
+            case 1:
                 fragment = new SettingsFragment();
+                break;
+
+            default:
+                fragment = new HomeFragment();
                 break;
         }
 
         if (fragment != null) {
 
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, fragment)
+                    .addToBackStack(null)
+                    .commit();
 
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
