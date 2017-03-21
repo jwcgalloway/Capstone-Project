@@ -30,7 +30,7 @@ public class HelperMethods {
      * @param fileName Name of internally saved file to be checked if exists.
      * @return True is installed, otherwise false.
      */
-    static boolean isInstalled(Context context, String fileName) {
+    public static boolean isInstalled(Context context, String fileName) {
         String filePath = context.getFilesDir().toString() + String.format("/%s", fileName);
         File file = new File(filePath);
         return file.exists();

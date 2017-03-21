@@ -7,6 +7,9 @@ import com.microsoft.band.sensors.BandAccelerometerEventListener;
 import com.microsoft.band.sensors.SampleRate;
 
 
+import java.util.Locale;
+
+import qut.wearable_remake.HelperMethods;
 import qut.wearable_remake.SpecialEventListener;
 import qut.wearable_remake.band.ProjectClient;
 
@@ -63,7 +66,10 @@ public class AccSensor implements SensorInterface {
                     offset = sum;
                 }
 
-                /** Write Data to File **/
+                /** CHANGE THE GRAPHS **/
+                //write to file here
+                //time and sum
+
                 if (projectClient.getProjectContact().getWorn()) {
                     specialEvent.onAccChanged(time, sum);
                 }
