@@ -36,6 +36,7 @@ import qut.wearable_remake.sensors.SensorInterface;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
@@ -217,6 +218,17 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             projectClient.sendHaptic();
         }
 
+        // tries to print saved data on console every time move count changes
+        String save = "FAIL";
+        try{
+            save = HelperMethods.getDataFromFile("acc_data", MainActivity.this);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        Log.d("acc_data", save);
+        // end test
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -248,6 +260,10 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
                     lastRefreshed = timestamp;
                     accLineGraph.updateDisplay();
                 }
+
+                // saves sum of acc data and timestamp in "acc_data" file
+                String output = String.format(Locale.getDefault(),"%f,%f;",timestamp,accData);
+                HelperMethods.writeToFile("acc_data",output,MainActivity.this);
             }
         });
     } // end onAccChanged()
