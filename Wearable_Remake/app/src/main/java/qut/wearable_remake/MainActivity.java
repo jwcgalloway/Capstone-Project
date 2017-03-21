@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     public int fragId;
-
+    //pls help
     private View progressClock;
     private Switch liveGraphingSwitch;
     private Switch sendHapticsSwitch;
