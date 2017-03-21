@@ -1,7 +1,5 @@
 package qut.wearable_remake;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,10 +24,6 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.microsoft.band.BandClient;
 
 import qut.wearable_remake.band.ConnectAsync;
@@ -40,10 +34,8 @@ import qut.wearable_remake.graphs.DailyMovesBullet;
 import qut.wearable_remake.graphs.HourlyMovesBar;
 import qut.wearable_remake.sensors.SensorInterface;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
@@ -53,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     public int fragId;
-    //pls help
+
     private View progressClock;
     private Switch liveGraphingSwitch;
     private Switch sendHapticsSwitch;
@@ -65,11 +57,6 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     public DailyMovesBullet dailyMovesBullet;
 
     private long lastRefreshed;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
 
 
         // Setup nav drawer
-        mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
+        mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -157,9 +144,6 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         fragId = 0;
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        //client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     /**
@@ -173,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     public void onConnectDone(BandClient bandClient) {
         if (bandClient != null) {
             projectClient = new ProjectClient(bandClient, this);
-
             if (HelperMethods.isInstalled(this, "acc_data")
                     && HelperMethods.isInstalled(this, "move_count")
                     && HelperMethods.isInstalled(this, "app_id")
@@ -253,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      * Updates page values and graphs relating to accelerometer data.
      *
      * @param timestamp The timestamp that the accelerometer data was taken at.
-     * @param accData   The accelerometer data.
+     * @param accData The accelerometer data.
      */
     @Override
     public void onAccChanged(final long timestamp, final float accData) {
@@ -264,8 +247,6 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
                 if (timestamp > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphingSwitch.isChecked()) {
                     lastRefreshed = timestamp;
                     accLineGraph.updateDisplay();
-                    String output = String.format(Locale.getDefault(),"%f,%f;",timestamp,accData);
-                    HelperMethods.writeToFile("acc_data",output,MainActivity.this);
                 }
             }
         });
@@ -304,42 +285,6 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         HorizontalBarChart dailyBulletView = (HorizontalBarChart) findViewById(R.id.dailyBulletView);
         dailyMovesBullet = new DailyMovesBullet(dailyBulletView, this);
     } // end initGraphs
-
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("Main Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
-    }
 
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
