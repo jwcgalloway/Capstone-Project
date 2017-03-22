@@ -32,9 +32,9 @@ public interface SpecialEventListener {
      * the given string, and refreshes the graph, provided live graphing is checked.
      *
      * @param timestamp The timestamp that the accelerometer data was taken at.
-     * @param accData The accelerometer data.
+     * @param x The value for the X axis on the accelerometer.
+     * @param y The value for the Y axis on the accelerometer.
+     * @param z The value for the Z axis on the accelerometer.
      */
-    void onAccChanged(long timestamp, float accData);
-
-
+    void onAccChanged(long timestamp, float x, float y, float z);
 }

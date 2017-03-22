@@ -19,9 +19,9 @@ import qut.wearable_remake.WearableApplication;
 public class DailyMovesBullet extends AbstractGraph {
     private int moveGoal;
     private int moveCount;
-    private BarDataSet dataSet;
+    private final BarDataSet dataSet;
     private LimitLine limitLine;
-    private BarChart hc;
+    private final BarChart hc;
     public DailyMovesBullet(HorizontalBarChart hc, Activity a) {
         super(hc, a, "some_thing");
         this.hc = hc;

@@ -6,11 +6,10 @@ import android.content.Context;
 import java.io.FileOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,14 +83,22 @@ public class HelperMethods {
     public static String getDataFromFile(String fileName, Context context) throws IOException {
         String filePath = context.getFilesDir().toString() + String.format("/%s", fileName);
         File file = new File(filePath);
-        FileInputStream stream = new FileInputStream(file);
-        String str = streamToString(stream);
-        stream.close();
 
-        PrintWriter pw = new PrintWriter(filePath);
-        pw.close();
+        StringBuilder text = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
 
-        return str;
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return text.toString();
     } // end getDataFromFile()
 
     /**

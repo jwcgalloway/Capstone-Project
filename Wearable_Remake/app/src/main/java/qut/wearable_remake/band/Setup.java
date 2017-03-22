@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.microsoft.band.BandException;
@@ -23,7 +22,6 @@ import com.microsoft.band.tiles.pages.WrappedTextBlockFont;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.UUID;
 import qut.wearable_remake.HelperMethods;
 import qut.wearable_remake.SpecialEventListener;
@@ -37,7 +35,8 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
     private final ProjectClient projectClient;
     //private UUID tileId, pageId;
     private final SpecialEventListener listener;
-    private UUID tileId, pageId;
+    private final UUID tileId;
+    private final UUID pageId;
     private ProgressDialog setupDialog;
 
     public Setup(Activity a, ProjectClient pc, SpecialEventListener l) {
@@ -73,7 +72,6 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
             HelperMethods.writeToFile("acc_data", "0,0", activity);
             for (int i = 1; i <= 24; i++) {
                 String[] splitDate = HelperMethods.getCurrentDate().split(":");
-                Log.d("DATE: ", splitDate[0] + ":" + Integer.toString(i));
                 HelperMethods.writeToFile("move_count", splitDate[0] + ":" + Integer.toString(i) + ",0\n", activity);
             }
 

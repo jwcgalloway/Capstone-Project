@@ -1,18 +1,14 @@
 package qut.wearable_remake.band;
 
-import android.app.Activity;
-
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandException;
 import com.microsoft.band.notifications.VibrationType;
 import com.microsoft.band.tiles.pages.PageData;
 import com.microsoft.band.tiles.pages.WrappedTextBlockData;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import qut.wearable_remake.HelperMethods;
 import qut.wearable_remake.SpecialEventListener;
 import qut.wearable_remake.sensors.AccSensor;
 import qut.wearable_remake.sensors.ContactSensor;

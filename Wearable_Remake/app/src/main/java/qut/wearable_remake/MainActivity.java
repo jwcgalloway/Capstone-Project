@@ -11,14 +11,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.ViewSwitcher;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -34,9 +32,7 @@ import qut.wearable_remake.graphs.DailyMovesBullet;
 import qut.wearable_remake.graphs.HourlyMovesBar;
 import qut.wearable_remake.sensors.SensorInterface;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
@@ -226,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         catch (Exception e){
             e.printStackTrace();
         }
-        Log.d("acc_data", save);
+        Log.d("acc_data",save);
         // end test
 
         runOnUiThread(new Runnable() {
@@ -248,13 +244,16 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      * Updates page values and graphs relating to accelerometer data.
      *
      * @param timestamp The timestamp that the accelerometer data was taken at.
-     * @param accData The accelerometer data.
+     * @param x The value for the X axis on the accelerometer.
+     * @param y The value for the Y axis on the accelerometer.
+     * @param z The value for the Z axis on the accelerometer.
      */
     @Override
-    public void onAccChanged(final long timestamp, final float accData) {
+    public void onAccChanged(final long timestamp, final float x, final float y, final float z) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                float accData = x + y + z;
                 accLineGraph.addToDataSet(accData);
                 if (timestamp > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphingSwitch.isChecked()) {
                     lastRefreshed = timestamp;
@@ -262,7 +261,10 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
                 }
 
                 // saves sum of acc data and timestamp in "acc_data" file
-                String output = String.format(Locale.getDefault(),"%f,%f;",timestamp,accData);
+                String output = Long.toString(timestamp) + ","
+                        + Float.toString(x) + ","
+                        + Float.toString(y) + ","
+                        + Float.toString(z) + "\n";
                 HelperMethods.writeToFile("acc_data",output,MainActivity.this);
             }
         });

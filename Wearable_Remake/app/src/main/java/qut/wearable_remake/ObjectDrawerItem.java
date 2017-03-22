@@ -1,11 +1,9 @@
 package qut.wearable_remake;
 
-import qut.wearable_remake.R;
+class ObjectDrawerItem {
 
-public class ObjectDrawerItem {
-
-    public int icon;
-    public String name;
+    public final int icon;
+    public final String name;
 
     // Constructor.
     public ObjectDrawerItem(int icon, String name) {
