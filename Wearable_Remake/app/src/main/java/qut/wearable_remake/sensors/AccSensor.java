@@ -7,9 +7,6 @@ import com.microsoft.band.sensors.BandAccelerometerEventListener;
 import com.microsoft.band.sensors.SampleRate;
 
 
-import java.util.Locale;
-
-import qut.wearable_remake.HelperMethods;
 import qut.wearable_remake.SpecialEventListener;
 import qut.wearable_remake.band.ProjectClient;
 
@@ -35,7 +32,7 @@ public class AccSensor implements SensorInterface {
                 float z = bandEvent.getAccelerationZ();
                 long time = bandEvent.getTimestamp();
 
-                /** Detect Orientation **/
+                // Detect Orientation
 //                if (time > lastOrientation + BOUNCE_TIME) {
 //                    lastOrientation = time;
 //                    if (y < -ORIENTATION_THRESHOLD) {
@@ -53,7 +50,7 @@ public class AccSensor implements SensorInterface {
 //                    }
 //                }
 
-                /** Count Movements **/
+                // Count Movements
                 float sum = x + y + z;
                 if (!moving && (sum - offset > ACCELERATION_THRESHOLD || sum - offset < -ACCELERATION_THRESHOLD)) {
                     moving = true;
@@ -66,12 +63,12 @@ public class AccSensor implements SensorInterface {
                     offset = sum;
                 }
 
-                /** CHANGE THE GRAPHS **/
+                // CHANGE THE GRAPHS
                 //write to file here
                 //time and sum
 
                 if (projectClient.getProjectContact().getWorn()) {
-                    specialEvent.onAccChanged(time, sum);
+                    specialEvent.onAccChanged(time, x, y, z);
                 }
             }
         };

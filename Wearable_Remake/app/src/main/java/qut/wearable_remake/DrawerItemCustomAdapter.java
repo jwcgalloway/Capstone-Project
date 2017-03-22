@@ -12,11 +12,11 @@ import android.widget.TextView;
 import qut.wearable_remake.ObjectDrawerItem;
 import qut.wearable_remake.R;
 
-public class DrawerItemCustomAdapter extends ArrayAdapter<ObjectDrawerItem> {
+class DrawerItemCustomAdapter extends ArrayAdapter<ObjectDrawerItem> {
 
-    Context mContext;
-    int layoutResourceId;
-    ObjectDrawerItem data[] = null;
+    private final Context mContext;
+    private final int layoutResourceId;
+    private ObjectDrawerItem data[] = null;
 
     public DrawerItemCustomAdapter(Context mContext, int layoutResourceId, ObjectDrawerItem[] data) {
 

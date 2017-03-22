@@ -2,8 +2,6 @@ package qut.wearable_remake.graphs;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.view.MotionEvent;
-import android.view.View;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;

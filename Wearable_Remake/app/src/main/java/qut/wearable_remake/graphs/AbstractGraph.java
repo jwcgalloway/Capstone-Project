@@ -3,7 +3,6 @@ package qut.wearable_remake.graphs;
 import android.app.Activity;
 
 import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.data.DataSet;
 
 import java.io.IOException;
 import java.util.ArrayList;
