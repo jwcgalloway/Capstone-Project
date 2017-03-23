@@ -38,13 +38,15 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
     private final UUID tileId;
     private final UUID pageId;
     private ProgressDialog setupDialog;
+    private boolean data_exists;
 
-    public Setup(Activity a, ProjectClient pc, SpecialEventListener l) {
+    public Setup(Activity a, ProjectClient pc, SpecialEventListener l, boolean state) {
         activity = a;
         projectClient = pc;
         tileId = UUID.randomUUID();
         pageId = UUID.randomUUID();
         listener = l;
+        data_exists = state;
 
         String str = tileId.toString() + "," + pageId.toString();
         HelperMethods.writeToFile("app_id", str, a);
@@ -66,7 +68,7 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
      */
     @Override
     protected Boolean doInBackground(Void... params) {
-        boolean setup = createLocalFile("acc_data") && createLocalFile("move_count") && createTile();
+        /* boolean setup = createLocalFile("acc_data") && createLocalFile("move_count") && createTile();
         if (setup) {
             // Write default values to save files
             HelperMethods.writeToFile("acc_data", "0,0", activity);
@@ -80,7 +82,34 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
             projectClient.sendDialog("Wearable", "Tap to continue...");
             return true;
         }
+        return false; */
+
+
+        if (!data_exists) {
+            boolean setup = createLocalFile("acc_data") && createLocalFile("move_count") && createTile();
+            if (setup) {
+                // Write default values to save files
+                HelperMethods.writeToFile("acc_data", "0,0", activity);
+                for (int i = 1; i <= 24; i++) {
+                    String[] splitDate = HelperMethods.getCurrentDate().split(":");
+                    HelperMethods.writeToFile("move_count", splitDate[0] + ":" + Integer.toString(i) + ",0\n", activity);
+                }
+                projectClient.setTileId(tileId);
+                projectClient.setPageId(pageId);
+                projectClient.sendDialog("Wearable", "Tap to continue... New");
+                return true;
+            }
+        }
+        else{
+            //load data
+            createTile();
+            projectClient.setTileId(tileId);
+            projectClient.setPageId(pageId);
+            projectClient.sendDialog("Wearable", "Tap to continue... Old");
+            return true;
+        }
         return false;
+
     } // end doInBackground()
 
     /**

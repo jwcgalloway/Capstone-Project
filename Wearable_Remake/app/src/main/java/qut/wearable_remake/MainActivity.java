@@ -155,20 +155,20 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         if (bandClient != null) {
             projectClient = new ProjectClient(bandClient, this);
             if (HelperMethods.isInstalled(this, "acc_data")
-                    && HelperMethods.isInstalled(this, "move_count")
-                    && HelperMethods.isInstalled(this, "app_id")
-                    && HelperMethods.isInstalled(this, "please_fail")) { // Intentional fail until load data works
+                    && HelperMethods.isInstalled(this, "move_count")) { // Intentional fail until load data works
                 // loads previous files
-                List<UUID> uuids = HelperMethods.getUUID(MainActivity.this);
+
+
+                /*List<UUID> uuids = HelperMethods.getUUID(MainActivity.this);
                 UUID app_uuid = uuids.get(0);
                 UUID app_pageid = uuids.get(1);
                 projectClient.setTileId(app_uuid);
-                projectClient.setPageId(app_pageid);
+                projectClient.setPageId(app_pageid); */
 
-                initGraphs();
-                projectClient.sendDialog("Device status", "Connected to existing data.");
+                new Setup(MainActivity.this, projectClient, this, true).execute();
+                //projectClient.sendDialog("Device status", "Connected to existing data.");
             } else {
-                new Setup(MainActivity.this, projectClient, this).execute();
+                new Setup(MainActivity.this, projectClient, this, false).execute();
             }
         }
     } // end onConnectDone()
