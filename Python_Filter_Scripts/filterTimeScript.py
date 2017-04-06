@@ -7,7 +7,7 @@ def formatString(row):
     list.append(str(round(float(row[2]),4)))
     list.append(str(round(float(row[3]),4)))
     return list
-with open('rawdata.csv','rb') as csvfile,open('outputFile.csv','wb') as output :
+with open('rawdata2.csv','rb') as csvfile,open('outputFile2.csv','wb') as output :
     reader = csv.reader(csvfile)
     writer = csv.writer(output)
     stored = 0
