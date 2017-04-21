@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (orientation == lastOrientation) {
                 repetitions++;
-                if (repetitions == 8) {
+                if (repetitions == 2) {
                     filtered.add(orientation);
                     sbPost.append(strOrientation);
                 }
