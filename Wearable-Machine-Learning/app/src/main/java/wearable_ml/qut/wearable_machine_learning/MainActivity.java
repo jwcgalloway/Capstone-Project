@@ -73,6 +73,11 @@ public class MainActivity extends AppCompatActivity {
                 && largest < 1.5 && largest > 0.5) {
             return 5;
         }
+        // Position 6: Vertical Up & Left
+        else if (axis == 1 && largest < 0
+            && largest > -1.5 && largest < -0.5) {
+            return 6;
+        }
         // Unknown Position
         else {
             return 0;
@@ -81,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Filter the contents of an orientation vector.  All zeros are removed as well as
-     * any sequence with a length less than 13.
+     * any sequence with a length less than 8.
      *
      * @param unfilteredOV - Original, unfiltered orientation vector.
      *
@@ -105,13 +110,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // Only add orientations which repeat more than 13 times
+        // Only add orientations which repeat more than 8 times
         for (Integer orientation : unfilteredOV) {
             String strOrientation = Integer.toString(orientation);
 
             if (orientation == lastOrientation) {
                 repetitions++;
-                if (repetitions == 13) {
+                if (repetitions == 8) {
                     filtered.add(orientation);
                     sbPost.append(strOrientation);
                 }
@@ -138,24 +143,21 @@ public class MainActivity extends AppCompatActivity {
         List<Character> actions = new ArrayList<>();
 
         for (int i = 0; i < orientationVector.size(); i++) {
-            // Action A
-            if (orientationVector.get(i) == 1 && orientationVector.get(i + 1) == 2) {
-                if (orientationVector.get(i + 2) == 1) {
-                    i = i + 2;
+            if (i + 2 < orientationVector.size()) {
+                // Action A
+                if (orientationVector.get(i) == 1 && orientationVector.get(i + 1) == 2) {
+                    actions.add('A');
                 }
-                i = i + 1;
-                actions.add('A');
-            }
-            // Action B
-            else if (orientationVector.get(i) == 1
-                    && orientationVector.get(i + 1) == 5
-                    && orientationVector.get(i + 2) == 1) {
-                i = i + 2;
-                actions.add('B');
-            }
-            // Action C
-            else {
-                actions.add('C');
+                // Action B
+                else if (orientationVector.get(i) == 3
+                        && orientationVector.get(i + 1) == 6
+                        && orientationVector.get(i + 2) == 3) {
+                    actions.add('B');
+                }
+                // Action C
+                else {
+                    actions.add('C');
+                }
             }
         }
 
@@ -170,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
     private void readAccData() {
         AssetManager am = this.getAssets();
         try {
-            InputStream is = am.open("fake_acc_data.txt");
+            InputStream is = am.open("hand-to-mouth2.txt");
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String line;
 
