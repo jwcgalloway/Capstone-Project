@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private int getOrientation(float x, float y, float z) {
         float largest;
+        double range = 0.5;
         int axis;
 
         // Find axis with largest absolute value
@@ -50,28 +51,33 @@ public class MainActivity extends AppCompatActivity {
 
         // Position 1: Tilted Right
         if (axis == 2 && largest < 0
-                && largest > -1.5 && largest < -0.5) {
+                && largest > -1 - range && largest < -1 + range) {
             return 1;
         }
         // Position 2: Flat
         else if (axis == 3 && largest > 0
-                && largest < 1.5 && largest > 0.5) {
+                && largest < 1 + range && largest > 1 - range) {
             return 2;
         }
         // Position 3: Tilt Left
         else if (axis == 2 && largest > 0
-                && largest < 1.5 && largest > 0.5) {
+                && largest < 1 + range && largest > 1 - range) {
             return 3;
         }
         // Position 4: Upside Down
         else if (axis == 3 && largest < 0
-                && largest > -1.5 && largest < -0.5) {
+                && largest > -1 - range && largest < -1 + range) {
             return 4;
         }
         // Position 5: Vertical Up or Vertical Down
         else if (axis == 1 && largest > 0
-                && largest < 1.5 && largest > 0.5) {
+                && largest < 1 + range && largest > 1 - range) {
             return 5;
+        }
+        // Position 6: Vertical Up & Left
+        else if (axis == 1 && largest < 0
+            && largest > -1 - range && largest < -1 + range) {
+            return 6;
         }
         // Unknown Position
         else {
@@ -79,9 +85,10 @@ public class MainActivity extends AppCompatActivity {
         }
     } // end getOrientation
 
+
     /**
      * Filter the contents of an orientation vector.  All zeros are removed as well as
-     * any sequence with a length less than 13.
+     * any sequence with a length less than 8.
      *
      * @param unfilteredOV - Original, unfiltered orientation vector.
      *
@@ -105,13 +112,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // Only add orientations which repeat more than 13 times
+        // Only add orientations which repeat more than 8 times
         for (Integer orientation : unfilteredOV) {
             String strOrientation = Integer.toString(orientation);
 
             if (orientation == lastOrientation) {
                 repetitions++;
-                if (repetitions == 13) {
+                if (repetitions == 2) {
                     filtered.add(orientation);
                     sbPost.append(strOrientation);
                 }
@@ -135,33 +142,35 @@ public class MainActivity extends AppCompatActivity {
      * @param orientationVector - The orientation vector to be analysed.
      */
     private void recogniseActions(List<Integer> orientationVector) {
-        List<Character> actions = new ArrayList<>();
+        List<String> actions = new ArrayList<>();
 
         for (int i = 0; i < orientationVector.size(); i++) {
-            // Action A
-            if (orientationVector.get(i) == 1 && orientationVector.get(i + 1) == 2) {
-                if (orientationVector.get(i + 2) == 1) {
-                    i = i + 2;
+            if (i + 2 < orientationVector.size()) {
+
+                if (orientationVector.get(i) == 2
+                        && orientationVector.get(i + 1) == 6
+                        && orientationVector.get(i + 2) == 2) {
+                    actions.add("Reach and Retrieve");
                 }
-                i = i + 1;
-                actions.add('A');
-            }
-            // Action B
-            else if (orientationVector.get(i) == 1
-                    && orientationVector.get(i + 1) == 5
-                    && orientationVector.get(i + 2) == 1) {
-                i = i + 2;
-                actions.add('B');
-            }
-            // Action C
-            else {
-                actions.add('C');
+                else if (orientationVector.get(i) == 3
+                        && orientationVector.get(i + 1) == 2 || orientationVector.get(i + 1) == 6
+                        && orientationVector.get(i + 2) == 3) {
+                    actions.add("Reach to Mouth");
+                }
+                else if (orientationVector.get(i) == 2
+                        && orientationVector.get(i + 1) == 3
+                        && orientationVector.get(i + 2) == 2) {
+                    actions.add("Wrist Rotation");
+                }
+                else {
+                    actions.add("Undefined");
+                }
             }
         }
 
         StringBuilder sb = new StringBuilder();
-        for (Character c : actions) {
-            sb.append(c);
+        for (String s : actions) {
+            sb.append(s + " -> ");
         }
         Log.d("Action Sequence: ", sb.toString());
     } // end recogniseActions
@@ -170,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
     private void readAccData() {
         AssetManager am = this.getAssets();
         try {
-            InputStream is = am.open("fake_acc_data.txt");
+            InputStream is = am.open("acc_combo.txt");
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String line;
 
