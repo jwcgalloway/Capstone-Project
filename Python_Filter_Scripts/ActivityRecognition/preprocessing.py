@@ -3,12 +3,16 @@ from scipy import stats
 import numpy as np
 
 
-FREQUENCY = 51
-EPOCH = 2
+FREQUENCY = 31
+EPOCH = 2.5
 SAMPLES = EPOCH * FREQUENCY
-ACTIVITY = "R2M"
+ACTIVITY = "2"
+DATASET = "wristRotation.txt"
+OUTPUT_NAME = "ActivitiesFeatures.csv"
 #data = np.loadtxt("reachToMouth.txt",delimiter= ",")
-data = np.loadtxt("trainingSet.csv",delimiter=",")
+
+
+data = np.loadtxt(DATASET, delimiter=",")
 
 
 
@@ -52,8 +56,8 @@ print np.array(xyz)
 #Write to TExtfile
 labels = "varx, stdx, skewx, minx, maxx , avgx,vary,stdy,skewy,miny,maxy,avgy,varz,stdz,skewz,minz,maxz,avgz,CLASS \n"
 
-with open("FeaturesReachToMouth.txt","w") as text_file:
+with open(OUTPUT_NAME, "a") as text_file:
     text_file.write(labels)
     for rows in xyz:
-        text_file.write(rows + ACTIVITY + "\n")
+        text_file.write(rows + "," + ACTIVITY + "\n")
 
