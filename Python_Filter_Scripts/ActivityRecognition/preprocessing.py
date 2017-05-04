@@ -1,21 +1,50 @@
 #min, max, variance, mean
 from scipy import stats
 import numpy as np
-
+import csv
 
 FREQUENCY = 31
 EPOCH = 2.5
 SAMPLES = EPOCH * FREQUENCY
-ACTIVITY = "2"
-DATASET = "wristRotation.txt"
-OUTPUT_NAME = "ActivitiesFeatures.csv"
+ACTIVITY = "3"
+DATASET = "stirring_pot_31hz.txt"
+FILTEREDSET = "filteredSets.csv"
+OUTPUT_NAME = "ActivityFeatures.csv"
 #data = np.loadtxt("reachToMouth.txt",delimiter= ",")
 
 
-data = np.loadtxt(DATASET, delimiter=",")
+def formatString(row):
+    list = []
+    list.append(row[0])
+    list.append(str(round(float(row[1]), 4)))
+    list.append(str(round(float(row[2]), 4)))
+    list.append(str(round(float(row[3]), 4)))
+    return list
 
 
+with open(DATASET, 'rb') as csvfile, open(FILTEREDSET, 'w') as output:
+    reader = csv.reader(csvfile)
+    writer = csv.writer(output)
+    movingX = [0, 0, 0, 0, 0]
+    movingY = [0, 0, 0, 0, 0]
+    movingZ = [0, 0, 0, 0, 0]
+    for row in reader:  # print row[0]
+        movingX.pop(0)
+        movingX.append(float(row[1]))
+        xAvg = sum(movingX) / len(movingX)
 
+        movingY.pop(0)
+        movingY.append(float(row[2]))
+        yAvg = sum(movingY) / len(movingY)
+
+        movingZ.pop(0)
+        movingZ.append(float(row[3]))
+        zAvg = sum(movingZ) / len(movingZ)
+
+        newRow = [row[0], xAvg, yAvg, zAvg]
+        writer.writerow(formatString(newRow))
+
+data = np.loadtxt(FILTEREDSET, delimiter=",")
 x = data[:, 1]
 y = data[:, 2]
 z = data[:, 3]
