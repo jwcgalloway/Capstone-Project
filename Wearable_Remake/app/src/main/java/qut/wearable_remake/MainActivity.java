@@ -16,13 +16,15 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
-
 import com.microsoft.band.BandClient;
+
+import java.util.ArrayList;
 
 import qut.wearable_remake.band.ConnectAsync;
 import qut.wearable_remake.band.ProjectClient;
@@ -31,9 +33,6 @@ import qut.wearable_remake.graphs.AccLineGraph;
 import qut.wearable_remake.graphs.DailyMovesBullet;
 import qut.wearable_remake.graphs.HourlyMovesBar;
 import qut.wearable_remake.sensors.SensorInterface;
-
-import java.util.List;
-import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
     private static final long GRAPH_REFRESH_TIME = 1000;
@@ -52,6 +51,11 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     private AccLineGraph accLineGraph;
     private HourlyMovesBar hourlyMovesBar;
     public DailyMovesBullet dailyMovesBullet;
+
+    private ArrayList<Integer> orientations;
+    private int currentOrientation;
+    private int orientationRepetitions;
+    private TextView recActionTxt;
 
     private long lastRefreshed;
 
@@ -141,6 +145,12 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         fragId = 0;
 
+        // TODO Ugly ;(
+        orientations = new ArrayList<>();
+        orientations.add(0); orientations.add(0); orientations.add(0);
+        currentOrientation = 0;
+        orientationRepetitions = 0;
+        recActionTxt = (TextView) findViewById(R.id.recActionTxt);
     }
 
     /**
@@ -254,6 +264,18 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             @Override
             public void run() {
                 float accData = x + y + z;
+
+                // TODO WHEN ABLE TO TEST - REPETITION = 2 FOR 8Hz
+                int orientation = HelperMethods.getOrientation(x, y, z);
+                if (orientation == currentOrientation) {
+                    orientationRepetitions++;
+                } else if (orientation != 0 && orientationRepetitions > 2) {
+                    orientations.add(orientation);
+                }
+                if (orientations.size() >= 3) {
+                    recActionTxt.setText(HelperMethods.recogniseActions(orientations));
+                }
+
                 accLineGraph.addToDataSet(accData);
                 if (timestamp > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphingSwitch.isChecked()) {
                     lastRefreshed = timestamp;

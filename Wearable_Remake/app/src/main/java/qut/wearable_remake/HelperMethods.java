@@ -147,4 +147,94 @@ public class HelperMethods {
     } // end getHourFromDate
 
 
+    /**
+     * Determines the orientation of the accelerometer.
+     *
+     * @param x - Value of the X axis
+     * @param y - Value of the Y axis
+     * @param z - Value of the Z axis
+     *
+     * @return An integer (positions 1 through 5) to represent the orientation of the band.
+     */
+    static int getOrientation(float x, float y, float z) {
+        float largest;
+        double range = 0.5;
+        int axis;
+
+        // Find axis with largest absolute value
+        if (Math.abs(x) > Math.abs(y) && Math.abs(x) > Math.abs(z)) {
+            largest = x;
+            axis = 1;
+        } else if (Math.abs(y) > Math.abs(x) && Math.abs(y) > Math.abs(z)) {
+            largest = y;
+            axis = 2;
+        } else {
+            largest = z;
+            axis = 3;
+        }
+
+        // Position 1: Tilted Right
+        if (axis == 2 && largest < 0
+                && largest > -1 - range && largest < -1 + range) {
+            return 1;
+        }
+        // Position 2: Flat
+        else if (axis == 3 && largest > 0
+                && largest < 1 + range && largest > 1 - range) {
+            return 2;
+        }
+        // Position 3: Tilt Left
+        else if (axis == 2 && largest > 0
+                && largest < 1 + range && largest > 1 - range) {
+            return 3;
+        }
+        // Position 4: Upside Down
+        else if (axis == 3 && largest < 0
+                && largest > -1 - range && largest < -1 + range) {
+            return 4;
+        }
+        // Position 5: Vertical Up or Vertical Down
+        else if (axis == 1 && largest > 0
+                && largest < 1 + range && largest > 1 - range) {
+            return 5;
+        }
+        // Position 6: Vertical Up & Left
+        else if (axis == 1 && largest < 0
+                && largest > -1 - range && largest < -1 + range) {
+            return 6;
+        }
+        // Unknown Position
+        else {
+            return 0;
+        }
+    } // end getOrientation
+
+    /**
+     * Recognises the actions in an orientation vector by analysing the vector's
+     * orientation sequences.
+     *
+     * @param orientationVector - The orientation vector to be analysed.
+     */
+     static String recogniseActions(ArrayList<Integer> orientationVector) {
+        String action = "Unidentified Movement";
+
+        if (orientationVector.get(0) == 2
+                && orientationVector.get(1) == 6
+                && orientationVector.get(2) == 2) {
+            action = "Reach and Retrieve";
+        }
+        else if (orientationVector.get(0) == 3
+                && orientationVector.get(1) == 2 || orientationVector.get(1) == 6
+                && orientationVector.get(2) == 3) {
+            action =  "Reach to Mouth";
+        }
+        else if (orientationVector.get(0) == 2
+                && orientationVector.get(1) == 3
+                && orientationVector.get(2) == 2) {
+            action =  "Wrist Rotation";
+        }
+
+        orientationVector.remove(0);
+        return action;
+    } // end recogniseActions
 }
