@@ -22,6 +22,12 @@ import android.widget.ViewSwitcher;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
+
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
 import com.microsoft.band.BandClient;
 
 import java.util.ArrayList;
@@ -151,7 +157,21 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         currentOrientation = 0;
         orientationRepetitions = 0;
         recActionTxt = (TextView) findViewById(R.id.recActionTxt);
-    }
+
+        // new bar chart
+        HorizontalBarChart chart = (HorizontalBarChart) findViewById(R.id.action_chart);
+
+        BarData data = new BarData(getDataSet());
+        data.setBarWidth(3f);
+        chart.setDescription("");
+        chart.getXAxis().setEnabled(false);
+        chart.getAxisLeft().setEnabled(false);
+        chart.setData(data);
+        chart.setFitBars(true);
+        chart.animateXY(2000, 2000);
+        chart.invalidate();
+
+    } //end onCreate()
 
     /**
      * Called after the device has connected to the Band.
@@ -371,6 +391,29 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         } else {
             Log.e("MainActivity", "Error in creating fragment");
         }
+    }
+
+    private BarDataSet getDataSet() {
+
+        ArrayList<BarEntry> entries = new ArrayList();
+        entries.add(new BarEntry(5f, 50));
+        entries.add(new BarEntry(10f, 24));
+        entries.add(new BarEntry(15f, 32));
+        entries.add(new BarEntry(20f, 15));
+
+
+        BarDataSet dataset = new BarDataSet(entries,"Movements Performed");
+        dataset.setColors(ColorTemplate.MATERIAL_COLORS);
+        return dataset;
+    }
+
+    private ArrayList<String> getXAxisValues() {
+        ArrayList<String> labels = new ArrayList();
+        labels.add("R&R");
+        labels.add("W");
+        labels.add("RtM");
+        labels.add("SP");
+        return labels;
     }
 
 }

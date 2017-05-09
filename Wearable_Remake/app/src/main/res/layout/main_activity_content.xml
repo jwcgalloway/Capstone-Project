@@ -35,6 +35,40 @@
             class="qut.wearable_remake.ProgressClock"
             android:id="@+id/progressClock"
             android:layout_height="170dp" />
+        
+
+        <TextView
+            android:id="@+id/rrTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="RR" />
+
+        <TextView
+            android:id="@+id/wTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="W" />
+
+        <TextView
+            android:id="@+id/RtMTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="RtM" />
+
+        <TextView
+            android:id="@+id/sTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="S" />
+
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/action_chart"
+            android:layout_width="match_parent"
+            android:layout_height="150dp" />
 
         <TextView
             android:layout_width="match_parent"
