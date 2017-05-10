@@ -35,38 +35,19 @@
             class="qut.wearable_remake.ProgressClock"
             android:id="@+id/progressClock"
             android:layout_height="170dp" />
-        
+
 
         <TextView
-            android:id="@+id/rrTxt"
+            android:id="@+id/actionCountTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="RR" />
-
-        <TextView
-            android:id="@+id/wTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="W" />
-
-        <TextView
-            android:id="@+id/RtMTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="RtM" />
-
-        <TextView
-            android:id="@+id/sTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="S" />
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/actionsCountLbl" />
 
         <com.github.mikephil.charting.charts.HorizontalBarChart
-            android:id="@+id/action_chart"
+            android:id="@+id/actionBarView"
             android:layout_width="match_parent"
             android:layout_height="150dp" />
 
@@ -98,26 +79,11 @@
         </ViewSwitcher>
 
 
-
         <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/dailyBulletView"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:id="@+id/dailyBulletView"
-            android:layout_marginTop="-10dp" />
-
-        <TextView
-            android:id="@+id/lastActionLbl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/lastActionLbl" />
-
-        <TextView
-            android:id="@+id/recActionTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/recActionTxt" />
+            android:layout_marginTop="10dp" />
 
 
     </LinearLayout>

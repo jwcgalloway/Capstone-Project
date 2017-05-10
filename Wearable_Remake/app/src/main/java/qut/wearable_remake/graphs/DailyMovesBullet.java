@@ -22,6 +22,7 @@ public class DailyMovesBullet extends AbstractGraph {
     private final BarDataSet dataSet;
     private LimitLine limitLine;
     private final BarChart hc;
+
     public DailyMovesBullet(HorizontalBarChart hc, Activity a) {
         super(hc, a, "some_thing");
         this.hc = hc;

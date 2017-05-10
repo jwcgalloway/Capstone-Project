@@ -215,26 +215,26 @@ public class HelperMethods {
      *
      * @param orientationVector - The orientation vector to be analysed.
      */
-     static String recogniseActions(ArrayList<Integer> orientationVector) {
-        String action = "Unidentified Movement";
-
+     static int recogniseActions(ArrayList<Integer> orientationVector) {
+        // Reach and Retrieve
         if (orientationVector.get(0) == 2
-                && orientationVector.get(1) == 6
-                && orientationVector.get(2) == 2) {
-            action = "Reach and Retrieve";
-        }
-        else if (orientationVector.get(0) == 3
-                && orientationVector.get(1) == 2 || orientationVector.get(1) == 6
-                && orientationVector.get(2) == 3) {
-            action =  "Reach to Mouth";
-        }
-        else if (orientationVector.get(0) == 2
                 && orientationVector.get(1) == 3
                 && orientationVector.get(2) == 2) {
-            action =  "Wrist Rotation";
+            return 1;
+        }
+        // Reach to Mouth
+        else if (orientationVector.get(0) == 3
+                && orientationVector.get(1) == 6
+                && orientationVector.get(2) == 3) {
+            return 2;
+        }
+        // Wrist Rotation
+        else if (orientationVector.get(0) == 2
+                && orientationVector.get(1) == 1
+                && orientationVector.get(2) == 2) {
+            return 3;
         }
 
-        orientationVector.remove(0);
-        return action;
+        return -1;
     } // end recogniseActions
 }
