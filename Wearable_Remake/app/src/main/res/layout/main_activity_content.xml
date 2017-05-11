@@ -36,6 +36,21 @@
             android:id="@+id/progressClock"
             android:layout_height="170dp" />
 
+
+        <TextView
+            android:id="@+id/actionCountTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/actionsCountLbl" />
+
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/actionBarView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,13 +79,11 @@
         </ViewSwitcher>
 
 
-
         <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/dailyBulletView"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:id="@+id/dailyBulletView"
-            android:layout_marginTop="-10dp" />
-
+            android:layout_marginTop="10dp" />
 
 
     </LinearLayout>

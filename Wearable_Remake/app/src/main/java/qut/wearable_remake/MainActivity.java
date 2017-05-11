@@ -21,19 +21,18 @@ import android.widget.ViewSwitcher;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
-
 import com.microsoft.band.BandClient;
+
+import java.util.ArrayList;
 
 import qut.wearable_remake.band.ConnectAsync;
 import qut.wearable_remake.band.ProjectClient;
 import qut.wearable_remake.band.Setup;
 import qut.wearable_remake.graphs.AccLineGraph;
+import qut.wearable_remake.graphs.ActionsBar;
 import qut.wearable_remake.graphs.DailyMovesBullet;
 import qut.wearable_remake.graphs.HourlyMovesBar;
 import qut.wearable_remake.sensors.SensorInterface;
-
-import java.util.List;
-import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements SpecialEventListener {
     private static final long GRAPH_REFRESH_TIME = 1000;
@@ -49,9 +48,14 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     private ViewSwitcher chartSwitcher;
 
     public ProjectClient projectClient;
-    private AccLineGraph accLineGraph;
+    //private AccLineGraph accLineGraph;
     private HourlyMovesBar hourlyMovesBar;
     public DailyMovesBullet dailyMovesBullet;
+    public ActionsBar actionBar;
+
+    private ArrayList<Integer> orientations;
+    private int currentOrientation;
+    private int orientationRepetitions;
 
     private long lastRefreshed;
 
@@ -141,7 +145,12 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         fragId = 0;
 
-    }
+        // TODO Ugly ;(
+        orientations = new ArrayList<>();
+        orientations.add(-1); orientations.add(-1); orientations.add(-1);
+        currentOrientation = -1;
+        orientationRepetitions = 0;
+    } //end onCreate()
 
     /**
      * Called after the device has connected to the Band.
@@ -214,17 +223,6 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             projectClient.sendHaptic();
         }
 
-        // tries to print saved data on console every time move count changes
-        String save = "FAIL";
-        try{
-            save = HelperMethods.getDataFromFile("acc_data", MainActivity.this);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        Log.d("acc_data",save);
-        // end test
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -253,12 +251,34 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                float accData = x + y + z;
-                accLineGraph.addToDataSet(accData);
-                if (timestamp > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphingSwitch.isChecked()) {
-                    lastRefreshed = timestamp;
-                    accLineGraph.updateDisplay();
+//                float accData = x + y + z;
+
+                // TODO REPETITION = 2 FOR 8Hz
+                Log.d("ACTION VECTOR", orientations.toString());
+                int orientation = HelperMethods.getOrientation(x, y, z);
+                if (orientation == currentOrientation) {
+                    orientationRepetitions++;
+                } else {
+                    currentOrientation = orientation;
+                    orientationRepetitions = 0;
                 }
+                if (orientation != 0 && orientationRepetitions > 2 && orientations.get(2) != orientation) {
+                    orientations.remove(0);
+                    orientations.add(orientation);
+                    if (orientations.size() >= 3) {
+                        int action = HelperMethods.recogniseActions(orientations);
+                        if (action != -1) {
+                            Log.d("ACTION", Integer.toString(action));
+                            actionBar.incrementDataSet(action);
+                        }
+                    }
+                }
+
+//                accLineGraph.addToDataSet(accData);
+//                if (timestamp > lastRefreshed + GRAPH_REFRESH_TIME && liveGraphingSwitch.isChecked()) {
+//                    lastRefreshed = timestamp;
+//                    accLineGraph.updateDisplay();
+//                }
 
                 // saves sum of acc data and timestamp in "acc_data" file
                 String output = Long.toString(timestamp) + ","
@@ -274,34 +294,37 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
      * Initialise all graphs.
      */
     private void initGraphs() {
-        LineChart accLineView = (LineChart) findViewById(R.id.accLineView);
-        accLineGraph = new AccLineGraph(accLineView, this);
-        accLineView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    chartSwitcher.showNext();
-                    return true;
-                }
-                return false;
-            }
-        });
+//        LineChart accLineView = (LineChart) findViewById(R.id.accLineView);
+//        accLineGraph = new AccLineGraph(accLineView, this);
+//        accLineView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                    chartSwitcher.showNext();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
 
         BarChart hourlyBarView = (BarChart) findViewById(R.id.hourlyBarView);
         hourlyMovesBar = new HourlyMovesBar(hourlyBarView, this);
-        hourlyBarView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    chartSwitcher.showPrevious();
-                    return true;
-                }
-                return false;
-            }
-        });
+//        hourlyBarView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    chartSwitcher.showPrevious();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
 
         HorizontalBarChart dailyBulletView = (HorizontalBarChart) findViewById(R.id.dailyBulletView);
         dailyMovesBullet = new DailyMovesBullet(dailyBulletView, this);
+
+        HorizontalBarChart actionBarView = (HorizontalBarChart) findViewById(R.id.actionBarView);
+        actionBar = new ActionsBar(actionBarView, this);
     } // end initGraphs
 
 
@@ -350,5 +373,4 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
             Log.e("MainActivity", "Error in creating fragment");
         }
     }
-
 }

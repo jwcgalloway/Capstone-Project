@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
     private void readAccData() {
         AssetManager am = this.getAssets();
         try {
-            InputStream is = am.open("acc_combo.txt");
+            InputStream is = am.open("reachToMouth50.csv");
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String line;
 
@@ -189,12 +189,12 @@ public class MainActivity extends AppCompatActivity {
             while ((line = br.readLine()) != null) {
                 String[] accVals = line.split(",");
 
-                int orientation = getOrientation(Float.parseFloat(accVals[1]),
-                        Float.parseFloat(accVals[2]),
-                        Float.parseFloat(accVals[3]));
+                int orientation = getOrientation(Float.parseFloat(accVals[0]),
+                        Float.parseFloat(accVals[1]),
+                        Float.parseFloat(accVals[2]));
                 orientationVector.add(orientation);
 
-                Log.d("Acc Line = ", accVals[1] + "," + accVals[2] + "," + accVals[3] + "\n" +
+                Log.d("Acc Line = ", accVals[0] + "," + accVals[1] + "," + accVals[2] + "\n" +
                         "Orientation = " + Integer.toString(orientation));
             }
 

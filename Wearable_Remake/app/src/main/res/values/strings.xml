@@ -5,6 +5,7 @@
     <string name="movesTodayLbl">Movements Today</string>
     <string name="hundredLbl">100</string>
     <string name="moveByHourLbl">Movements by Hour</string>
+    <string name="actionsCountLbl">Action Count</string>
 
     <!-- Settings Strings -->
     <string name="removeTileLbl">Remove Tile</string>
