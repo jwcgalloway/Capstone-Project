@@ -2,14 +2,14 @@
 from scipy import stats
 import numpy as np
 import csv
-
-FREQUENCY = 31
-EPOCH = 2.5
+from PreprocessingData import *
+FREQUENCY = 8
+EPOCH = 2.8
 SAMPLES = EPOCH * FREQUENCY
 ACTIVITY = "3"
-DATASET = "stirring_pot_31hz.txt"
+DATASET = "walking.csv"
 FILTEREDSET = "filteredSets.csv"
-OUTPUT_NAME = "ActivityFeatures.csv"
+OUTPUT_NAME = "walkingFeatures.csv"
 #data = np.loadtxt("reachToMouth.txt",delimiter= ",")
 
 
@@ -22,29 +22,8 @@ def formatString(row):
     return list
 
 
-with open(DATASET, 'rb') as csvfile, open(FILTEREDSET, 'w') as output:
-    reader = csv.reader(csvfile)
-    writer = csv.writer(output)
-    movingX = [0, 0, 0, 0, 0]
-    movingY = [0, 0, 0, 0, 0]
-    movingZ = [0, 0, 0, 0, 0]
-    for row in reader:  # print row[0]
-        movingX.pop(0)
-        movingX.append(float(row[1]))
-        xAvg = sum(movingX) / len(movingX)
 
-        movingY.pop(0)
-        movingY.append(float(row[2]))
-        yAvg = sum(movingY) / len(movingY)
 
-        movingZ.pop(0)
-        movingZ.append(float(row[3]))
-        zAvg = sum(movingZ) / len(movingZ)
-
-        newRow = [row[0], xAvg, yAvg, zAvg]
-        writer.writerow(formatString(newRow))
-
-data = np.loadtxt(FILTEREDSET, delimiter=",")
 x = data[:, 1]
 y = data[:, 2]
 z = data[:, 3]
