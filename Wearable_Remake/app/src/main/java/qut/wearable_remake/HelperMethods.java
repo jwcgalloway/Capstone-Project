@@ -130,7 +130,7 @@ public class HelperMethods {
      * @return The string representation of the current date & time
      */
     public static String getCurrentDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy:HH", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy:HH:mm:ss", Locale.getDefault());
         Date currentDate = Calendar.getInstance().getTime();
         return dateFormat.format(currentDate);
     } // end getCurrentDate()
@@ -217,20 +217,27 @@ public class HelperMethods {
      */
      static int recogniseActions(ArrayList<Integer> orientationVector) {
         // Reach and Retrieve
-        if (orientationVector.get(0) == 2
-                && orientationVector.get(1) == 3
-                && orientationVector.get(2) == 2) {
-            return 1;
+        if (orientationVector.get(0) == 3
+                && orientationVector.get(1) == 2
+                && orientationVector.get(2) == 3) {
+            return 0;
         }
         // Reach to Mouth
         else if (orientationVector.get(0) == 3
                 && orientationVector.get(1) == 6
                 && orientationVector.get(2) == 3) {
-            return 2;
+            return 1;
         }
         // Wrist Rotation
+        else if (orientationVector.get(0) == 4
+                && orientationVector.get(1) == 3
+                && orientationVector.get(2) == 2) {
+            return 2;
+        }
+
+        // Stirring
         else if (orientationVector.get(0) == 2
-                && orientationVector.get(1) == 1
+                && orientationVector.get(1) == 5
                 && orientationVector.get(2) == 2) {
             return 3;
         }

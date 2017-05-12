@@ -131,8 +131,6 @@ public class Setup extends AsyncTask<Void, Void, Boolean> {
      */
     private boolean createLocalFile(String filename) {
         try {
-
-
             FileOutputStream fos = activity.openFileOutput(filename, Context.MODE_PRIVATE);
             fos.close();
             return true;
