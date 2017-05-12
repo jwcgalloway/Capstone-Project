@@ -137,13 +137,14 @@ public  class ActivityRecognition {
         return inst_co;
     }
 
-    public int getClassifiedInstance() throws Exception {
+    public String getClassifiedInstance() throws Exception {
         List extractedAxis = ExtractAxis();
         List features = CreateFeatures(extractedAxis);
         Instance instance = createInstance(features);
 
-        ClassifiedInstance = (int) smo.classifyInstance(instance);
-        return ClassifiedInstance;
+        double clsLabel = smo.classifyInstance(instance);
+        return instance.classAttribute().value((int) clsLabel);
+
 
     }
 }

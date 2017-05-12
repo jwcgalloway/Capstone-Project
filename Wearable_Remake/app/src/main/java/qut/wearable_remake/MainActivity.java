@@ -70,6 +70,10 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
     private int currentOrientation;
     private int orientationRepetitions;
 
+
+    private ArrayList<Float> accBuffer;
+    private ArrayList<Float> overlapBuffer;
+
     private long lastRefreshed;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -266,9 +270,11 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
         final int moveCount = ((WearableApplication) this.getApplication()).getTotalMovesToday() + 1;
         ((WearableApplication) this.getApplication()).setTotalMovesToday(moveCount);
 
+        /*
         if (sendHapticsSwitch.isChecked()) {
             projectClient.sendHaptic();
         }
+        */
 
         runOnUiThread(new Runnable() {
             @Override
