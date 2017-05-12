@@ -4,29 +4,22 @@ import numpy as np
 import csv
 from PreprocessingData import *
 FREQUENCY = 8
-EPOCH = 2.8
+EPOCH = 3
 SAMPLES = EPOCH * FREQUENCY
 ACTIVITY = "3"
 DATASET = "walking.csv"
 FILTEREDSET = "filteredSets.csv"
-OUTPUT_NAME = "walkingFeatures.csv"
-#data = np.loadtxt("reachToMouth.txt",delimiter= ",")
-
-
-def formatString(row):
-    list = []
-    list.append(row[0])
-    list.append(str(round(float(row[1]), 4)))
-    list.append(str(round(float(row[2]), 4)))
-    list.append(str(round(float(row[3]), 4)))
-    return list
+OUTPUT_NAME = "randomTestFeatures.csv"
+data = np.loadtxt("randomTest.csv",delimiter= ",")
 
 
 
 
-x = data[:, 1]
-y = data[:, 2]
-z = data[:, 3]
+
+
+x = data[:, 0]
+y = data[:, 1]
+z = data[:, 2]
 axises = [x, y, z]
 
 output = []
@@ -64,8 +57,9 @@ print np.array(xyz)
 #Write to TExtfile
 labels = "varx, stdx, skewx, minx, maxx , avgx,vary,stdy,skewy,miny,maxy,avgy,varz,stdz,skewz,minz,maxz,avgz,CLASS \n"
 
-with open(OUTPUT_NAME, "a") as text_file:
-    text_file.write(labels)
-    for rows in xyz:
-        text_file.write(rows + "," + ACTIVITY + "\n")
 
+# with open(OUTPUT_NAME, "a") as text_file:
+#     text_file.write(labels)
+#     for rows in xyz:
+#         text_file.write(rows + "," + ACTIVITY + "\n")
+#
