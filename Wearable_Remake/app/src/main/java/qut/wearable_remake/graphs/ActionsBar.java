@@ -52,7 +52,7 @@ public class ActionsBar extends AbstractGraph {
         xAxis.setDrawGridLines(false);
 
         final String[] labels = new String[]
-                {"Stirring", "Reach and Retrieve", "Reach to Mouth", "Wrist Rotation"};
+                {"Reach and Retrieve", "Reach to Mouth", "Wrist Rotation", "Stirring"};
         xAxis.setValueFormatter(new AxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
@@ -80,7 +80,7 @@ public class ActionsBar extends AbstractGraph {
      */
     public void incrementDataSet(int action) {
         BarEntry entry = dataSet.getEntryForIndex(action);
-        entry.setY(entry.getY() + 1);
+        entry.setY(entry.getY()+1);
         dataSet.notifyDataSetChanged();
         chart.setData(new BarData(dataSet));
         chart.invalidate();
