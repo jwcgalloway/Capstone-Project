@@ -322,9 +322,24 @@ public class MainActivity extends AppCompatActivity implements SpecialEventListe
                         int action = HelperMethods.recogniseActions(orientations);
                         if (action != -1) {
                             // save timestamp and action
+
+                            String action_str = "test";
+                            if (action == 0){
+                                action_str = "Reach and Retrieve";
+                            }
+                            else if (action == 1){
+                                action_str = "Reach to Mouth";
+                            }
+                            else if (action == 2){
+                                action_str = "Wrist Rotation";
+                            }
+                            else if (action == 3){
+                                action_str = "Stirring";
+                            }
+
                             String output = HelperMethods.getCurrentDate() +
                                     ", " +
-                                    Integer.toString(action) + "\n";
+                                    action_str + "\n";
                             HelperMethods.writeToFile("action_sequences.txt", output, MainActivity.this);
                             Log.d("ACTION", Integer.toString(action));
                             actionBar.incrementDataSet(action);
